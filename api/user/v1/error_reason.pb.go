@@ -37,6 +37,12 @@ const (
 	ErrorReason_ACCOUNT_DUPLICATE ErrorReason = 4
 	// 系统错误
 	ErrorReason_SYSTEM_ERROR ErrorReason = 5
+	// 用户不存在或密码错误
+	ErrorReason_USER_NOT_EXIST_OR_PASSWORD_ERROR ErrorReason = 6
+	// 账号错误
+	ErrorReason_ACCOUNT_ERROR ErrorReason = 7
+	// 密码错误
+	ErrorReason_PASSWORD_ERROR ErrorReason = 8
 )
 
 // Enum value maps for ErrorReason.
@@ -48,14 +54,20 @@ var (
 		3: "PASSWORD_NOT_MATCH",
 		4: "ACCOUNT_DUPLICATE",
 		5: "SYSTEM_ERROR",
+		6: "USER_NOT_EXIST_OR_PASSWORD_ERROR",
+		7: "ACCOUNT_ERROR",
+		8: "PASSWORD_ERROR",
 	}
 	ErrorReason_value = map[string]int32{
-		"PARAMS_ERROR":       0,
-		"ACCOUNT_TOO_SHORT":  1,
-		"PASSWORD_TOO_SHORT": 2,
-		"PASSWORD_NOT_MATCH": 3,
-		"ACCOUNT_DUPLICATE":  4,
-		"SYSTEM_ERROR":       5,
+		"PARAMS_ERROR":                     0,
+		"ACCOUNT_TOO_SHORT":                1,
+		"PASSWORD_TOO_SHORT":               2,
+		"PASSWORD_NOT_MATCH":               3,
+		"ACCOUNT_DUPLICATE":                4,
+		"SYSTEM_ERROR":                     5,
+		"USER_NOT_EXIST_OR_PASSWORD_ERROR": 6,
+		"ACCOUNT_ERROR":                    7,
+		"PASSWORD_ERROR":                   8,
 	}
 )
 
@@ -90,14 +102,17 @@ var File_user_v1_error_reason_proto protoreflect.FileDescriptor
 
 const file_user_v1_error_reason_proto_rawDesc = "" +
 	"\n" +
-	"\x1auser/v1/error_reason.proto\x12\vapi.user.v1\x1a\x13errors/errors.proto*\xb9\x01\n" +
+	"\x1auser/v1/error_reason.proto\x12\vapi.user.v1\x1a\x13errors/errors.proto*\x98\x02\n" +
 	"\vErrorReason\x12\x16\n" +
 	"\fPARAMS_ERROR\x10\x00\x1a\x04\xa8E\x90\x03\x12\x1b\n" +
 	"\x11ACCOUNT_TOO_SHORT\x10\x01\x1a\x04\xa8E\x90\x03\x12\x1c\n" +
 	"\x12PASSWORD_TOO_SHORT\x10\x02\x1a\x04\xa8E\x90\x03\x12\x1c\n" +
 	"\x12PASSWORD_NOT_MATCH\x10\x03\x1a\x04\xa8E\x90\x03\x12\x1b\n" +
 	"\x11ACCOUNT_DUPLICATE\x10\x04\x1a\x04\xa8E\x99\x03\x12\x16\n" +
-	"\fSYSTEM_ERROR\x10\x05\x1a\x04\xa8E\xf4\x03\x1a\x04\xa0E\xf4\x03B;\n" +
+	"\fSYSTEM_ERROR\x10\x05\x1a\x04\xa8E\xf4\x03\x12*\n" +
+	" USER_NOT_EXIST_OR_PASSWORD_ERROR\x10\x06\x1a\x04\xa8E\x91\x03\x12\x17\n" +
+	"\rACCOUNT_ERROR\x10\a\x1a\x04\xa8E\x90\x03\x12\x18\n" +
+	"\x0ePASSWORD_ERROR\x10\b\x1a\x04\xa8E\x90\x03\x1a\x04\xa0E\xf4\x03B;\n" +
 	"\vapi.user.v1P\x01Z*smart-collab-gallery-server/api/user/v1;v1b\x06proto3"
 
 var (

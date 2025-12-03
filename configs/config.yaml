@@ -13,3 +13,6 @@ data:
     addr: 127.0.0.1:6379
     read_timeout: 0.2s
     write_timeout: 0.2s
+auth:
+  jwt_secret: "smart-collab-gallery-secret-key-change-in-production"
+  jwt_expire: 168h  # 7天 = 7 * 24h = 168h

@@ -19,9 +19,12 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationUserLogin = "/api.user.v1.User/Login"
 const OperationUserRegister = "/api.user.v1.User/Register"
 
 type UserHTTPServer interface {
+	// Login 用户登录
+	Login(context.Context, *LoginRequest) (*LoginReply, error)
 	// Register 用户注册
 	Register(context.Context, *RegisterRequest) (*RegisterReply, error)
 }
@@ -29,6 +32,7 @@ type UserHTTPServer interface {
 func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r := s.Route("/")
 	r.POST("/api/user/register", _User_Register0_HTTP_Handler(srv))
+	r.POST("/api/user/login", _User_Login0_HTTP_Handler(srv))
 }
 
 func _User_Register0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -53,7 +57,31 @@ func _User_Register0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) err
 	}
 }
 
+func _User_Login0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in LoginRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserLogin)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Login(ctx, req.(*LoginRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*LoginReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type UserHTTPClient interface {
+	// Login 用户登录
+	Login(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
 	// Register 用户注册
 	Register(ctx context.Context, req *RegisterRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
 }
@@ -64,6 +92,20 @@ type UserHTTPClientImpl struct {
 
 func NewUserHTTPClient(client *http.Client) UserHTTPClient {
 	return &UserHTTPClientImpl{client}
+}
+
+// Login 用户登录
+func (c *UserHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts ...http.CallOption) (*LoginReply, error) {
+	var out LoginReply
+	pattern := "/api/user/login"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserLogin))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
 }
 
 // Register 用户注册

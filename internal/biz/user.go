@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"strings"
+	"time"
 
 	v1 "smart-collab-gallery-server/api/user/v1"
 
@@ -13,11 +14,16 @@ import (
 
 // User 用户业务对象
 type User struct {
-	ID           int64
-	UserAccount  string
-	UserPassword string
-	UserName     string
-	UserRole     string
+	ID            int64
+	UserAccount   string
+	UserPassword  string
+	UserName      string
+	UserAvatar    string
+	UserProfile   string
+	UserRole      string
+	VipNumber     int64
+	VipExpireTime *time.Time
+	CreateTime    time.Time
 }
 
 // UserRepo 用户仓储接口
@@ -26,6 +32,10 @@ type UserRepo interface {
 	CreateUser(ctx context.Context, user *User) (*User, error)
 	// GetUserByAccount 根据账号查询用户
 	GetUserByAccount(ctx context.Context, account string) (*User, error)
+	// GetUserByAccountAndPassword 根据账号和密码查询用户
+	GetUserByAccountAndPassword(ctx context.Context, account, password string) (*User, error)
+	// GetUserByID 根据 ID 查询用户
+	GetUserByID(ctx context.Context, id int64) (*User, error)
 }
 
 // UserUsecase 用户用例
@@ -110,4 +120,49 @@ func (uc *UserUsecase) encryptPassword(password string) string {
 	hash := md5.New()
 	hash.Write([]byte(SALT + password))
 	return hex.EncodeToString(hash.Sum(nil))
+}
+
+// Login 用户登录
+func (uc *UserUsecase) Login(ctx context.Context, userAccount, userPassword string) (*User, error) {
+	// 1. 校验参数
+	if err := uc.validateLoginParams(userAccount, userPassword); err != nil {
+		return nil, err
+	}
+
+	// 2. 加密密码
+	encryptPassword := uc.encryptPassword(userPassword)
+
+	// 3. 查询用户是否存在
+	user, err := uc.repo.GetUserByAccountAndPassword(ctx, userAccount, encryptPassword)
+	if err != nil {
+		uc.log.Errorf("用户登录失败，账号或密码错误: account=%s, err=%v", userAccount, err)
+		return nil, v1.ErrorUserNotExistOrPasswordError("用户不存在或密码错误")
+	}
+
+	if user == nil {
+		uc.log.Infof("user login failed, userAccount cannot match userPassword: %s", userAccount)
+		return nil, v1.ErrorUserNotExistOrPasswordError("用户不存在或密码错误")
+	}
+
+	return user, nil
+}
+
+// validateLoginParams 校验登录参数
+func (uc *UserUsecase) validateLoginParams(userAccount, userPassword string) error {
+	// 参数为空检查
+	if strings.TrimSpace(userAccount) == "" || strings.TrimSpace(userPassword) == "" {
+		return v1.ErrorParamsError("参数为空")
+	}
+
+	// 账号长度检查
+	if len(userAccount) < 4 {
+		return v1.ErrorAccountError("账号错误")
+	}
+
+	// 密码长度检查
+	if len(userPassword) < 8 {
+		return v1.ErrorPasswordError("密码错误")
+	}
+
+	return nil
 }

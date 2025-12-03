@@ -128,6 +128,221 @@ func (x *RegisterReply) GetUserId() int64 {
 	return 0
 }
 
+// 登录请求
+type LoginRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserAccount   string                 `protobuf:"bytes,1,opt,name=user_account,json=userAccount,proto3" json:"user_account,omitempty"`    // 用户账号
+	UserPassword  string                 `protobuf:"bytes,2,opt,name=user_password,json=userPassword,proto3" json:"user_password,omitempty"` // 用户密码
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LoginRequest) Reset() {
+	*x = LoginRequest{}
+	mi := &file_user_v1_user_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LoginRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoginRequest) ProtoMessage() {}
+
+func (x *LoginRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoginRequest.ProtoReflect.Descriptor instead.
+func (*LoginRequest) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *LoginRequest) GetUserAccount() string {
+	if x != nil {
+		return x.UserAccount
+	}
+	return ""
+}
+
+func (x *LoginRequest) GetUserPassword() string {
+	if x != nil {
+		return x.UserPassword
+	}
+	return ""
+}
+
+// 登录响应
+type LoginReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"` // JWT token
+	User          *LoginUserVO           `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`   // 用户信息
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LoginReply) Reset() {
+	*x = LoginReply{}
+	mi := &file_user_v1_user_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LoginReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoginReply) ProtoMessage() {}
+
+func (x *LoginReply) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoginReply.ProtoReflect.Descriptor instead.
+func (*LoginReply) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *LoginReply) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+func (x *LoginReply) GetUser() *LoginUserVO {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
+// 登录用户视图对象
+type LoginUserVO struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                             // 用户 ID
+	UserAccount   string                 `protobuf:"bytes,2,opt,name=user_account,json=userAccount,proto3" json:"user_account,omitempty"`         // 用户账号
+	UserName      string                 `protobuf:"bytes,3,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`                  // 用户昵称
+	UserAvatar    string                 `protobuf:"bytes,4,opt,name=user_avatar,json=userAvatar,proto3" json:"user_avatar,omitempty"`            // 用户头像
+	UserProfile   string                 `protobuf:"bytes,5,opt,name=user_profile,json=userProfile,proto3" json:"user_profile,omitempty"`         // 用户简介
+	UserRole      string                 `protobuf:"bytes,6,opt,name=user_role,json=userRole,proto3" json:"user_role,omitempty"`                  // 用户角色
+	VipNumber     int64                  `protobuf:"varint,7,opt,name=vip_number,json=vipNumber,proto3" json:"vip_number,omitempty"`              // 会员编号
+	VipExpireTime string                 `protobuf:"bytes,8,opt,name=vip_expire_time,json=vipExpireTime,proto3" json:"vip_expire_time,omitempty"` // 会员过期时间
+	CreateTime    string                 `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`            // 创建时间
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LoginUserVO) Reset() {
+	*x = LoginUserVO{}
+	mi := &file_user_v1_user_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LoginUserVO) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoginUserVO) ProtoMessage() {}
+
+func (x *LoginUserVO) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoginUserVO.ProtoReflect.Descriptor instead.
+func (*LoginUserVO) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *LoginUserVO) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *LoginUserVO) GetUserAccount() string {
+	if x != nil {
+		return x.UserAccount
+	}
+	return ""
+}
+
+func (x *LoginUserVO) GetUserName() string {
+	if x != nil {
+		return x.UserName
+	}
+	return ""
+}
+
+func (x *LoginUserVO) GetUserAvatar() string {
+	if x != nil {
+		return x.UserAvatar
+	}
+	return ""
+}
+
+func (x *LoginUserVO) GetUserProfile() string {
+	if x != nil {
+		return x.UserProfile
+	}
+	return ""
+}
+
+func (x *LoginUserVO) GetUserRole() string {
+	if x != nil {
+		return x.UserRole
+	}
+	return ""
+}
+
+func (x *LoginUserVO) GetVipNumber() int64 {
+	if x != nil {
+		return x.VipNumber
+	}
+	return 0
+}
+
+func (x *LoginUserVO) GetVipExpireTime() string {
+	if x != nil {
+		return x.VipExpireTime
+	}
+	return ""
+}
+
+func (x *LoginUserVO) GetCreateTime() string {
+	if x != nil {
+		return x.CreateTime
+	}
+	return ""
+}
+
 var File_user_v1_user_proto protoreflect.FileDescriptor
 
 const file_user_v1_user_proto_rawDesc = "" +
@@ -138,9 +353,30 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\ruser_password\x18\x02 \x01(\tR\fuserPassword\x12%\n" +
 	"\x0echeck_password\x18\x03 \x01(\tR\rcheckPassword\"(\n" +
 	"\rRegisterReply\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\x03R\x06userId2k\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\"V\n" +
+	"\fLoginRequest\x12!\n" +
+	"\fuser_account\x18\x01 \x01(\tR\vuserAccount\x12#\n" +
+	"\ruser_password\x18\x02 \x01(\tR\fuserPassword\"P\n" +
+	"\n" +
+	"LoginReply\x12\x14\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\x12,\n" +
+	"\x04user\x18\x02 \x01(\v2\x18.api.user.v1.LoginUserVOR\x04user\"\xa6\x02\n" +
+	"\vLoginUserVO\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12!\n" +
+	"\fuser_account\x18\x02 \x01(\tR\vuserAccount\x12\x1b\n" +
+	"\tuser_name\x18\x03 \x01(\tR\buserName\x12\x1f\n" +
+	"\vuser_avatar\x18\x04 \x01(\tR\n" +
+	"userAvatar\x12!\n" +
+	"\fuser_profile\x18\x05 \x01(\tR\vuserProfile\x12\x1b\n" +
+	"\tuser_role\x18\x06 \x01(\tR\buserRole\x12\x1d\n" +
+	"\n" +
+	"vip_number\x18\a \x01(\x03R\tvipNumber\x12&\n" +
+	"\x0fvip_expire_time\x18\b \x01(\tR\rvipExpireTime\x12\x1f\n" +
+	"\vcreate_time\x18\t \x01(\tR\n" +
+	"createTime2\xc4\x01\n" +
 	"\x04User\x12c\n" +
-	"\bRegister\x12\x1c.api.user.v1.RegisterRequest\x1a\x1a.api.user.v1.RegisterReply\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/user/registerB;\n" +
+	"\bRegister\x12\x1c.api.user.v1.RegisterRequest\x1a\x1a.api.user.v1.RegisterReply\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/user/register\x12W\n" +
+	"\x05Login\x12\x19.api.user.v1.LoginRequest\x1a\x17.api.user.v1.LoginReply\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/user/loginB;\n" +
 	"\vapi.user.v1P\x01Z*smart-collab-gallery-server/api/user/v1;v1b\x06proto3"
 
 var (
@@ -155,19 +391,25 @@ func file_user_v1_user_proto_rawDescGZIP() []byte {
 	return file_user_v1_user_proto_rawDescData
 }
 
-var file_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_user_v1_user_proto_goTypes = []any{
 	(*RegisterRequest)(nil), // 0: api.user.v1.RegisterRequest
 	(*RegisterReply)(nil),   // 1: api.user.v1.RegisterReply
+	(*LoginRequest)(nil),    // 2: api.user.v1.LoginRequest
+	(*LoginReply)(nil),      // 3: api.user.v1.LoginReply
+	(*LoginUserVO)(nil),     // 4: api.user.v1.LoginUserVO
 }
 var file_user_v1_user_proto_depIdxs = []int32{
-	0, // 0: api.user.v1.User.Register:input_type -> api.user.v1.RegisterRequest
-	1, // 1: api.user.v1.User.Register:output_type -> api.user.v1.RegisterReply
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	4, // 0: api.user.v1.LoginReply.user:type_name -> api.user.v1.LoginUserVO
+	0, // 1: api.user.v1.User.Register:input_type -> api.user.v1.RegisterRequest
+	2, // 2: api.user.v1.User.Login:input_type -> api.user.v1.LoginRequest
+	1, // 3: api.user.v1.User.Register:output_type -> api.user.v1.RegisterReply
+	3, // 4: api.user.v1.User.Login:output_type -> api.user.v1.LoginReply
+	3, // [3:5] is the sub-list for method output_type
+	1, // [1:3] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_user_v1_user_proto_init() }
@@ -181,7 +423,7 @@ func file_user_v1_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_v1_user_proto_rawDesc), len(file_user_v1_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

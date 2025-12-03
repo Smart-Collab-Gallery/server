@@ -16,6 +16,14 @@ service User {
       body: "*"
     };
   }
+  
+  // 用户登录
+  rpc Login (LoginRequest) returns (LoginReply) {
+    option (google.api.http) = {
+      post: "/api/user/login"
+      body: "*"
+    };
+  }
 }
 
 // 注册请求
@@ -28,4 +36,29 @@ message RegisterRequest {
 // 注册响应
 message RegisterReply {
   int64 user_id = 1;  // 用户 ID
+}
+
+// 登录请求
+message LoginRequest {
+  string user_account = 1;    // 用户账号
+  string user_password = 2;   // 用户密码
+}
+
+// 登录响应
+message LoginReply {
+  string token = 1;           // JWT token
+  LoginUserVO user = 2;       // 用户信息
+}
+
+// 登录用户视图对象
+message LoginUserVO {
+  int64 id = 1;               // 用户 ID
+  string user_account = 2;    // 用户账号
+  string user_name = 3;       // 用户昵称
+  string user_avatar = 4;     // 用户头像
+  string user_profile = 5;    // 用户简介
+  string user_role = 6;       // 用户角色
+  int64 vip_number = 7;       // 会员编号
+  string vip_expire_time = 8; // 会员过期时间
+  string create_time = 9;     // 创建时间
 }

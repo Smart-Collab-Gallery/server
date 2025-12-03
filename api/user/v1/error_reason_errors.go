@@ -53,3 +53,27 @@ func IsAccountDuplicate(err error) bool {
 func IsSystemError(err error) bool {
 	return errors.Reason(err) == ErrorReason_SYSTEM_ERROR.String()
 }
+
+func ErrorUserNotExistOrPasswordError(format string, args ...interface{}) *errors.Error {
+	return errors.New(401, ErrorReason_USER_NOT_EXIST_OR_PASSWORD_ERROR.String(), format)
+}
+
+func IsUserNotExistOrPasswordError(err error) bool {
+	return errors.Reason(err) == ErrorReason_USER_NOT_EXIST_OR_PASSWORD_ERROR.String()
+}
+
+func ErrorAccountError(format string, args ...interface{}) *errors.Error {
+	return errors.New(400, ErrorReason_ACCOUNT_ERROR.String(), format)
+}
+
+func IsAccountError(err error) bool {
+	return errors.Reason(err) == ErrorReason_ACCOUNT_ERROR.String()
+}
+
+func ErrorPasswordError(format string, args ...interface{}) *errors.Error {
+	return errors.New(400, ErrorReason_PASSWORD_ERROR.String(), format)
+}
+
+func IsPasswordError(err error) bool {
+	return errors.Reason(err) == ErrorReason_PASSWORD_ERROR.String()
+}

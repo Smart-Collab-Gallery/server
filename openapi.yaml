@@ -6,6 +6,25 @@ info:
     title: ""
     version: 0.0.1
 paths:
+    /api/user/login:
+        post:
+            tags:
+                - User
+            description: 用户登录
+            operationId: User_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.LoginReply'
     /api/user/register:
         post:
             tags:
@@ -46,6 +65,44 @@ paths:
                                 $ref: '#/components/schemas/helloworld.v1.HelloReply'
 components:
     schemas:
+        api.user.v1.LoginReply:
+            type: object
+            properties:
+                token:
+                    type: string
+                user:
+                    $ref: '#/components/schemas/api.user.v1.LoginUserVO'
+            description: 登录响应
+        api.user.v1.LoginRequest:
+            type: object
+            properties:
+                userAccount:
+                    type: string
+                userPassword:
+                    type: string
+            description: 登录请求
+        api.user.v1.LoginUserVO:
+            type: object
+            properties:
+                id:
+                    type: string
+                userAccount:
+                    type: string
+                userName:
+                    type: string
+                userAvatar:
+                    type: string
+                userProfile:
+                    type: string
+                userRole:
+                    type: string
+                vipNumber:
+                    type: string
+                vipExpireTime:
+                    type: string
+                createTime:
+                    type: string
+            description: 登录用户视图对象
         api.user.v1.RegisterReply:
             type: object
             properties:

@@ -63,3 +63,55 @@ func (r *userRepo) GetUserByAccount(ctx context.Context, account string) (*biz.U
 		UserRole:     userEntity.UserRole,
 	}, nil
 }
+
+// GetUserByAccountAndPassword 根据账号和密码查询用户
+func (r *userRepo) GetUserByAccountAndPassword(ctx context.Context, account, password string) (*biz.User, error) {
+	var userEntity User
+	err := r.data.db.WithContext(ctx).
+		Where("userAccount = ? AND userPassword = ? AND isDelete = 0", account, password).
+		First(&userEntity).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		r.log.Errorf("根据账号密码查询用户失败: %v", err)
+		return nil, err
+	}
+
+	return r.convertToUser(&userEntity), nil
+}
+
+// GetUserByID 根据 ID 查询用户
+func (r *userRepo) GetUserByID(ctx context.Context, id int64) (*biz.User, error) {
+	var userEntity User
+	err := r.data.db.WithContext(ctx).
+		Where("id = ? AND isDelete = 0", id).
+		First(&userEntity).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		r.log.Errorf("根据 ID 查询用户失败: %v", err)
+		return nil, err
+	}
+
+	return r.convertToUser(&userEntity), nil
+}
+
+// convertToUser 将数据库实体转换为业务对象
+func (r *userRepo) convertToUser(userEntity *User) *biz.User {
+	return &biz.User{
+		ID:            userEntity.ID,
+		UserAccount:   userEntity.UserAccount,
+		UserPassword:  userEntity.UserPassword,
+		UserName:      userEntity.UserName,
+		UserAvatar:    userEntity.UserAvatar,
+		UserProfile:   userEntity.UserProfile,
+		UserRole:      userEntity.UserRole,
+		VipNumber:     userEntity.VipNumber,
+		VipExpireTime: userEntity.VipExpireTime,
+		CreateTime:    userEntity.CreateTime,
+	}
+}
