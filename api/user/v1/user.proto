@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package api.user.v1;
+
+option go_package = "smart-collab-gallery-server/api/user/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.user.v1";
+
+import "google/api/annotations.proto";
+
+service User {
+  // 用户注册
+  rpc Register (RegisterRequest) returns (RegisterReply) {
+    option (google.api.http) = {
+      post: "/api/user/register"
+      body: "*"
+    };
+  }
+}
+
+// 注册请求
+message RegisterRequest {
+  string user_account = 1;    // 用户账号
+  string user_password = 2;   // 用户密码
+  string check_password = 3;  // 确认密码
+}
+
+// 注册响应
+message RegisterReply {
+  int64 user_id = 1;  // 用户 ID
+}

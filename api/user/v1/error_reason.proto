@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package api.user.v1;
+
+option go_package = "smart-collab-gallery-server/api/user/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.user.v1";
+
+import "errors/errors.proto";
+
+enum ErrorReason {
+  option (errors.default_code) = 500;
+  
+  // 参数错误
+  PARAMS_ERROR = 0 [(errors.code) = 400];
+  // 账号过短
+  ACCOUNT_TOO_SHORT = 1 [(errors.code) = 400];
+  // 密码过短
+  PASSWORD_TOO_SHORT = 2 [(errors.code) = 400];
+  // 密码不一致
+  PASSWORD_NOT_MATCH = 3 [(errors.code) = 400];
+  // 账号重复
+  ACCOUNT_DUPLICATE = 4 [(errors.code) = 409];
+  // 系统错误
+  SYSTEM_ERROR = 5 [(errors.code) = 500];
+}
