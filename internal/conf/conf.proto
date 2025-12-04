@@ -9,6 +9,7 @@ message Bootstrap {
   Server server = 1;
   Data data = 2;
   Auth auth = 3;
+  Consul consul = 4;
 }
 
 message Server {
@@ -44,4 +45,9 @@ message Data {
 message Auth {
   string jwt_secret = 1;                        // JWT 密钥
   google.protobuf.Duration jwt_expire = 2;      // JWT 过期时间
+}
+
+message Consul {
+  string address = 1;                           // Consul 地址
+  bool enabled = 2;                             // 是否启用
 }
