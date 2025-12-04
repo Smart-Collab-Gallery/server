@@ -6,6 +6,19 @@ info:
     title: ""
     version: 0.0.1
 paths:
+    /api/user/get/login:
+        get:
+            tags:
+                - User
+            description: 获取当前登录用户
+            operationId: User_GetLoginUser
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.GetLoginUserReply'
     /api/user/login:
         post:
             tags:
@@ -65,6 +78,12 @@ paths:
                                 $ref: '#/components/schemas/helloworld.v1.HelloReply'
 components:
     schemas:
+        api.user.v1.GetLoginUserReply:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/api.user.v1.LoginUserVO'
+            description: 获取登录用户响应
         api.user.v1.LoginReply:
             type: object
             properties:
@@ -101,6 +120,8 @@ components:
                 vipExpireTime:
                     type: string
                 createTime:
+                    type: string
+                updateTime:
                     type: string
             description: 登录用户视图对象
         api.user.v1.RegisterReply:

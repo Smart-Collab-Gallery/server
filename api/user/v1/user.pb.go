@@ -234,6 +234,88 @@ func (x *LoginReply) GetUser() *LoginUserVO {
 	return nil
 }
 
+// 获取登录用户请求（空请求，从 Header 中获取 Token）
+type GetLoginUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetLoginUserRequest) Reset() {
+	*x = GetLoginUserRequest{}
+	mi := &file_user_v1_user_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetLoginUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLoginUserRequest) ProtoMessage() {}
+
+func (x *GetLoginUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLoginUserRequest.ProtoReflect.Descriptor instead.
+func (*GetLoginUserRequest) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{4}
+}
+
+// 获取登录用户响应
+type GetLoginUserReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	User          *LoginUserVO           `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"` // 用户信息
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetLoginUserReply) Reset() {
+	*x = GetLoginUserReply{}
+	mi := &file_user_v1_user_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetLoginUserReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLoginUserReply) ProtoMessage() {}
+
+func (x *GetLoginUserReply) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLoginUserReply.ProtoReflect.Descriptor instead.
+func (*GetLoginUserReply) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetLoginUserReply) GetUser() *LoginUserVO {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
 // 登录用户视图对象
 type LoginUserVO struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -246,13 +328,14 @@ type LoginUserVO struct {
 	VipNumber     int64                  `protobuf:"varint,7,opt,name=vip_number,json=vipNumber,proto3" json:"vip_number,omitempty"`              // 会员编号
 	VipExpireTime string                 `protobuf:"bytes,8,opt,name=vip_expire_time,json=vipExpireTime,proto3" json:"vip_expire_time,omitempty"` // 会员过期时间
 	CreateTime    string                 `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`            // 创建时间
+	UpdateTime    string                 `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`           // 更新时间
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *LoginUserVO) Reset() {
 	*x = LoginUserVO{}
-	mi := &file_user_v1_user_proto_msgTypes[4]
+	mi := &file_user_v1_user_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -264,7 +347,7 @@ func (x *LoginUserVO) String() string {
 func (*LoginUserVO) ProtoMessage() {}
 
 func (x *LoginUserVO) ProtoReflect() protoreflect.Message {
-	mi := &file_user_v1_user_proto_msgTypes[4]
+	mi := &file_user_v1_user_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -277,7 +360,7 @@ func (x *LoginUserVO) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LoginUserVO.ProtoReflect.Descriptor instead.
 func (*LoginUserVO) Descriptor() ([]byte, []int) {
-	return file_user_v1_user_proto_rawDescGZIP(), []int{4}
+	return file_user_v1_user_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *LoginUserVO) GetId() int64 {
@@ -343,6 +426,13 @@ func (x *LoginUserVO) GetCreateTime() string {
 	return ""
 }
 
+func (x *LoginUserVO) GetUpdateTime() string {
+	if x != nil {
+		return x.UpdateTime
+	}
+	return ""
+}
+
 var File_user_v1_user_proto protoreflect.FileDescriptor
 
 const file_user_v1_user_proto_rawDesc = "" +
@@ -360,7 +450,10 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\n" +
 	"LoginReply\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12,\n" +
-	"\x04user\x18\x02 \x01(\v2\x18.api.user.v1.LoginUserVOR\x04user\"\xa6\x02\n" +
+	"\x04user\x18\x02 \x01(\v2\x18.api.user.v1.LoginUserVOR\x04user\"\x15\n" +
+	"\x13GetLoginUserRequest\"A\n" +
+	"\x11GetLoginUserReply\x12,\n" +
+	"\x04user\x18\x01 \x01(\v2\x18.api.user.v1.LoginUserVOR\x04user\"\xc7\x02\n" +
 	"\vLoginUserVO\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12!\n" +
 	"\fuser_account\x18\x02 \x01(\tR\vuserAccount\x12\x1b\n" +
@@ -373,10 +466,14 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"vip_number\x18\a \x01(\x03R\tvipNumber\x12&\n" +
 	"\x0fvip_expire_time\x18\b \x01(\tR\rvipExpireTime\x12\x1f\n" +
 	"\vcreate_time\x18\t \x01(\tR\n" +
-	"createTime2\xc4\x01\n" +
+	"createTime\x12\x1f\n" +
+	"\vupdate_time\x18\n" +
+	" \x01(\tR\n" +
+	"updateTime2\xb3\x02\n" +
 	"\x04User\x12c\n" +
 	"\bRegister\x12\x1c.api.user.v1.RegisterRequest\x1a\x1a.api.user.v1.RegisterReply\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/user/register\x12W\n" +
-	"\x05Login\x12\x19.api.user.v1.LoginRequest\x1a\x17.api.user.v1.LoginReply\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/user/loginB;\n" +
+	"\x05Login\x12\x19.api.user.v1.LoginRequest\x1a\x17.api.user.v1.LoginReply\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/user/login\x12m\n" +
+	"\fGetLoginUser\x12 .api.user.v1.GetLoginUserRequest\x1a\x1e.api.user.v1.GetLoginUserReply\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/api/user/get/loginB;\n" +
 	"\vapi.user.v1P\x01Z*smart-collab-gallery-server/api/user/v1;v1b\x06proto3"
 
 var (
@@ -391,25 +488,30 @@ func file_user_v1_user_proto_rawDescGZIP() []byte {
 	return file_user_v1_user_proto_rawDescData
 }
 
-var file_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_user_v1_user_proto_goTypes = []any{
-	(*RegisterRequest)(nil), // 0: api.user.v1.RegisterRequest
-	(*RegisterReply)(nil),   // 1: api.user.v1.RegisterReply
-	(*LoginRequest)(nil),    // 2: api.user.v1.LoginRequest
-	(*LoginReply)(nil),      // 3: api.user.v1.LoginReply
-	(*LoginUserVO)(nil),     // 4: api.user.v1.LoginUserVO
+	(*RegisterRequest)(nil),     // 0: api.user.v1.RegisterRequest
+	(*RegisterReply)(nil),       // 1: api.user.v1.RegisterReply
+	(*LoginRequest)(nil),        // 2: api.user.v1.LoginRequest
+	(*LoginReply)(nil),          // 3: api.user.v1.LoginReply
+	(*GetLoginUserRequest)(nil), // 4: api.user.v1.GetLoginUserRequest
+	(*GetLoginUserReply)(nil),   // 5: api.user.v1.GetLoginUserReply
+	(*LoginUserVO)(nil),         // 6: api.user.v1.LoginUserVO
 }
 var file_user_v1_user_proto_depIdxs = []int32{
-	4, // 0: api.user.v1.LoginReply.user:type_name -> api.user.v1.LoginUserVO
-	0, // 1: api.user.v1.User.Register:input_type -> api.user.v1.RegisterRequest
-	2, // 2: api.user.v1.User.Login:input_type -> api.user.v1.LoginRequest
-	1, // 3: api.user.v1.User.Register:output_type -> api.user.v1.RegisterReply
-	3, // 4: api.user.v1.User.Login:output_type -> api.user.v1.LoginReply
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	6, // 0: api.user.v1.LoginReply.user:type_name -> api.user.v1.LoginUserVO
+	6, // 1: api.user.v1.GetLoginUserReply.user:type_name -> api.user.v1.LoginUserVO
+	0, // 2: api.user.v1.User.Register:input_type -> api.user.v1.RegisterRequest
+	2, // 3: api.user.v1.User.Login:input_type -> api.user.v1.LoginRequest
+	4, // 4: api.user.v1.User.GetLoginUser:input_type -> api.user.v1.GetLoginUserRequest
+	1, // 5: api.user.v1.User.Register:output_type -> api.user.v1.RegisterReply
+	3, // 6: api.user.v1.User.Login:output_type -> api.user.v1.LoginReply
+	5, // 7: api.user.v1.User.GetLoginUser:output_type -> api.user.v1.GetLoginUserReply
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_user_v1_user_proto_init() }
@@ -423,7 +525,7 @@ func file_user_v1_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_v1_user_proto_rawDesc), len(file_user_v1_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -24,6 +24,13 @@ service User {
       body: "*"
     };
   }
+  
+  // 获取当前登录用户
+  rpc GetLoginUser (GetLoginUserRequest) returns (GetLoginUserReply) {
+    option (google.api.http) = {
+      get: "/api/user/get/login"
+    };
+  }
 }
 
 // 注册请求
@@ -50,6 +57,15 @@ message LoginReply {
   LoginUserVO user = 2;       // 用户信息
 }
 
+// 获取登录用户请求（空请求，从 Header 中获取 Token）
+message GetLoginUserRequest {
+}
+
+// 获取登录用户响应
+message GetLoginUserReply {
+  LoginUserVO user = 1;       // 用户信息
+}
+
 // 登录用户视图对象
 message LoginUserVO {
   int64 id = 1;               // 用户 ID
@@ -61,4 +77,5 @@ message LoginUserVO {
   int64 vip_number = 7;       // 会员编号
   string vip_expire_time = 8; // 会员过期时间
   string create_time = 9;     // 创建时间
+  string update_time = 10;    // 更新时间
 }

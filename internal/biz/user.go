@@ -24,6 +24,7 @@ type User struct {
 	VipNumber     int64
 	VipExpireTime *time.Time
 	CreateTime    time.Time
+	UpdateTime    time.Time
 }
 
 // UserRepo 用户仓储接口
@@ -165,4 +166,24 @@ func (uc *UserUsecase) validateLoginParams(userAccount, userPassword string) err
 	}
 
 	return nil
+}
+
+// GetLoginUser 获取当前登录用户
+func (uc *UserUsecase) GetLoginUser(ctx context.Context, userID int64) (*User, error) {
+	if userID <= 0 {
+		return nil, v1.ErrorNotLoginError("未登录")
+	}
+
+	// 从数据库查询用户
+	user, err := uc.repo.GetUserByID(ctx, userID)
+	if err != nil {
+		uc.log.Errorf("查询用户失败: userID=%d, err=%v", userID, err)
+		return nil, v1.ErrorSystemError("查询用户失败")
+	}
+
+	if user == nil {
+		return nil, v1.ErrorUserNotFound("用户不存在")
+	}
+
+	return user, nil
 }

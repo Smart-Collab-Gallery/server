@@ -77,3 +77,27 @@ func ErrorPasswordError(format string, args ...interface{}) *errors.Error {
 func IsPasswordError(err error) bool {
 	return errors.Reason(err) == ErrorReason_PASSWORD_ERROR.String()
 }
+
+func ErrorNotLoginError(format string, args ...interface{}) *errors.Error {
+	return errors.New(401, ErrorReason_NOT_LOGIN_ERROR.String(), format)
+}
+
+func IsNotLoginError(err error) bool {
+	return errors.Reason(err) == ErrorReason_NOT_LOGIN_ERROR.String()
+}
+
+func ErrorInvalidToken(format string, args ...interface{}) *errors.Error {
+	return errors.New(401, ErrorReason_INVALID_TOKEN.String(), format)
+}
+
+func IsInvalidToken(err error) bool {
+	return errors.Reason(err) == ErrorReason_INVALID_TOKEN.String()
+}
+
+func ErrorUserNotFound(format string, args ...interface{}) *errors.Error {
+	return errors.New(404, ErrorReason_USER_NOT_FOUND.String(), format)
+}
+
+func IsUserNotFound(err error) bool {
+	return errors.Reason(err) == ErrorReason_USER_NOT_FOUND.String()
+}

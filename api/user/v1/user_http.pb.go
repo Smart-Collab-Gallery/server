@@ -19,10 +19,13 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationUserGetLoginUser = "/api.user.v1.User/GetLoginUser"
 const OperationUserLogin = "/api.user.v1.User/Login"
 const OperationUserRegister = "/api.user.v1.User/Register"
 
 type UserHTTPServer interface {
+	// GetLoginUser 获取当前登录用户
+	GetLoginUser(context.Context, *GetLoginUserRequest) (*GetLoginUserReply, error)
 	// Login 用户登录
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
 	// Register 用户注册
@@ -33,6 +36,7 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r := s.Route("/")
 	r.POST("/api/user/register", _User_Register0_HTTP_Handler(srv))
 	r.POST("/api/user/login", _User_Login0_HTTP_Handler(srv))
+	r.GET("/api/user/get/login", _User_GetLoginUser0_HTTP_Handler(srv))
 }
 
 func _User_Register0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -79,7 +83,28 @@ func _User_Login0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error 
 	}
 }
 
+func _User_GetLoginUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetLoginUserRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserGetLoginUser)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetLoginUser(ctx, req.(*GetLoginUserRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetLoginUserReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type UserHTTPClient interface {
+	// GetLoginUser 获取当前登录用户
+	GetLoginUser(ctx context.Context, req *GetLoginUserRequest, opts ...http.CallOption) (rsp *GetLoginUserReply, err error)
 	// Login 用户登录
 	Login(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
 	// Register 用户注册
@@ -92,6 +117,20 @@ type UserHTTPClientImpl struct {
 
 func NewUserHTTPClient(client *http.Client) UserHTTPClient {
 	return &UserHTTPClientImpl{client}
+}
+
+// GetLoginUser 获取当前登录用户
+func (c *UserHTTPClientImpl) GetLoginUser(ctx context.Context, in *GetLoginUserRequest, opts ...http.CallOption) (*GetLoginUserReply, error) {
+	var out GetLoginUserReply
+	pattern := "/api/user/get/login"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationUserGetLoginUser))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
 }
 
 // Login 用户登录

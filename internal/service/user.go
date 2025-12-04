@@ -6,6 +6,7 @@ import (
 
 	v1 "smart-collab-gallery-server/api/user/v1"
 	"smart-collab-gallery-server/internal/biz"
+	"smart-collab-gallery-server/internal/middleware"
 	"smart-collab-gallery-server/internal/pkg"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -67,6 +68,30 @@ func (s *UserService) Login(ctx context.Context, req *v1.LoginRequest) (*v1.Logi
 	}, nil
 }
 
+func (s *UserService) GetLoginUser(ctx context.Context, req *v1.GetLoginUserRequest) (*v1.GetLoginUserReply, error) {
+	// 从上下文中获取用户 ID（由 JWT 中间件设置）
+	userID := middleware.GetUserIDFromContext(ctx)
+	if userID == 0 {
+		return nil, v1.ErrorNotLoginError("未登录")
+	}
+
+	s.log.WithContext(ctx).Infof("获取登录用户信息: userID=%d", userID)
+
+	// 从数据库查询用户信息
+	user, err := s.uc.GetLoginUser(ctx, userID)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("获取登录用户失败: %v", err)
+		return nil, err
+	}
+
+	// 构建返回的用户信息
+	loginUserVO := s.convertToLoginUserVO(user)
+
+	return &v1.GetLoginUserReply{
+		User: loginUserVO,
+	}, nil
+}
+
 // convertToLoginUserVO 将 User 转换为 LoginUserVO
 func (s *UserService) convertToLoginUserVO(user *biz.User) *v1.LoginUserVO {
 	vo := &v1.LoginUserVO{
@@ -78,6 +103,7 @@ func (s *UserService) convertToLoginUserVO(user *biz.User) *v1.LoginUserVO {
 		UserRole:    user.UserRole,
 		VipNumber:   user.VipNumber,
 		CreateTime:  user.CreateTime.Format(time.RFC3339),
+		UpdateTime:  user.UpdateTime.Format(time.RFC3339),
 	}
 
 	if user.VipExpireTime != nil {

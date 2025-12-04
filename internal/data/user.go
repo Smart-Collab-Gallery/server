@@ -113,5 +113,6 @@ func (r *userRepo) convertToUser(userEntity *User) *biz.User {
 		VipNumber:     userEntity.VipNumber,
 		VipExpireTime: userEntity.VipExpireTime,
 		CreateTime:    userEntity.CreateTime,
+		UpdateTime:    userEntity.UpdateTime,
 	}
 }
