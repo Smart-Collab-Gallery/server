@@ -38,6 +38,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.user.v1.LoginReply'
+    /api/user/logout:
+        post:
+            tags:
+                - User
+            description: 用户注销
+            operationId: User_Logout
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.LogoutRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.LogoutReply'
     /api/user/register:
         post:
             tags:
@@ -124,6 +143,16 @@ components:
                 updateTime:
                     type: string
             description: 登录用户视图对象
+        api.user.v1.LogoutReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+            description: 注销响应
+        api.user.v1.LogoutRequest:
+            type: object
+            properties: {}
+            description: 注销请求（空请求，从 Header 中获取 Token）
         api.user.v1.RegisterReply:
             type: object
             properties:

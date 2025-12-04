@@ -31,6 +31,14 @@ service User {
       get: "/api/user/get/login"
     };
   }
+  
+  // 用户注销
+  rpc Logout (LogoutRequest) returns (LogoutReply) {
+    option (google.api.http) = {
+      post: "/api/user/logout"
+      body: "*"
+    };
+  }
 }
 
 // 注册请求
@@ -64,6 +72,15 @@ message GetLoginUserRequest {
 // 获取登录用户响应
 message GetLoginUserReply {
   LoginUserVO user = 1;       // 用户信息
+}
+
+// 注销请求（空请求，从 Header 中获取 Token）
+message LogoutRequest {
+}
+
+// 注销响应
+message LogoutReply {
+  bool success = 1;           // 是否成功
 }
 
 // 登录用户视图对象

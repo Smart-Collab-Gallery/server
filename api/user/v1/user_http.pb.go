@@ -21,6 +21,7 @@ const _ = http.SupportPackageIsVersion1
 
 const OperationUserGetLoginUser = "/api.user.v1.User/GetLoginUser"
 const OperationUserLogin = "/api.user.v1.User/Login"
+const OperationUserLogout = "/api.user.v1.User/Logout"
 const OperationUserRegister = "/api.user.v1.User/Register"
 
 type UserHTTPServer interface {
@@ -28,6 +29,8 @@ type UserHTTPServer interface {
 	GetLoginUser(context.Context, *GetLoginUserRequest) (*GetLoginUserReply, error)
 	// Login 用户登录
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
+	// Logout 用户注销
+	Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
 	// Register 用户注册
 	Register(context.Context, *RegisterRequest) (*RegisterReply, error)
 }
@@ -37,6 +40,7 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r.POST("/api/user/register", _User_Register0_HTTP_Handler(srv))
 	r.POST("/api/user/login", _User_Login0_HTTP_Handler(srv))
 	r.GET("/api/user/get/login", _User_GetLoginUser0_HTTP_Handler(srv))
+	r.POST("/api/user/logout", _User_Logout0_HTTP_Handler(srv))
 }
 
 func _User_Register0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -102,11 +106,35 @@ func _User_GetLoginUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context)
 	}
 }
 
+func _User_Logout0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in LogoutRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserLogout)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Logout(ctx, req.(*LogoutRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*LogoutReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type UserHTTPClient interface {
 	// GetLoginUser 获取当前登录用户
 	GetLoginUser(ctx context.Context, req *GetLoginUserRequest, opts ...http.CallOption) (rsp *GetLoginUserReply, err error)
 	// Login 用户登录
 	Login(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
+	// Logout 用户注销
+	Logout(ctx context.Context, req *LogoutRequest, opts ...http.CallOption) (rsp *LogoutReply, err error)
 	// Register 用户注册
 	Register(ctx context.Context, req *RegisterRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
 }
@@ -139,6 +167,20 @@ func (c *UserHTTPClientImpl) Login(ctx context.Context, in *LoginRequest, opts .
 	pattern := "/api/user/login"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserLogin))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// Logout 用户注销
+func (c *UserHTTPClientImpl) Logout(ctx context.Context, in *LogoutRequest, opts ...http.CallOption) (*LogoutReply, error) {
+	var out LogoutReply
+	pattern := "/api/user/logout"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserLogout))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

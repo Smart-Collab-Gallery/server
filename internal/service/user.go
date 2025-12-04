@@ -92,6 +92,27 @@ func (s *UserService) GetLoginUser(ctx context.Context, req *v1.GetLoginUserRequ
 	}, nil
 }
 
+func (s *UserService) Logout(ctx context.Context, req *v1.LogoutRequest) (*v1.LogoutReply, error) {
+	// 从上下文中获取用户 ID（由 JWT 中间件设置）
+	userID := middleware.GetUserIDFromContext(ctx)
+	if userID == 0 {
+		return nil, v1.ErrorNotLoginError("未登录")
+	}
+
+	s.log.WithContext(ctx).Infof("用户注销请求: userID=%d", userID)
+
+	// 执行注销逻辑
+	err := s.uc.Logout(ctx, userID)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("用户注销失败: %v", err)
+		return nil, err
+	}
+
+	return &v1.LogoutReply{
+		Success: true,
+	}, nil
+}
+
 // convertToLoginUserVO 将 User 转换为 LoginUserVO
 func (s *UserService) convertToLoginUserVO(user *biz.User) *v1.LoginUserVO {
 	vo := &v1.LoginUserVO{
