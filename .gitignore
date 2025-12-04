@@ -79,3 +79,4 @@ configs/*prod*
 # Coverage
 coverage.txt
 coverage.html
+config.yaml
