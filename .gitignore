@@ -63,6 +63,10 @@ logs/
 build/
 out/
 
+# Docs
+docs/
+
+
 # Config files with sensitive data (保留配置模板，忽略本地配置)
 configs/*local*
 configs/*prod*
