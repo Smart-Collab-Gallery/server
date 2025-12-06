@@ -1,0 +1,40 @@
+{{- if .Values.hpa.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  behavior:
+    scaleDown:
+      policies:
+        - type: Pods
+          value: {{ .Values.hpa.scaleDownPolicies.numberOfPods }}
+          periodSeconds: {{ .Values.hpa.scaleDownPolicies.observationPeriod }}
+    scaleUp:
+      policies:
+        - type: Pods
+          value: {{ .Values.hpa.scaleUpPolicies.numberOfPods }}
+          periodSeconds: {{ .Values.hpa.scaleUpPolicies.observationPeriod }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  metrics:
+{{- if .Values.serviceMonitor.enabled }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          averageUtilization: {{ .Values.hpa.cpuUtilization }}
+          type: Utilization
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          averageUtilization: {{ .Values.hpa.memoryUtilization }}
+          type: Utilization
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  scaleTargetRef:
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    name: {{ .Release.Name }}
+  {{- end }}
+{{- end }}

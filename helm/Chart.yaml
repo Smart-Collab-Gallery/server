@@ -1,0 +1,6 @@
+apiVersion: v2
+name: scene-api
+description: smart-collab-gallery
+type: application
+version: 0.1.6
+appVersion: "1.0.0"

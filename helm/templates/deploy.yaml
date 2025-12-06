@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: smart-collab-gallery
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.smartCollabGallery.replicas }}
+  progressDeadlineSeconds: 3600
+  selector:
+    matchLabels:
+      app: smart-collab-gallery
+  strategy:
+    canary:
+      steps:
+      - setWeight: 100
+  template:
+    metadata:
+      labels:
+        app: smart-collab-gallery
+    spec:
+      containers:
+        - name: smart-collab-gallery
+          image: "{{ .Values.smartCollabGallery.image }}"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: VERSION
+              value: "{{ .Values.smartCollabGallery.version }}"
+            - name: deployType
+              value: "eks"
+          ports:
+            - name: p-8000
+              containerPort: 8000
+            - name: p-9000
+              containerPort: 9000
+          volumeMounts:
+            - name: smart-collab-gallery-config
+              mountPath: /app/config
+          resources: {{- toYaml .Values.smartCollabGallery.resources | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: smart-collab-gallery-config
+          configMap:
+            name: smart-collab-gallery-config
