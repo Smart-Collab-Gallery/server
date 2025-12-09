@@ -59,8 +59,6 @@ jobs:
           --set smartCollabGallery.image=${{ secrets.DOCKER_USERNAME }}/smart-collab-gallery/${{ github.event.inputs.image_tag }} \
           --set consul.address=${{ secrets.CONSUL_ADDRESS }} \
           --set consul.token=${{ secrets.CONSUL_TOKEN }}
-          --wait \
-          --timeout 5m
 
     - name: Verify deployment
       run: |
