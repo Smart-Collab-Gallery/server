@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: smart-collab-gallery
-  namespace: {{ Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.smartCollabGallery.replicas }}
   progressDeadlineSeconds: 3600
