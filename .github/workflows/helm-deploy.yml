@@ -13,22 +13,36 @@ jobs:
     runs-on: ubuntu-24.04
     if: github.event_name == 'workflow_dispatch'
     environment: ${{ github.event.inputs.environment }}
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
+
     - name: Install Helm
       uses: azure/setup-helm@v3
       with:
         version: 'v3.12.0'
-    
-    - name: Configure kubectl
-      uses: azure/k8s-set-context@v3
-      with:
-        method: kubeconfig
-        kubeconfig: ${{ secrets.KUBE_CONFIG }}
-    
+
+    - name: Setup kubeconfig
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+        chmod 600 $HOME/.kube/config
+        
+        # 获取集群名称
+        CLUSTER_NAME=$(kubectl config view -o jsonpath='{.contexts[?(@.name=="'$(kubectl config current-context)'")].context.cluster}')
+        echo "Current cluster: $CLUSTER_NAME"
+        
+        # 禁用 TLS 验证
+        kubectl config set-cluster $CLUSTER_NAME --insecure-skip-tls-verify=true
+        
+        # 验证连接
+        echo "=== Cluster Info ==="
+        kubectl cluster-info
+        
+        echo "=== Nodes ==="
+        kubectl get nodes
+
     - name: Prepare values
       run: |
         cat > deploy-values.yaml <<'EOF'
@@ -36,7 +50,7 @@ jobs:
         EOF
         
         cat deploy-values.yaml
-    
+
     - name: Deploy with Helm
       run: |
         helm upgrade --install smart-collab-gallery ./helm \
@@ -47,7 +61,7 @@ jobs:
           --set consul.token=${{ secrets.CONSUL_TOKEN }}
           --wait \
           --timeout 5m
-    
+
     - name: Verify deployment
       run: |
         kubectl rollout status deployment/smart-collab-gallery -n ${{ github.event.inputs.environment }}
