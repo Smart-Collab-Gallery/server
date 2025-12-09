@@ -3,7 +3,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: smart-collab-gallery
-  namespace: {{ .Values.smartCollabGallery.namespace }}
+  namespace: {{ .Release.Namespace }}
 spec:
   behavior:
     scaleDown:

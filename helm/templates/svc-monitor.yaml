@@ -13,7 +13,7 @@ spec:
       app: smart-collab-gallery
   namespaceSelector:
     matchNames:
-      - {{ .Values.smartCollabGallery.namespace }}
+      - {{ .Release.Namespace }}
   endpoints:
   - port: "http"
     interval: {{ .Values.serviceMonitor.interval }}
