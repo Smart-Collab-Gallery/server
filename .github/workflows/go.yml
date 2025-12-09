@@ -1,0 +1,89 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: '镜像标签'
+        required: true
+        default: 'latest'
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Get tag
+      id: tag
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        else
+          echo "TAG=${{ github.event.inputs.image_tag || 'latest' }}" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ secrets.DOCKER_USERNAME }}/smart-collab-gallery:${{ steps.tag.outputs.TAG }}
+          ${{ secrets.DOCKER_USERNAME }}/smart-collab-gallery:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'workflow_dispatch'
+    environment: ${{ github.event.inputs.environment }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Install Helm
+      uses: azure/setup-helm@v3
+      with:
+        version: 'v3.12.0'
+    
+    - name: Configure kubectl
+      uses: azure/k8s-set-context@v3
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+    
+    - name: Prepare values
+      run: |
+        cat > deploy-values.yaml <<'EOF'
+        ${{ vars.DEPLOY_VALUES }}
+        EOF
+        
+        cat deploy-values.yaml
+    
+    - name: Deploy with Helm
+      run: |
+        helm upgrade --install smart-collab-gallery ./helm \
+          --namespace smart-collab-gallery \
+          --values deploy-values.yaml \
+          --set smartCollabGallery.image=${{ secrets.DOCKER_USERNAME }}/smart-collab-gallery/${{ github.event.inputs.image_tag }} \
+          --set consul.address=${{ secrets.CONSUL_ADDRESS }} \
+          --set consul.token=${{ secrets.CONSUL_TOKEN }}
+          --wait \
+          --timeout 5m
+    
+    - name: Verify deployment
+      run: |
+        kubectl rollout status deployment/smart-collab-gallery -n ${{ github.event.inputs.environment }}
+        kubectl get pods -n ${{ github.event.inputs.environment }}
