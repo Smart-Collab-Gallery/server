@@ -2,7 +2,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ .Release.Name }}
+  name: smart-collab-gallery
   namespace: "prometheus"
   labels:
     release: "prometheus-community"
@@ -10,10 +10,10 @@ spec:
   jobLabel: app
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      app: smart-collab-gallery
   namespaceSelector:
     matchNames:
-      - {{ .Release.Namespace }}
+      - {{ .Values.smartCollabGallery.namespace }}
   endpoints:
   - port: "http"
     interval: {{ .Values.serviceMonitor.interval }}

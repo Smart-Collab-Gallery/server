@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: scene-api
-  namespace: {{ .Release.Namespace }}
+  name: smart-collab-gallery
+  namespace: {{ .Values.smartCollabGallery.namespace }}
   labels:
     app: scene-api
 spec:
