@@ -23,10 +23,6 @@ spec:
           image: "{{ .Values.smartCollabGallery.image }}"
           imagePullPolicy: IfNotPresent
           env:
-            - name: VERSION
-              value: "{{ .Values.smartCollabGallery.version }}"
-            - name: deployType
-              value: "eks"
             - name: APP_NAME
               value: "smart-collab-gallery"
             - name: APP_VERSION
