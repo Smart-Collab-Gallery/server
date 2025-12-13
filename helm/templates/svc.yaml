@@ -4,7 +4,7 @@ metadata:
   name: smart-collab-gallery
   namespace: {{ .Release.Namespace }}
   labels:
-    app: scene-api
+    app: smart-collab-gallery
 spec:
   type: ClusterIP
   selector:

@@ -5,7 +5,7 @@ metadata:
   name: smart-collab-gallery
   namespace: "prometheus"
   labels:
-    release: "prometheus-community"
+    release: "prometheus"
 spec:
   jobLabel: app
   selector:
