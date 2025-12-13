@@ -1,8 +1,6 @@
 module smart-collab-gallery-server
 
-go 1.23.0
-
-toolchain go1.23.12
+go 1.23.12
 
 require (
 	github.com/go-kratos/kratos/v2 v2.8.0
