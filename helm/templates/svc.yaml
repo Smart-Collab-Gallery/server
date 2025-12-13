@@ -8,7 +8,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: scene-api
+    app: smart-collab-gallery
   ports:
     - name: grpc
       protocol: TCP
