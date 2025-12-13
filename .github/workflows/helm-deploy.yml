@@ -56,6 +56,6 @@ jobs:
         helm upgrade --install smart-collab-gallery ./helm \
           --namespace smart-collab-gallery \
           --values deploy-values.yaml \
-          --set smartCollabGallery.image=${{ secrets.DOCKER_USERNAME }}/smart-collab-gallery/${{ github.event.inputs.image_tag }} \
+          --set smartCollabGallery.image=${{ secrets.DOCKER_USERNAME }}/smart-collab-gallery:${{ github.event.inputs.image_tag }} \
           --set consul.address=${{ secrets.CONSUL_ADDRESS }} \
           --set consul.token=${{ secrets.CONSUL_TOKEN }}
