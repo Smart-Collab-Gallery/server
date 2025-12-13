@@ -7,6 +7,7 @@ import (
 
 	"smart-collab-gallery-server/internal/conf"
 	"smart-collab-gallery-server/internal/pkg"
+	"smart-collab-gallery-server/internal/server"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
@@ -68,6 +69,12 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 
 func main() {
 	flag.Parse()
+
+	// 初始化 Prometheus 指标导出器
+	if err := server.InitMetrics(); err != nil {
+		panic(err)
+	}
+
 	logger := log.With(log.NewStdLogger(os.Stdout),
 		"ts", log.DefaultTimestamp,
 		"caller", log.DefaultCaller,
