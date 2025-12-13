@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 
+	healthv1 "smart-collab-gallery-server/api/health/v1"
 	v1 "smart-collab-gallery-server/api/helloworld/v1"
 	userv1 "smart-collab-gallery-server/api/user/v1"
 	"smart-collab-gallery-server/internal/conf"
@@ -17,7 +18,7 @@ import (
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, user *service.UserService, jwtManager *pkg.JWTManager, logger log.Logger) *http.Server {
+func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, user *service.UserService, health *service.HealthService, jwtManager *pkg.JWTManager, logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -37,6 +38,8 @@ func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, user *servic
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
+
+	healthv1.RegisterHealthHTTPServer(srv, health)
 	v1.RegisterGreeterHTTPServer(srv, greeter)
 	userv1.RegisterUserHTTPServer(srv, user)
 	return srv
@@ -49,6 +52,7 @@ func NewWhiteListMatcher() selector.MatchFunc {
 	whiteList["/api.user.v1.User/Register"] = struct{}{}
 	whiteList["/api.user.v1.User/Login"] = struct{}{}
 	whiteList["/api.helloworld.v1.Greeter/SayHello"] = struct{}{}
+	whiteList["/api.health.v1.Health/Ping"] = struct{}{}
 
 	return func(ctx context.Context, operation string) bool {
 		if _, ok := whiteList[operation]; ok {

@@ -1,6 +1,7 @@
 package server
 
 import (
+	healthv1 "smart-collab-gallery-server/api/health/v1"
 	v1 "smart-collab-gallery-server/api/helloworld/v1"
 	userv1 "smart-collab-gallery-server/api/user/v1"
 	"smart-collab-gallery-server/internal/conf"
@@ -12,7 +13,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, greeter *service.GreeterService, user *service.UserService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *conf.Server, greeter *service.GreeterService, user *service.UserService, health *service.HealthService, logger log.Logger) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -28,6 +29,7 @@ func NewGRPCServer(c *conf.Server, greeter *service.GreeterService, user *servic
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
+	healthv1.RegisterHealthServer(srv, health)
 	v1.RegisterGreeterServer(srv, greeter)
 	userv1.RegisterUserServer(srv, user)
 	return srv
