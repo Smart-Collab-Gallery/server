@@ -5,13 +5,13 @@
 //go:build example
 // +build example
 
-package middleware
+package middleware_example
 
 import (
 	"context"
 
+	"smart-collab-gallery-server/internal/middleware"
 	"smart-collab-gallery-server/internal/pkg"
-	"smart-collab-gallery-server/internal/service"
 
 	v1 "smart-collab-gallery-server/api/user/v1"
 
@@ -22,22 +22,21 @@ import (
 )
 
 // 示例 1: 在 HTTP Server 配置中使用管理员权限中间件
-func NewHTTPServerWithAdminAuth(greeter *service.GreeterService,
-	user *service.UserService, jwtManager *pkg.JWTManager, logger log.Logger) *http.Server {
+func NewHTTPServerWithAdminAuth(jwtManager *pkg.JWTManager, logger log.Logger) *http.Server {
 
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
-			MetricsServer(),
+			middleware.MetricsServer(),
 
 			// 第一层：JWT 认证 - 验证用户登录状态
 			selector.Server(
-				JWTAuth(jwtManager),
+				middleware.JWTAuth(jwtManager),
 			).Match(NewAuthRequiredMatcher()).Build(),
 
 			// 第二层：管理员权限校验 - 对特定接口要求管理员权限
 			selector.Server(
-				RequireAdmin(),
+				middleware.RequireAdmin(),
 			).Match(NewAdminOnlyMatcher()).Build(),
 		),
 	}
@@ -92,8 +91,8 @@ type ExampleService struct {
 
 func (s *ExampleService) DeleteUser(ctx context.Context, userID int64) error {
 	// 方式 1: 手动检查管理员权限
-	userRole := GetUserRoleFromContext(ctx)
-	if UserRole(userRole) != RoleAdmin {
+	userRole := middleware.GetUserRoleFromContext(ctx)
+	if middleware.UserRole(userRole) != middleware.RoleAdmin {
 		return v1.ErrorNoAuthError("仅管理员可删除用户")
 	}
 
@@ -106,8 +105,8 @@ func (s *ExampleService) DeleteUser(ctx context.Context, userID int64) error {
 
 func (s *ExampleService) UpdateContent(ctx context.Context, contentID int64, content string) error {
 	// 获取当前用户信息
-	userID := GetUserIDFromContext(ctx)
-	userRole := GetUserRoleFromContext(ctx)
+	userID := middleware.GetUserIDFromContext(ctx)
+	userRole := middleware.GetUserRoleFromContext(ctx)
 
 	// 方式 2: 复杂的权限判断逻辑
 	// 管理员可以修改任何内容，普通用户只能修改自己的内容
@@ -119,7 +118,7 @@ func (s *ExampleService) UpdateContent(ctx context.Context, contentID int64, con
 	}
 
 	// 权限校验
-	isAdmin := UserRole(userRole) == RoleAdmin
+	isAdmin := middleware.UserRole(userRole) == middleware.RoleAdmin
 	isOwner := owner == userID
 
 	if !isAdmin && !isOwner {
@@ -139,8 +138,7 @@ func (s *ExampleService) getContentOwner(ctx context.Context, contentID int64) (
 }
 
 // 示例 3: 使用 RequireLogin 仅要求登录
-func NewHTTPServerWithLoginRequired(user *service.UserService,
-	jwtManager *pkg.JWTManager, logger log.Logger) *http.Server {
+func NewHTTPServerWithLoginRequired(jwtManager *pkg.JWTManager, logger log.Logger) *http.Server {
 
 	var opts = []http.ServerOption{
 		http.Middleware(
@@ -148,12 +146,12 @@ func NewHTTPServerWithLoginRequired(user *service.UserService,
 
 			// JWT 认证
 			selector.Server(
-				JWTAuth(jwtManager),
+				middleware.JWTAuth(jwtManager),
 			).Match(NewAuthRequiredMatcher()).Build(),
 
 			// 仅要求登录（不校验角色）
 			selector.Server(
-				RequireLogin(),
+				middleware.RequireLogin(),
 			).Match(NewLoginRequiredMatcher()).Build(),
 		),
 	}
@@ -178,8 +176,7 @@ func NewLoginRequiredMatcher() selector.MatchFunc {
 }
 
 // 示例 4: 多层级权限控制
-func NewHTTPServerWithMultiLevelAuth(greeter *service.GreeterService,
-	user *service.UserService, jwtManager *pkg.JWTManager, logger log.Logger) *http.Server {
+func NewHTTPServerWithMultiLevelAuth(jwtManager *pkg.JWTManager, logger log.Logger) *http.Server {
 
 	var opts = []http.ServerOption{
 		http.Middleware(
@@ -187,7 +184,7 @@ func NewHTTPServerWithMultiLevelAuth(greeter *service.GreeterService,
 
 			// 层级 1: JWT 认证（解析 Token）
 			selector.Server(
-				JWTAuth(jwtManager),
+				middleware.JWTAuth(jwtManager),
 			).Match(func(ctx context.Context, operation string) bool {
 				// 除了以下接口，其他都需要 JWT
 				publicAPIs := []string{
@@ -205,7 +202,7 @@ func NewHTTPServerWithMultiLevelAuth(greeter *service.GreeterService,
 
 			// 层级 2: 登录校验（要求用户 ID 存在）
 			selector.Server(
-				RequireLogin(),
+				middleware.RequireLogin(),
 			).Match(func(ctx context.Context, operation string) bool {
 				// 需要登录的接口
 				loginAPIs := []string{
@@ -223,7 +220,7 @@ func NewHTTPServerWithMultiLevelAuth(greeter *service.GreeterService,
 
 			// 层级 3: 管理员权限校验
 			selector.Server(
-				RequireAdmin(),
+				middleware.RequireAdmin(),
 			).Match(func(ctx context.Context, operation string) bool {
 				// 需要管理员权限的接口
 				adminAPIs := []string{
@@ -252,14 +249,14 @@ type ExampleBiz struct {
 
 func (b *ExampleBiz) PerformAdminAction(ctx context.Context) error {
 	// 获取用户信息
-	userID := GetUserIDFromContext(ctx)
-	userAccount := GetUserAccountFromContext(ctx)
-	userRole := GetUserRoleFromContext(ctx)
+	userID := middleware.GetUserIDFromContext(ctx)
+	userAccount := middleware.GetUserAccountFromContext(ctx)
+	userRole := middleware.GetUserRoleFromContext(ctx)
 
 	b.log.Infof("用户 [%d:%s] (角色: %s) 正在执行操作", userID, userAccount, userRole)
 
 	// 检查是否为管理员
-	if UserRole(userRole) != RoleAdmin {
+	if middleware.UserRole(userRole) != middleware.RoleAdmin {
 		return v1.ErrorNoAuthError("需要管理员权限")
 	}
 

@@ -39,6 +39,52 @@ service User {
       body: "*"
     };
   }
+  
+  // 创建用户（仅管理员）
+  rpc AddUser (AddUserRequest) returns (AddUserReply) {
+    option (google.api.http) = {
+      post: "/api/user/add"
+      body: "*"
+    };
+  }
+  
+  // 根据 ID 获取用户（仅管理员）
+  rpc GetUserById (GetUserByIdRequest) returns (GetUserByIdReply) {
+    option (google.api.http) = {
+      get: "/api/user/get"
+    };
+  }
+  
+  // 根据 ID 获取用户 VO
+  rpc GetUserVOById (GetUserVOByIdRequest) returns (GetUserVOByIdReply) {
+    option (google.api.http) = {
+      get: "/api/user/get/vo"
+    };
+  }
+  
+  // 删除用户（仅管理员）
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply) {
+    option (google.api.http) = {
+      post: "/api/user/delete"
+      body: "*"
+    };
+  }
+  
+  // 更新用户（仅管理员）
+  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply) {
+    option (google.api.http) = {
+      post: "/api/user/update"
+      body: "*"
+    };
+  }
+  
+  // 分页获取用户列表（仅管理员）
+  rpc ListUserByPage (ListUserByPageRequest) returns (ListUserByPageReply) {
+    option (google.api.http) = {
+      post: "/api/user/list/page/vo"
+      body: "*"
+    };
+  }
 }
 
 // 注册请求
@@ -95,4 +141,108 @@ message LoginUserVO {
   string vip_expire_time = 8; // 会员过期时间
   string create_time = 9;     // 创建时间
   string update_time = 10;    // 更新时间
+}
+
+// 用户视图对象（用于列表展示）
+message UserVO {
+  int64 id = 1;
+  string user_account = 2;
+  string user_name = 3;
+  string user_avatar = 4;
+  string user_profile = 5;
+  string user_role = 6;
+  int64 vip_number = 7;
+  string vip_expire_time = 8;
+  string create_time = 9;
+  string update_time = 10;
+}
+
+// 创建用户请求
+message AddUserRequest {
+  string user_account = 1;
+  string user_name = 2;
+  string user_avatar = 3;
+  string user_profile = 4;
+  string user_role = 5;
+}
+
+// 创建用户响应
+message AddUserReply {
+  int64 user_id = 1;
+}
+
+// 根据 ID 获取用户请求
+message GetUserByIdRequest {
+  int64 id = 1;
+}
+
+// 根据 ID 获取用户响应
+message GetUserByIdReply {
+  int64 id = 1;
+  string user_account = 2;
+  string user_password = 3;
+  string user_name = 4;
+  string user_avatar = 5;
+  string user_profile = 6;
+  string user_role = 7;
+  int64 vip_number = 8;
+  string vip_expire_time = 9;
+  string create_time = 10;
+  string update_time = 11;
+}
+
+// 根据 ID 获取用户 VO 请求
+message GetUserVOByIdRequest {
+  int64 id = 1;
+}
+
+// 根据 ID 获取用户 VO 响应
+message GetUserVOByIdReply {
+  UserVO user = 1;
+}
+
+// 删除用户请求
+message DeleteUserRequest {
+  int64 id = 1;
+}
+
+// 删除用户响应
+message DeleteUserReply {
+  bool success = 1;
+}
+
+// 更新用户请求
+message UpdateUserRequest {
+  int64 id = 1;
+  string user_account = 2;
+  string user_name = 3;
+  string user_avatar = 4;
+  string user_profile = 5;
+  string user_role = 6;
+}
+
+// 更新用户响应
+message UpdateUserReply {
+  bool success = 1;
+}
+
+// 分页查询用户请求
+message ListUserByPageRequest {
+  int64 current = 1;        // 当前页
+  int64 page_size = 2;      // 每页大小
+  int64 id = 3;             // 用户 ID
+  string user_account = 4;  // 用户账号
+  string user_name = 5;     // 用户昵称
+  string user_profile = 6;  // 用户简介
+  string user_role = 7;     // 用户角色
+  string sort_field = 8;    // 排序字段
+  string sort_order = 9;    // 排序顺序 (ascend/descend)
+}
+
+// 分页查询用户响应
+message ListUserByPageReply {
+  int64 total = 1;              // 总数
+  repeated UserVO list = 2;     // 用户列表
+  int64 current = 3;            // 当前页
+  int64 page_size = 4;          // 每页大小
 }

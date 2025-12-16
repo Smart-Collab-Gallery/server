@@ -6,6 +6,62 @@ info:
     title: ""
     version: 0.0.1
 paths:
+    /api/user/add:
+        post:
+            tags:
+                - User
+            description: 创建用户（仅管理员）
+            operationId: User_AddUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.AddUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.AddUserReply'
+    /api/user/delete:
+        post:
+            tags:
+                - User
+            description: 删除用户（仅管理员）
+            operationId: User_DeleteUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.DeleteUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.DeleteUserReply'
+    /api/user/get:
+        get:
+            tags:
+                - User
+            description: 根据 ID 获取用户（仅管理员）
+            operationId: User_GetUserById
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.GetUserByIdReply'
     /api/user/get/login:
         get:
             tags:
@@ -19,6 +75,43 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.user.v1.GetLoginUserReply'
+    /api/user/get/vo:
+        get:
+            tags:
+                - User
+            description: 根据 ID 获取用户 VO
+            operationId: User_GetUserVOById
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.GetUserVOByIdReply'
+    /api/user/list/page/vo:
+        post:
+            tags:
+                - User
+            description: 分页获取用户列表（仅管理员）
+            operationId: User_ListUserByPage
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.ListUserByPageRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.ListUserByPageReply'
     /api/user/login:
         post:
             tags:
@@ -76,6 +169,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.user.v1.RegisterReply'
+    /api/user/update:
+        post:
+            tags:
+                - User
+            description: 更新用户（仅管理员）
+            operationId: User_UpdateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.UpdateUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.UpdateUserReply'
     /helloworld/{name}:
         get:
             tags:
@@ -95,14 +207,133 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.HelloReply'
+    /ping:
+        get:
+            tags:
+                - Health
+            description: 健康检查
+            operationId: Health_Ping
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.health.v1.PingReply'
 components:
     schemas:
+        api.health.v1.PingReply:
+            type: object
+            properties:
+                status:
+                    type: string
+            description: Ping 响应
+        api.user.v1.AddUserReply:
+            type: object
+            properties:
+                userId:
+                    type: string
+            description: 创建用户响应
+        api.user.v1.AddUserRequest:
+            type: object
+            properties:
+                userAccount:
+                    type: string
+                userName:
+                    type: string
+                userAvatar:
+                    type: string
+                userProfile:
+                    type: string
+                userRole:
+                    type: string
+            description: 创建用户请求
+        api.user.v1.DeleteUserReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+            description: 删除用户响应
+        api.user.v1.DeleteUserRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+            description: 删除用户请求
         api.user.v1.GetLoginUserReply:
             type: object
             properties:
                 user:
                     $ref: '#/components/schemas/api.user.v1.LoginUserVO'
             description: 获取登录用户响应
+        api.user.v1.GetUserByIdReply:
+            type: object
+            properties:
+                id:
+                    type: string
+                userAccount:
+                    type: string
+                userPassword:
+                    type: string
+                userName:
+                    type: string
+                userAvatar:
+                    type: string
+                userProfile:
+                    type: string
+                userRole:
+                    type: string
+                vipNumber:
+                    type: string
+                vipExpireTime:
+                    type: string
+                createTime:
+                    type: string
+                updateTime:
+                    type: string
+            description: 根据 ID 获取用户响应
+        api.user.v1.GetUserVOByIdReply:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/api.user.v1.UserVO'
+            description: 根据 ID 获取用户 VO 响应
+        api.user.v1.ListUserByPageReply:
+            type: object
+            properties:
+                total:
+                    type: string
+                list:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.user.v1.UserVO'
+                current:
+                    type: string
+                pageSize:
+                    type: string
+            description: 分页查询用户响应
+        api.user.v1.ListUserByPageRequest:
+            type: object
+            properties:
+                current:
+                    type: string
+                pageSize:
+                    type: string
+                id:
+                    type: string
+                userAccount:
+                    type: string
+                userName:
+                    type: string
+                userProfile:
+                    type: string
+                userRole:
+                    type: string
+                sortField:
+                    type: string
+                sortOrder:
+                    type: string
+            description: 分页查询用户请求
         api.user.v1.LoginReply:
             type: object
             properties:
@@ -169,6 +400,52 @@ components:
                 checkPassword:
                     type: string
             description: 注册请求
+        api.user.v1.UpdateUserReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+            description: 更新用户响应
+        api.user.v1.UpdateUserRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                userAccount:
+                    type: string
+                userName:
+                    type: string
+                userAvatar:
+                    type: string
+                userProfile:
+                    type: string
+                userRole:
+                    type: string
+            description: 更新用户请求
+        api.user.v1.UserVO:
+            type: object
+            properties:
+                id:
+                    type: string
+                userAccount:
+                    type: string
+                userName:
+                    type: string
+                userAvatar:
+                    type: string
+                userProfile:
+                    type: string
+                userRole:
+                    type: string
+                vipNumber:
+                    type: string
+                vipExpireTime:
+                    type: string
+                createTime:
+                    type: string
+                updateTime:
+                    type: string
+            description: 用户视图对象（用于列表展示）
         helloworld.v1.HelloReply:
             type: object
             properties:
@@ -178,4 +455,5 @@ components:
 tags:
     - name: Greeter
       description: The greeting service definition.
+    - name: Health
     - name: User

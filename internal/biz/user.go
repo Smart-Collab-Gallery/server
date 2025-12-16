@@ -27,6 +27,27 @@ type User struct {
 	UpdateTime    time.Time
 }
 
+// UserQueryParams 用户查询参数
+type UserQueryParams struct {
+	ID          *int64
+	UserAccount string
+	UserName    string
+	UserProfile string
+	UserRole    string
+	SortField   string
+	SortOrder   string // ascend 或 descend
+	Current     int64
+	PageSize    int64
+}
+
+// UserPage 用户分页结果
+type UserPage struct {
+	Total    int64
+	List     []*User
+	Current  int64
+	PageSize int64
+}
+
 // UserRepo 用户仓储接口
 type UserRepo interface {
 	// CreateUser 创建用户
@@ -37,6 +58,12 @@ type UserRepo interface {
 	GetUserByAccountAndPassword(ctx context.Context, account, password string) (*User, error)
 	// GetUserByID 根据 ID 查询用户
 	GetUserByID(ctx context.Context, id int64) (*User, error)
+	// UpdateUser 更新用户
+	UpdateUser(ctx context.Context, user *User) error
+	// DeleteUser 删除用户
+	DeleteUser(ctx context.Context, id int64) error
+	// ListUserByPage 分页查询用户
+	ListUserByPage(ctx context.Context, params *UserQueryParams) (*UserPage, error)
 }
 
 // UserUsecase 用户用例
@@ -205,4 +232,136 @@ func (uc *UserUsecase) Logout(ctx context.Context, userID int64) error {
 	// 3. 发送注销通知等
 
 	return nil
+}
+
+// AddUser 创建用户（管理员功能）
+func (uc *UserUsecase) AddUser(ctx context.Context, user *User) (int64, error) {
+	// 1. 参数校验
+	if strings.TrimSpace(user.UserAccount) == "" {
+		return 0, v1.ErrorParamsError("用户账号不能为空")
+	}
+
+	// 2. 检查账号是否已存在
+	existUser, err := uc.repo.GetUserByAccount(ctx, user.UserAccount)
+	if err == nil && existUser != nil {
+		return 0, v1.ErrorAccountDuplicate("账号已存在")
+	}
+
+	// 3. 设置默认密码 12345678
+	const DEFAULT_PASSWORD = "12345678"
+	user.UserPassword = uc.encryptPassword(DEFAULT_PASSWORD)
+
+	// 4. 设置默认值
+	if user.UserName == "" {
+		user.UserName = "无名"
+	}
+	if user.UserRole == "" {
+		user.UserRole = "user"
+	}
+
+	// 5. 创建用户
+	newUser, err := uc.repo.CreateUser(ctx, user)
+	if err != nil {
+		uc.log.Errorf("创建用户失败: %v", err)
+		return 0, v1.ErrorSystemError("创建用户失败")
+	}
+
+	return newUser.ID, nil
+}
+
+// GetUserByID 根据 ID 获取用户（管理员功能）
+func (uc *UserUsecase) GetUserByID(ctx context.Context, id int64) (*User, error) {
+	if id <= 0 {
+		return nil, v1.ErrorParamsError("用户 ID 无效")
+	}
+
+	user, err := uc.repo.GetUserByID(ctx, id)
+	if err != nil {
+		uc.log.Errorf("查询用户失败: id=%d, err=%v", id, err)
+		return nil, v1.ErrorSystemError("查询用户失败")
+	}
+
+	if user == nil {
+		return nil, v1.ErrorUserNotFound("用户不存在")
+	}
+
+	return user, nil
+}
+
+// DeleteUser 删除用户（管理员功能）
+func (uc *UserUsecase) DeleteUser(ctx context.Context, id int64) error {
+	if id <= 0 {
+		return v1.ErrorParamsError("用户 ID 无效")
+	}
+
+	// 检查用户是否存在
+	user, err := uc.repo.GetUserByID(ctx, id)
+	if err != nil {
+		return v1.ErrorSystemError("查询用户失败")
+	}
+	if user == nil {
+		return v1.ErrorUserNotFound("用户不存在")
+	}
+
+	// 删除用户
+	err = uc.repo.DeleteUser(ctx, id)
+	if err != nil {
+		uc.log.Errorf("删除用户失败: id=%d, err=%v", id, err)
+		return v1.ErrorSystemError("删除用户失败")
+	}
+
+	return nil
+}
+
+// UpdateUser 更新用户（管理员功能）
+func (uc *UserUsecase) UpdateUser(ctx context.Context, user *User) error {
+	if user.ID <= 0 {
+		return v1.ErrorParamsError("用户 ID 无效")
+	}
+
+	// 检查用户是否存在
+	existUser, err := uc.repo.GetUserByID(ctx, user.ID)
+	if err != nil {
+		return v1.ErrorSystemError("查询用户失败")
+	}
+	if existUser == nil {
+		return v1.ErrorUserNotFound("用户不存在")
+	}
+
+	// 如果更新账号，检查新账号是否已被使用
+	if user.UserAccount != "" && user.UserAccount != existUser.UserAccount {
+		duplicateUser, _ := uc.repo.GetUserByAccount(ctx, user.UserAccount)
+		if duplicateUser != nil && duplicateUser.ID != user.ID {
+			return v1.ErrorAccountDuplicate("账号已存在")
+		}
+	}
+
+	// 更新用户
+	err = uc.repo.UpdateUser(ctx, user)
+	if err != nil {
+		uc.log.Errorf("更新用户失败: id=%d, err=%v", user.ID, err)
+		return v1.ErrorSystemError("更新用户失败")
+	}
+
+	return nil
+}
+
+// ListUserByPage 分页查询用户（管理员功能）
+func (uc *UserUsecase) ListUserByPage(ctx context.Context, params *UserQueryParams) (*UserPage, error) {
+	// 参数校验
+	if params.Current <= 0 {
+		params.Current = 1
+	}
+	if params.PageSize <= 0 || params.PageSize > 100 {
+		params.PageSize = 10
+	}
+
+	// 查询用户列表
+	userPage, err := uc.repo.ListUserByPage(ctx, params)
+	if err != nil {
+		uc.log.Errorf("分页查询用户失败: %v", err)
+		return nil, v1.ErrorSystemError("查询用户列表失败")
+	}
+
+	return userPage, nil
 }

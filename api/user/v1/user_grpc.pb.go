@@ -19,10 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	User_Register_FullMethodName     = "/api.user.v1.User/Register"
-	User_Login_FullMethodName        = "/api.user.v1.User/Login"
-	User_GetLoginUser_FullMethodName = "/api.user.v1.User/GetLoginUser"
-	User_Logout_FullMethodName       = "/api.user.v1.User/Logout"
+	User_Register_FullMethodName       = "/api.user.v1.User/Register"
+	User_Login_FullMethodName          = "/api.user.v1.User/Login"
+	User_GetLoginUser_FullMethodName   = "/api.user.v1.User/GetLoginUser"
+	User_Logout_FullMethodName         = "/api.user.v1.User/Logout"
+	User_AddUser_FullMethodName        = "/api.user.v1.User/AddUser"
+	User_GetUserById_FullMethodName    = "/api.user.v1.User/GetUserById"
+	User_GetUserVOById_FullMethodName  = "/api.user.v1.User/GetUserVOById"
+	User_DeleteUser_FullMethodName     = "/api.user.v1.User/DeleteUser"
+	User_UpdateUser_FullMethodName     = "/api.user.v1.User/UpdateUser"
+	User_ListUserByPage_FullMethodName = "/api.user.v1.User/ListUserByPage"
 )
 
 // UserClient is the client API for User service.
@@ -37,6 +43,18 @@ type UserClient interface {
 	GetLoginUser(ctx context.Context, in *GetLoginUserRequest, opts ...grpc.CallOption) (*GetLoginUserReply, error)
 	// 用户注销
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutReply, error)
+	// 创建用户（仅管理员）
+	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserReply, error)
+	// 根据 ID 获取用户（仅管理员）
+	GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...grpc.CallOption) (*GetUserByIdReply, error)
+	// 根据 ID 获取用户 VO
+	GetUserVOById(ctx context.Context, in *GetUserVOByIdRequest, opts ...grpc.CallOption) (*GetUserVOByIdReply, error)
+	// 删除用户（仅管理员）
+	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserReply, error)
+	// 更新用户（仅管理员）
+	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserReply, error)
+	// 分页获取用户列表（仅管理员）
+	ListUserByPage(ctx context.Context, in *ListUserByPageRequest, opts ...grpc.CallOption) (*ListUserByPageReply, error)
 }
 
 type userClient struct {
@@ -87,6 +105,66 @@ func (c *userClient) Logout(ctx context.Context, in *LogoutRequest, opts ...grpc
 	return out, nil
 }
 
+func (c *userClient) AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddUserReply)
+	err := c.cc.Invoke(ctx, User_AddUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...grpc.CallOption) (*GetUserByIdReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserByIdReply)
+	err := c.cc.Invoke(ctx, User_GetUserById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) GetUserVOById(ctx context.Context, in *GetUserVOByIdRequest, opts ...grpc.CallOption) (*GetUserVOByIdReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserVOByIdReply)
+	err := c.cc.Invoke(ctx, User_GetUserVOById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteUserReply)
+	err := c.cc.Invoke(ctx, User_DeleteUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateUserReply)
+	err := c.cc.Invoke(ctx, User_UpdateUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) ListUserByPage(ctx context.Context, in *ListUserByPageRequest, opts ...grpc.CallOption) (*ListUserByPageReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListUserByPageReply)
+	err := c.cc.Invoke(ctx, User_ListUserByPage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility.
@@ -99,6 +177,18 @@ type UserServer interface {
 	GetLoginUser(context.Context, *GetLoginUserRequest) (*GetLoginUserReply, error)
 	// 用户注销
 	Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
+	// 创建用户（仅管理员）
+	AddUser(context.Context, *AddUserRequest) (*AddUserReply, error)
+	// 根据 ID 获取用户（仅管理员）
+	GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdReply, error)
+	// 根据 ID 获取用户 VO
+	GetUserVOById(context.Context, *GetUserVOByIdRequest) (*GetUserVOByIdReply, error)
+	// 删除用户（仅管理员）
+	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserReply, error)
+	// 更新用户（仅管理员）
+	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserReply, error)
+	// 分页获取用户列表（仅管理员）
+	ListUserByPage(context.Context, *ListUserByPageRequest) (*ListUserByPageReply, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -120,6 +210,24 @@ func (UnimplementedUserServer) GetLoginUser(context.Context, *GetLoginUserReques
 }
 func (UnimplementedUserServer) Logout(context.Context, *LogoutRequest) (*LogoutReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
+func (UnimplementedUserServer) AddUser(context.Context, *AddUserRequest) (*AddUserReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
+}
+func (UnimplementedUserServer) GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserById not implemented")
+}
+func (UnimplementedUserServer) GetUserVOById(context.Context, *GetUserVOByIdRequest) (*GetUserVOByIdReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserVOById not implemented")
+}
+func (UnimplementedUserServer) DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
+}
+func (UnimplementedUserServer) UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+}
+func (UnimplementedUserServer) ListUserByPage(context.Context, *ListUserByPageRequest) (*ListUserByPageReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUserByPage not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 func (UnimplementedUserServer) testEmbeddedByValue()              {}
@@ -214,6 +322,114 @@ func _User_Logout_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).AddUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_AddUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).AddUser(ctx, req.(*AddUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_GetUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).GetUserById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_GetUserById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).GetUserById(ctx, req.(*GetUserByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_GetUserVOById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserVOByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).GetUserVOById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_GetUserVOById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).GetUserVOById(ctx, req.(*GetUserVOByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).DeleteUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_DeleteUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).DeleteUser(ctx, req.(*DeleteUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UpdateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UpdateUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UpdateUser(ctx, req.(*UpdateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_ListUserByPage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUserByPageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).ListUserByPage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_ListUserByPage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).ListUserByPage(ctx, req.(*ListUserByPageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -236,6 +452,30 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Logout",
 			Handler:    _User_Logout_Handler,
+		},
+		{
+			MethodName: "AddUser",
+			Handler:    _User_AddUser_Handler,
+		},
+		{
+			MethodName: "GetUserById",
+			Handler:    _User_GetUserById_Handler,
+		},
+		{
+			MethodName: "GetUserVOById",
+			Handler:    _User_GetUserVOById_Handler,
+		},
+		{
+			MethodName: "DeleteUser",
+			Handler:    _User_DeleteUser_Handler,
+		},
+		{
+			MethodName: "UpdateUser",
+			Handler:    _User_UpdateUser_Handler,
+		},
+		{
+			MethodName: "ListUserByPage",
+			Handler:    _User_ListUserByPage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

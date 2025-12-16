@@ -35,4 +35,6 @@ enum ErrorReason {
   INVALID_TOKEN = 10 [(errors.code) = 401];
   // 用户不存在
   USER_NOT_FOUND = 11 [(errors.code) = 404];
+  // 无权限
+  NO_AUTH_ERROR = 12 [(errors.code) = 403];
 }

@@ -101,3 +101,11 @@ func ErrorUserNotFound(format string, args ...interface{}) *errors.Error {
 func IsUserNotFound(err error) bool {
 	return errors.Reason(err) == ErrorReason_USER_NOT_FOUND.String()
 }
+
+func ErrorNoAuthError(format string, args ...interface{}) *errors.Error {
+	return errors.New(403, ErrorReason_NO_AUTH_ERROR.String(), format)
+}
+
+func IsNoAuthError(err error) bool {
+	return errors.Reason(err) == ErrorReason_NO_AUTH_ERROR.String()
+}

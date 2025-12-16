@@ -19,20 +19,38 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationUserAddUser = "/api.user.v1.User/AddUser"
+const OperationUserDeleteUser = "/api.user.v1.User/DeleteUser"
 const OperationUserGetLoginUser = "/api.user.v1.User/GetLoginUser"
+const OperationUserGetUserById = "/api.user.v1.User/GetUserById"
+const OperationUserGetUserVOById = "/api.user.v1.User/GetUserVOById"
+const OperationUserListUserByPage = "/api.user.v1.User/ListUserByPage"
 const OperationUserLogin = "/api.user.v1.User/Login"
 const OperationUserLogout = "/api.user.v1.User/Logout"
 const OperationUserRegister = "/api.user.v1.User/Register"
+const OperationUserUpdateUser = "/api.user.v1.User/UpdateUser"
 
 type UserHTTPServer interface {
+	// AddUser 创建用户（仅管理员）
+	AddUser(context.Context, *AddUserRequest) (*AddUserReply, error)
+	// DeleteUser 删除用户（仅管理员）
+	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserReply, error)
 	// GetLoginUser 获取当前登录用户
 	GetLoginUser(context.Context, *GetLoginUserRequest) (*GetLoginUserReply, error)
+	// GetUserById 根据 ID 获取用户（仅管理员）
+	GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdReply, error)
+	// GetUserVOById 根据 ID 获取用户 VO
+	GetUserVOById(context.Context, *GetUserVOByIdRequest) (*GetUserVOByIdReply, error)
+	// ListUserByPage 分页获取用户列表（仅管理员）
+	ListUserByPage(context.Context, *ListUserByPageRequest) (*ListUserByPageReply, error)
 	// Login 用户登录
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
 	// Logout 用户注销
 	Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
 	// Register 用户注册
 	Register(context.Context, *RegisterRequest) (*RegisterReply, error)
+	// UpdateUser 更新用户（仅管理员）
+	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserReply, error)
 }
 
 func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
@@ -41,6 +59,12 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r.POST("/api/user/login", _User_Login0_HTTP_Handler(srv))
 	r.GET("/api/user/get/login", _User_GetLoginUser0_HTTP_Handler(srv))
 	r.POST("/api/user/logout", _User_Logout0_HTTP_Handler(srv))
+	r.POST("/api/user/add", _User_AddUser0_HTTP_Handler(srv))
+	r.GET("/api/user/get", _User_GetUserById0_HTTP_Handler(srv))
+	r.GET("/api/user/get/vo", _User_GetUserVOById0_HTTP_Handler(srv))
+	r.POST("/api/user/delete", _User_DeleteUser0_HTTP_Handler(srv))
+	r.POST("/api/user/update", _User_UpdateUser0_HTTP_Handler(srv))
+	r.POST("/api/user/list/page/vo", _User_ListUserByPage0_HTTP_Handler(srv))
 }
 
 func _User_Register0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -128,15 +152,153 @@ func _User_Logout0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error
 	}
 }
 
+func _User_AddUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in AddUserRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserAddUser)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.AddUser(ctx, req.(*AddUserRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*AddUserReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_GetUserById0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetUserByIdRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserGetUserById)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetUserById(ctx, req.(*GetUserByIdRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetUserByIdReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_GetUserVOById0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetUserVOByIdRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserGetUserVOById)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetUserVOById(ctx, req.(*GetUserVOByIdRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetUserVOByIdReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_DeleteUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in DeleteUserRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserDeleteUser)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.DeleteUser(ctx, req.(*DeleteUserRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*DeleteUserReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_UpdateUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdateUserRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserUpdateUser)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UpdateUser(ctx, req.(*UpdateUserRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UpdateUserReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_ListUserByPage0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in ListUserByPageRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserListUserByPage)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ListUserByPage(ctx, req.(*ListUserByPageRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*ListUserByPageReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type UserHTTPClient interface {
+	// AddUser 创建用户（仅管理员）
+	AddUser(ctx context.Context, req *AddUserRequest, opts ...http.CallOption) (rsp *AddUserReply, err error)
+	// DeleteUser 删除用户（仅管理员）
+	DeleteUser(ctx context.Context, req *DeleteUserRequest, opts ...http.CallOption) (rsp *DeleteUserReply, err error)
 	// GetLoginUser 获取当前登录用户
 	GetLoginUser(ctx context.Context, req *GetLoginUserRequest, opts ...http.CallOption) (rsp *GetLoginUserReply, err error)
+	// GetUserById 根据 ID 获取用户（仅管理员）
+	GetUserById(ctx context.Context, req *GetUserByIdRequest, opts ...http.CallOption) (rsp *GetUserByIdReply, err error)
+	// GetUserVOById 根据 ID 获取用户 VO
+	GetUserVOById(ctx context.Context, req *GetUserVOByIdRequest, opts ...http.CallOption) (rsp *GetUserVOByIdReply, err error)
+	// ListUserByPage 分页获取用户列表（仅管理员）
+	ListUserByPage(ctx context.Context, req *ListUserByPageRequest, opts ...http.CallOption) (rsp *ListUserByPageReply, err error)
 	// Login 用户登录
 	Login(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
 	// Logout 用户注销
 	Logout(ctx context.Context, req *LogoutRequest, opts ...http.CallOption) (rsp *LogoutReply, err error)
 	// Register 用户注册
 	Register(ctx context.Context, req *RegisterRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
+	// UpdateUser 更新用户（仅管理员）
+	UpdateUser(ctx context.Context, req *UpdateUserRequest, opts ...http.CallOption) (rsp *UpdateUserReply, err error)
 }
 
 type UserHTTPClientImpl struct {
@@ -147,6 +309,34 @@ func NewUserHTTPClient(client *http.Client) UserHTTPClient {
 	return &UserHTTPClientImpl{client}
 }
 
+// AddUser 创建用户（仅管理员）
+func (c *UserHTTPClientImpl) AddUser(ctx context.Context, in *AddUserRequest, opts ...http.CallOption) (*AddUserReply, error) {
+	var out AddUserReply
+	pattern := "/api/user/add"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserAddUser))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// DeleteUser 删除用户（仅管理员）
+func (c *UserHTTPClientImpl) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...http.CallOption) (*DeleteUserReply, error) {
+	var out DeleteUserReply
+	pattern := "/api/user/delete"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserDeleteUser))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 // GetLoginUser 获取当前登录用户
 func (c *UserHTTPClientImpl) GetLoginUser(ctx context.Context, in *GetLoginUserRequest, opts ...http.CallOption) (*GetLoginUserReply, error) {
 	var out GetLoginUserReply
@@ -155,6 +345,48 @@ func (c *UserHTTPClientImpl) GetLoginUser(ctx context.Context, in *GetLoginUserR
 	opts = append(opts, http.Operation(OperationUserGetLoginUser))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// GetUserById 根据 ID 获取用户（仅管理员）
+func (c *UserHTTPClientImpl) GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...http.CallOption) (*GetUserByIdReply, error) {
+	var out GetUserByIdReply
+	pattern := "/api/user/get"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationUserGetUserById))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// GetUserVOById 根据 ID 获取用户 VO
+func (c *UserHTTPClientImpl) GetUserVOById(ctx context.Context, in *GetUserVOByIdRequest, opts ...http.CallOption) (*GetUserVOByIdReply, error) {
+	var out GetUserVOByIdReply
+	pattern := "/api/user/get/vo"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationUserGetUserVOById))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// ListUserByPage 分页获取用户列表（仅管理员）
+func (c *UserHTTPClientImpl) ListUserByPage(ctx context.Context, in *ListUserByPageRequest, opts ...http.CallOption) (*ListUserByPageReply, error) {
+	var out ListUserByPageReply
+	pattern := "/api/user/list/page/vo"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserListUserByPage))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -195,6 +427,20 @@ func (c *UserHTTPClientImpl) Register(ctx context.Context, in *RegisterRequest, 
 	pattern := "/api/user/register"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserRegister))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// UpdateUser 更新用户（仅管理员）
+func (c *UserHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...http.CallOption) (*UpdateUserReply, error) {
+	var out UpdateUserReply
+	pattern := "/api/user/update"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserUpdateUser))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

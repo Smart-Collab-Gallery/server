@@ -133,3 +133,202 @@ func (s *UserService) convertToLoginUserVO(user *biz.User) *v1.LoginUserVO {
 
 	return vo
 }
+
+// convertToUserVO 将 User 转换为 UserVO
+func (s *UserService) convertToUserVO(user *biz.User) *v1.UserVO {
+	if user == nil {
+		return nil
+	}
+
+	vo := &v1.UserVO{
+		Id:          user.ID,
+		UserAccount: user.UserAccount,
+		UserName:    user.UserName,
+		UserAvatar:  user.UserAvatar,
+		UserProfile: user.UserProfile,
+		UserRole:    user.UserRole,
+		VipNumber:   user.VipNumber,
+		CreateTime:  user.CreateTime.Format(time.RFC3339),
+		UpdateTime:  user.UpdateTime.Format(time.RFC3339),
+	}
+
+	if user.VipExpireTime != nil {
+		vo.VipExpireTime = user.VipExpireTime.Format(time.RFC3339)
+	}
+
+	return vo
+}
+
+// convertToUserVOList 将 User 列表转换为 UserVO 列表
+func (s *UserService) convertToUserVOList(users []*biz.User) []*v1.UserVO {
+	if users == nil || len(users) == 0 {
+		return []*v1.UserVO{}
+	}
+
+	voList := make([]*v1.UserVO, 0, len(users))
+	for _, user := range users {
+		voList = append(voList, s.convertToUserVO(user))
+	}
+	return voList
+}
+
+// AddUser 创建用户（仅管理员）
+func (s *UserService) AddUser(ctx context.Context, req *v1.AddUserRequest) (*v1.AddUserReply, error) {
+	s.log.WithContext(ctx).Infof("创建用户请求: account=%s", req.UserAccount)
+
+	user := &biz.User{
+		UserAccount: req.UserAccount,
+		UserName:    req.UserName,
+		UserAvatar:  req.UserAvatar,
+		UserProfile: req.UserProfile,
+		UserRole:    req.UserRole,
+	}
+
+	userID, err := s.uc.AddUser(ctx, user)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("创建用户失败: %v", err)
+		return nil, err
+	}
+
+	return &v1.AddUserReply{
+		UserId: userID,
+	}, nil
+}
+
+// GetUserById 根据 ID 获取用户（仅管理员）
+func (s *UserService) GetUserById(ctx context.Context, req *v1.GetUserByIdRequest) (*v1.GetUserByIdReply, error) {
+	if req.Id <= 0 {
+		return nil, v1.ErrorParamsError("用户 ID 无效")
+	}
+
+	s.log.WithContext(ctx).Infof("获取用户: id=%d", req.Id)
+
+	user, err := s.uc.GetUserByID(ctx, req.Id)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("获取用户失败: %v", err)
+		return nil, err
+	}
+
+	reply := &v1.GetUserByIdReply{
+		Id:           user.ID,
+		UserAccount:  user.UserAccount,
+		UserPassword: user.UserPassword,
+		UserName:     user.UserName,
+		UserAvatar:   user.UserAvatar,
+		UserProfile:  user.UserProfile,
+		UserRole:     user.UserRole,
+		VipNumber:    user.VipNumber,
+		CreateTime:   user.CreateTime.Format(time.RFC3339),
+		UpdateTime:   user.UpdateTime.Format(time.RFC3339),
+	}
+
+	if user.VipExpireTime != nil {
+		reply.VipExpireTime = user.VipExpireTime.Format(time.RFC3339)
+	}
+
+	return reply, nil
+}
+
+// GetUserVOById 根据 ID 获取用户 VO
+func (s *UserService) GetUserVOById(ctx context.Context, req *v1.GetUserVOByIdRequest) (*v1.GetUserVOByIdReply, error) {
+	if req.Id <= 0 {
+		return nil, v1.ErrorParamsError("用户 ID 无效")
+	}
+
+	s.log.WithContext(ctx).Infof("获取用户 VO: id=%d", req.Id)
+
+	user, err := s.uc.GetUserByID(ctx, req.Id)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("获取用户失败: %v", err)
+		return nil, err
+	}
+
+	return &v1.GetUserVOByIdReply{
+		User: s.convertToUserVO(user),
+	}, nil
+}
+
+// DeleteUser 删除用户（仅管理员）
+func (s *UserService) DeleteUser(ctx context.Context, req *v1.DeleteUserRequest) (*v1.DeleteUserReply, error) {
+	if req.Id <= 0 {
+		return nil, v1.ErrorParamsError("用户 ID 无效")
+	}
+
+	s.log.WithContext(ctx).Infof("删除用户: id=%d", req.Id)
+
+	err := s.uc.DeleteUser(ctx, req.Id)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("删除用户失败: %v", err)
+		return nil, err
+	}
+
+	return &v1.DeleteUserReply{
+		Success: true,
+	}, nil
+}
+
+// UpdateUser 更新用户（仅管理员）
+func (s *UserService) UpdateUser(ctx context.Context, req *v1.UpdateUserRequest) (*v1.UpdateUserReply, error) {
+	if req.Id <= 0 {
+		return nil, v1.ErrorParamsError("用户 ID 无效")
+	}
+
+	s.log.WithContext(ctx).Infof("更新用户: id=%d", req.Id)
+
+	user := &biz.User{
+		ID:          req.Id,
+		UserAccount: req.UserAccount,
+		UserName:    req.UserName,
+		UserAvatar:  req.UserAvatar,
+		UserProfile: req.UserProfile,
+		UserRole:    req.UserRole,
+	}
+
+	err := s.uc.UpdateUser(ctx, user)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("更新用户失败: %v", err)
+		return nil, err
+	}
+
+	return &v1.UpdateUserReply{
+		Success: true,
+	}, nil
+}
+
+// ListUserByPage 分页获取用户列表（仅管理员）
+func (s *UserService) ListUserByPage(ctx context.Context, req *v1.ListUserByPageRequest) (*v1.ListUserByPageReply, error) {
+	s.log.WithContext(ctx).Infof("分页查询用户: current=%d, pageSize=%d", req.Current, req.PageSize)
+
+	// 构建查询参数
+	params := &biz.UserQueryParams{
+		UserAccount: req.UserAccount,
+		UserName:    req.UserName,
+		UserProfile: req.UserProfile,
+		UserRole:    req.UserRole,
+		SortField:   req.SortField,
+		SortOrder:   req.SortOrder,
+		Current:     req.Current,
+		PageSize:    req.PageSize,
+	}
+
+	if req.Id > 0 {
+		params.ID = &req.Id
+	}
+
+	// 查询用户列表
+	userPage, err := s.uc.ListUserByPage(ctx, params)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("分页查询用户失败: %v", err)
+		return nil, err
+	}
+
+	// 转换为 VO
+	voList := s.convertToUserVOList(userPage.List)
+
+	return &v1.ListUserByPageReply{
+		Total:    userPage.Total,
+		List:     voList,
+		Current:  userPage.Current,
+		PageSize: userPage.PageSize,
+	}, nil
+}
