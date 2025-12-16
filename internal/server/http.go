@@ -68,3 +68,19 @@ func NewWhiteListMatcher() selector.MatchFunc {
 		return true
 	}
 }
+
+// NewAdminOnlyMatcher 创建管理员接口匹配器，仅管理员可访问的接口
+// 示例：如果有需要管理员权限的接口，可以在这里配置
+func NewAdminOnlyMatcher() selector.MatchFunc {
+	adminList := make(map[string]struct{})
+	// 示例：这些接口需要管理员权限
+	// adminList["/api.user.v1.User/DeleteUser"] = struct{}{}
+	// adminList["/api.user.v1.User/UpdateUserRole"] = struct{}{}
+	// adminList["/api.user.v1.User/BanUser"] = struct{}{}
+
+	return func(ctx context.Context, operation string) bool {
+		// 在管理员列表中，需要管理员权限
+		_, ok := adminList[operation]
+		return ok
+	}
+}

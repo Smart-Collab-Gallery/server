@@ -54,6 +54,12 @@ cp .env.example .env
   - 获取当前登录用户
   - 用户注销
 
+- **权限控制**
+  - 基于角色的访问控制（RBAC）
+  - 支持普通用户（user）和管理员（admin）角色
+  - 中间件级别权限校验（类似 Java Spring `@AuthCheck`）
+  - 灵活的权限匹配策略
+
 - **配置管理**
   - 支持本地 YAML 配置
   - 集成 Consul 配置中心
@@ -64,6 +70,7 @@ cp .env.example .env
 - **框架**: Kratos v2 (Go 微服务框架)
 - **数据库**: MySQL + GORM v1.25.12
 - **认证**: JWT (golang-jwt/jwt/v5)
+- **授权**: 基于中间件的角色权限控制
 - **配置中心**: Consul
 - **依赖注入**: Google Wire
 - **架构**: Clean Architecture (Service → Biz → Data)
@@ -194,6 +201,33 @@ consul:
 - [Consul 配置详细文档](docs/consul-config.md)
 - [Consul 快速开始](docs/consul-quickstart.md)
 - [Consul 流程图](docs/consul-flow.md)
+
+### 权限控制
+
+系统实现了基于中间件的角色权限控制，类似于 Java Spring 的 `@AuthCheck` 注解功能：
+
+**角色定义**：
+- `user` - 普通用户
+- `admin` - 管理员
+
+**使用示例**：
+
+```go
+// 在 HTTP Server 中配置管理员权限
+selector.Server(
+    middleware.RequireAdmin(),
+).Match(NewAdminOnlyMatcher()).Build()
+
+// 在业务层手动校验
+userRole := middleware.GetUserRoleFromContext(ctx)
+if middleware.UserRole(userRole) != middleware.RoleAdmin {
+    return ErrorNoAuth
+}
+```
+
+**详细文档**：
+- [权限校验详细文档](docs/role-authorization.md) - 完整指南
+- [权限校验快速参考](docs/role-authorization-quickstart.md) - 快速上手
 
 ## 🛠️ 开发指南
 
