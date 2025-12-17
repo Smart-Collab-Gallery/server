@@ -9,6 +9,7 @@ import (
 	"smart-collab-gallery-server/internal/conf"
 	"smart-collab-gallery-server/internal/middleware"
 	"smart-collab-gallery-server/internal/pkg"
+	"smart-collab-gallery-server/internal/pkg/response"
 	"smart-collab-gallery-server/internal/service"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -21,6 +22,9 @@ import (
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, user *service.UserService, health *service.HealthService, jwtManager *pkg.JWTManager, logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
+		// 应用统一响应格式编码器
+		http.ResponseEncoder(response.ResponseEncoder),
+		http.ErrorEncoder(response.ErrorEncoder),
 		http.Middleware(
 			recovery.Recovery(),
 			middleware.MetricsServer(),
