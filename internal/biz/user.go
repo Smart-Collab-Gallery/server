@@ -215,21 +215,32 @@ func (uc *UserUsecase) GetLoginUser(ctx context.Context, userID int64) (*User, e
 	return user, nil
 }
 
-// Logout 用户注销
+// Logout 用户注销（逻辑删除用户）
 func (uc *UserUsecase) Logout(ctx context.Context, userID int64) error {
 	// 验证用户是否已登录
 	if userID <= 0 {
 		return v1.ErrorNotLoginError("未登录")
 	}
 
-	// 记录注销日志
-	uc.log.Infof("用户注销: userID=%d", userID)
+	// 检查用户是否存在
+	user, err := uc.repo.GetUserByID(ctx, userID)
+	if err != nil {
+		uc.log.Errorf("查询用户失败: userID=%d, err=%v", userID, err)
+		return v1.ErrorSystemError("查询用户失败")
+	}
+	if user == nil {
+		return v1.ErrorUserNotFound("用户不存在")
+	}
 
-	// JWT 是无状态的，实际的注销由客户端删除 Token 完成
-	// 这里可以做一些额外的清理工作，比如：
-	// 1. 记录注销日志到数据库
-	// 2. 清理用户相关的缓存
-	// 3. 发送注销通知等
+	// 记录注销日志
+	uc.log.Infof("用户注销（逻辑删除）: userID=%d, account=%s", userID, user.UserAccount)
+
+	// 执行逻辑删除（设置 isDelete = 1）
+	err = uc.repo.DeleteUser(ctx, userID)
+	if err != nil {
+		uc.log.Errorf("用户注销失败: userID=%d, err=%v", userID, err)
+		return v1.ErrorSystemError("用户注销失败")
+	}
 
 	return nil
 }
