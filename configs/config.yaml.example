@@ -16,3 +16,10 @@ data:
 auth:
   jwt_secret: "smart-collab-gallery-secret-key-change-in-production"
   jwt_expire: 3600s
+cos:
+  secret_id: ""
+  secret_key: ""
+  bucket_url: ""
+  region: ""
+  bucket_name: ""
+  upload_dir: "uploads"

@@ -35,7 +35,12 @@ func wireApp(confServer *conf.Server, confData *conf.Data, auth *conf.Auth, cos 
 	userUsecase := biz.NewUserUsecase(userRepo, logger)
 	jwtManager := service.NewJWTManager(auth)
 	userService := service.NewUserService(userUsecase, jwtManager, logger)
-	cosManager := service.NewCOSManager(cos, logger)
+	cosManager, err := service.NewCOSManager(cos, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	// cosManager 可以为 nil（COS 功能可选）
 	fileService := service.NewFileService(cosManager, logger)
 	healthService := service.NewHealthService()
 	grpcServer := server.NewGRPCServer(confServer, greeterService, userService, healthService, logger)

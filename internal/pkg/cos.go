@@ -31,6 +31,18 @@ type COSManager struct {
 func NewCOSManager(c *conf.Cos, logger log.Logger) (*COSManager, error) {
 	helper := log.NewHelper(logger)
 
+	// 如果配置为空，返回 nil（允许 COS 功能可选）
+	if c == nil {
+		helper.Warn("COS 配置为空，COS 功能将不可用")
+		return nil, nil
+	}
+
+	// 检查必要的配置字段
+	if c.SecretId == "" || c.SecretKey == "" || c.BucketUrl == "" {
+		helper.Warn("COS 配置不完整，COS 功能将不可用")
+		return nil, nil
+	}
+
 	// 解析 Bucket URL
 	u, err := url.Parse(c.BucketUrl)
 	if err != nil {

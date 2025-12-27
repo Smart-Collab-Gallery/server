@@ -17,6 +17,6 @@ func NewJWTManager(c *conf.Auth) *pkg.JWTManager {
 }
 
 // NewCOSManager 创建 COS 管理器
-func NewCOSManager(c *conf.Cos, logger log.Logger) *pkg.COSManager {
-	return pkg.NewCOSManager(c.SecretId, c.SecretKey, c.BucketUrl, c.Region, c.BucketName, logger)
+func NewCOSManager(c *conf.Cos, logger log.Logger) (*pkg.COSManager, error) {
+	return pkg.NewCOSManager(c, logger)
 }

@@ -27,6 +27,12 @@ func NewFileService(cosManager *pkg.COSManager, logger log.Logger) *FileService 
 func (s *FileService) GetUploadPresignedUrl(ctx context.Context, req *v1.GetUploadPresignedUrlRequest) (*v1.GetUploadPresignedUrlReply, error) {
 	s.log.WithContext(ctx).Infof("获取上传预签名 URL: fileName=%s, contentType=%s", req.FileName, req.ContentType)
 
+	// 检查 COS Manager 是否可用
+	if s.cosManager == nil {
+		s.log.WithContext(ctx).Error("COS Manager 未初始化，请检查配置")
+		return nil, v1.ErrorSystemError("文件上传服务暂不可用，请联系管理员配置 COS")
+	}
+
 	// 参数校验
 	if req.FileName == "" {
 		return nil, v1.ErrorParamsError("文件名不能为空")
