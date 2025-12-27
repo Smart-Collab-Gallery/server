@@ -6,6 +6,25 @@ info:
     title: ""
     version: 0.0.1
 paths:
+    /api/file/upload/presigned:
+        post:
+            tags:
+                - File
+            description: 获取上传预签名 URL
+            operationId: File_GetUploadPresignedUrl
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.file.v1.GetUploadPresignedUrlRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.file.v1.GetUploadPresignedUrlReply'
     /api/user/add:
         post:
             tags:
@@ -222,6 +241,26 @@ paths:
                                 $ref: '#/components/schemas/api.health.v1.PingReply'
 components:
     schemas:
+        api.file.v1.GetUploadPresignedUrlReply:
+            type: object
+            properties:
+                uploadUrl:
+                    type: string
+                fileKey:
+                    type: string
+                accessUrl:
+                    type: string
+                expireTime:
+                    type: string
+            description: 获取上传预签名 URL 响应
+        api.file.v1.GetUploadPresignedUrlRequest:
+            type: object
+            properties:
+                fileName:
+                    type: string
+                contentType:
+                    type: string
+            description: 获取上传预签名 URL 请求
         api.health.v1.PingReply:
             type: object
             properties:
@@ -453,6 +492,7 @@ components:
                     type: string
             description: The response message containing the greetings
 tags:
+    - name: File
     - name: Greeter
       description: The greeting service definition.
     - name: Health

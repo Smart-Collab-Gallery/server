@@ -10,6 +10,7 @@ message Bootstrap {
   Data data = 2;
   Auth auth = 3;
   Consul consul = 4;
+  Cos cos = 5;
 }
 
 message Server {
@@ -50,4 +51,13 @@ message Auth {
 message Consul {
   string address = 1;                           // Consul 地址
   bool enabled = 2;                             // 是否启用
+}
+
+message Cos {
+  string secret_id = 1;                         // 腾讯云 SecretId
+  string secret_key = 2;                        // 腾讯云 SecretKey
+  string bucket_url = 3;                        // 存储桶 URL
+  string region = 4;                            // 地域
+  string bucket_name = 5;                       // 存储桶名称
+  string upload_dir = 6;                        // 上传目录前缀
 }

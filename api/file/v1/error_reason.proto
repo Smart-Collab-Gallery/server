@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package api.file.v1;
+
+import "errors/errors.proto";
+
+option go_package = "smart-collab-gallery-server/api/file/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.file.v1";
+
+enum ErrorReason {
+  // 参数错误
+  PARAMS_ERROR = 0;
+  // 系统错误
+  SYSTEM_ERROR = 1;
+  // 文件类型不支持
+  FILE_TYPE_NOT_SUPPORTED = 2;
+  // 文件过大
+  FILE_TOO_LARGE = 3;
+}
