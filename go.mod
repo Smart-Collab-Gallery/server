@@ -5,9 +5,11 @@ go 1.24.11
 require (
 	github.com/go-kratos/kratos/v2 v2.8.0
 	github.com/golang-jwt/jwt/v5 v5.3.0
+	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.6.0
 	github.com/hashicorp/consul/api v1.29.4
 	github.com/prometheus/client_golang v1.23.2
+	github.com/tencentyun/cos-go-sdk-v5 v0.7.71
 	go.opentelemetry.io/otel v1.39.0
 	go.opentelemetry.io/otel/exporters/prometheus v0.61.0
 	go.opentelemetry.io/otel/metric v1.39.0
@@ -34,7 +36,6 @@ require (
 	github.com/go-playground/form/v4 v4.2.1 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
@@ -56,7 +57,6 @@ require (
 	github.com/prometheus/common v0.67.4 // indirect
 	github.com/prometheus/otlptranslator v1.0.0 // indirect
 	github.com/prometheus/procfs v0.19.2 // indirect
-	github.com/tencentyun/cos-go-sdk-v5 v0.7.71 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/otel/sdk v1.39.0 // indirect
 	go.opentelemetry.io/otel/trace v1.39.0 // indirect
