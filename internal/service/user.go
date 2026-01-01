@@ -332,3 +332,25 @@ func (s *UserService) ListUserByPage(ctx context.Context, req *v1.ListUserByPage
 		PageSize: userPage.PageSize,
 	}, nil
 }
+
+// UpdateMyInfo 更新个人信息（用户自己）
+func (s *UserService) UpdateMyInfo(ctx context.Context, req *v1.UpdateMyInfoRequest) (*v1.UpdateMyInfoReply, error) {
+	// 从上下文中获取用户 ID（由 JWT 中间件设置）
+	userID := middleware.GetUserIDFromContext(ctx)
+	if userID == 0 {
+		return nil, v1.ErrorNotLoginError("未登录")
+	}
+
+	s.log.WithContext(ctx).Infof("更新个人信息: userID=%d", userID)
+
+	// 执行更新
+	err := s.uc.UpdateMyInfo(ctx, userID, req.UserPassword, req.UserName, req.UserAvatar, req.UserProfile)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("更新个人信息失败: %v", err)
+		return nil, err
+	}
+
+	return &v1.UpdateMyInfoReply{
+		Success: true,
+	}, nil
+}

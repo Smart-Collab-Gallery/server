@@ -207,6 +207,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.user.v1.UpdateUserReply'
+    /api/user/update/personal:
+        post:
+            tags:
+                - User
+            description: 更新个人信息（用户自己）
+            operationId: User_UpdateMyInfo
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.UpdateMyInfoRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.UpdateMyInfoReply'
     /helloworld/{name}:
         get:
             tags:
@@ -449,6 +468,24 @@ components:
                 checkPassword:
                     type: string
             description: 注册请求
+        api.user.v1.UpdateMyInfoReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+            description: 更新个人信息响应
+        api.user.v1.UpdateMyInfoRequest:
+            type: object
+            properties:
+                userPassword:
+                    type: string
+                userName:
+                    type: string
+                userAvatar:
+                    type: string
+                userProfile:
+                    type: string
+            description: 更新个人信息请求
         api.user.v1.UpdateUserReply:
             type: object
             properties:

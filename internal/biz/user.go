@@ -376,3 +376,57 @@ func (uc *UserUsecase) ListUserByPage(ctx context.Context, params *UserQueryPara
 
 	return userPage, nil
 }
+
+// UpdateMyInfo 更新个人信息（用户自己）
+func (uc *UserUsecase) UpdateMyInfo(ctx context.Context, userID int64, password, name, avatar, profile string) error {
+	if userID <= 0 {
+		return v1.ErrorNotLoginError("未登录")
+	}
+
+	// 检查用户是否存在
+	existUser, err := uc.repo.GetUserByID(ctx, userID)
+	if err != nil {
+		return v1.ErrorSystemError("查询用户失败")
+	}
+	if existUser == nil {
+		return v1.ErrorUserNotFound("用户不存在")
+	}
+
+	// 构建更新对象，只更新提供的字段
+	user := &User{
+		ID: userID,
+	}
+
+	// 如果提供了密码，需要验证并加密
+	if strings.TrimSpace(password) != "" {
+		// 密码长度检查
+		if len(password) < 8 {
+			return v1.ErrorPasswordTooShort("密码过短，至少8个字符")
+		}
+		user.UserPassword = uc.encryptPassword(password)
+	}
+
+	// 更新昵称
+	if strings.TrimSpace(name) != "" {
+		user.UserName = name
+	}
+
+	// 更新头像
+	if strings.TrimSpace(avatar) != "" {
+		user.UserAvatar = avatar
+	}
+
+	// 更新简介
+	if strings.TrimSpace(profile) != "" {
+		user.UserProfile = profile
+	}
+
+	// 执行更新
+	err = uc.repo.UpdateUser(ctx, user)
+	if err != nil {
+		uc.log.Errorf("更新个人信息失败: userID=%d, err=%v", userID, err)
+		return v1.ErrorSystemError("更新个人信息失败")
+	}
+
+	return nil
+}
