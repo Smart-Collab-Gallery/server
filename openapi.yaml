@@ -349,6 +349,14 @@ components:
                     type: string
                 userProfile:
                     type: string
+                userEmail:
+                    type: string
+                userJob:
+                    type: string
+                userAddress:
+                    type: string
+                userTags:
+                    type: string
                 userRole:
                     type: string
                 vipNumber:
@@ -431,6 +439,14 @@ components:
                     type: string
                 userProfile:
                     type: string
+                userEmail:
+                    type: string
+                userJob:
+                    type: string
+                userAddress:
+                    type: string
+                userTags:
+                    type: string
                 userRole:
                     type: string
                 vipNumber:
@@ -485,6 +501,14 @@ components:
                     type: string
                 userProfile:
                     type: string
+                userEmail:
+                    type: string
+                userJob:
+                    type: string
+                userAddress:
+                    type: string
+                userTags:
+                    type: string
             description: 更新个人信息请求
         api.user.v1.UpdateUserReply:
             type: object
@@ -520,6 +544,14 @@ components:
                 userAvatar:
                     type: string
                 userProfile:
+                    type: string
+                userEmail:
+                    type: string
+                userJob:
+                    type: string
+                userAddress:
+                    type: string
+                userTags:
                     type: string
                 userRole:
                     type: string

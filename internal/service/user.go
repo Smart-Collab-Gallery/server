@@ -121,6 +121,10 @@ func (s *UserService) convertToLoginUserVO(user *biz.User) *v1.LoginUserVO {
 		UserName:    user.UserName,
 		UserAvatar:  user.UserAvatar,
 		UserProfile: user.UserProfile,
+		UserEmail:   user.UserEmail,
+		UserJob:     user.UserJob,
+		UserAddress: user.UserAddress,
+		UserTags:    user.UserTags,
 		UserRole:    user.UserRole,
 		VipNumber:   user.VipNumber,
 		CreateTime:  user.CreateTime.Format(time.RFC3339),
@@ -146,8 +150,22 @@ func (s *UserService) convertToUserVO(user *biz.User) *v1.UserVO {
 		UserName:    user.UserName,
 		UserAvatar:  user.UserAvatar,
 		UserProfile: user.UserProfile,
+		UserEmail:   user.UserEmail,
+		UserJob:     user.UserJob,
+		UserAddress: user.UserAddress,
+		UserTags:    user.UserTags,
 		UserRole:    user.UserRole,
 		VipNumber:   user.VipNumber,
+		CreateTime:  user.CreateTime.Format(time.RFC3339),
+		UpdateTime:  user.UpdateTime.Format(time.RFC3339),
+	}
+
+	if user.VipExpireTime != nil {
+		vo.VipExpireTime = user.VipExpireTime.Format(time.RFC3339)
+	}
+
+	return vo
+}
 		CreateTime:  user.CreateTime.Format(time.RFC3339),
 		UpdateTime:  user.UpdateTime.Format(time.RFC3339),
 	}
@@ -216,6 +234,10 @@ func (s *UserService) GetUserById(ctx context.Context, req *v1.GetUserByIdReques
 		UserName:     user.UserName,
 		UserAvatar:   user.UserAvatar,
 		UserProfile:  user.UserProfile,
+		UserEmail:    user.UserEmail,
+		UserJob:      user.UserJob,
+		UserAddress:  user.UserAddress,
+		UserTags:     user.UserTags,
 		UserRole:     user.UserRole,
 		VipNumber:    user.VipNumber,
 		CreateTime:   user.CreateTime.Format(time.RFC3339),
@@ -344,7 +366,7 @@ func (s *UserService) UpdateMyInfo(ctx context.Context, req *v1.UpdateMyInfoRequ
 	s.log.WithContext(ctx).Infof("更新个人信息: userID=%d", userID)
 
 	// 执行更新
-	err := s.uc.UpdateMyInfo(ctx, userID, req.UserPassword, req.UserName, req.UserAvatar, req.UserProfile)
+	err := s.uc.UpdateMyInfo(ctx, userID, req.UserPassword, req.UserName, req.UserAvatar, req.UserProfile, req.UserEmail, req.UserJob, req.UserAddress, req.UserTags)
 	if err != nil {
 		s.log.WithContext(ctx).Errorf("更新个人信息失败: %v", err)
 		return nil, err

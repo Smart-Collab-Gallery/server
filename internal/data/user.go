@@ -109,6 +109,10 @@ func (r *userRepo) convertToUser(userEntity *User) *biz.User {
 		UserName:      userEntity.UserName,
 		UserAvatar:    userEntity.UserAvatar,
 		UserProfile:   userEntity.UserProfile,
+		UserEmail:     userEntity.UserEmail,
+		UserJob:       userEntity.UserJob,
+		UserAddress:   userEntity.UserAddress,
+		UserTags:      userEntity.UserTags,
 		UserRole:      userEntity.UserRole,
 		VipNumber:     userEntity.VipNumber,
 		VipExpireTime: userEntity.VipExpireTime,
@@ -136,6 +140,18 @@ func (r *userRepo) UpdateUser(ctx context.Context, user *biz.User) error {
 	}
 	if user.UserProfile != "" {
 		updates["userProfile"] = user.UserProfile
+	}
+	if user.UserEmail != "" {
+		updates["userEmail"] = user.UserEmail
+	}
+	if user.UserJob != "" {
+		updates["userJob"] = user.UserJob
+	}
+	if user.UserAddress != "" {
+		updates["userAddress"] = user.UserAddress
+	}
+	if user.UserTags != "" {
+		updates["userTags"] = user.UserTags
 	}
 	if user.UserRole != "" {
 		updates["userRole"] = user.UserRole

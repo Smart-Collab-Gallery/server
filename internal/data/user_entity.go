@@ -12,6 +12,10 @@ type User struct {
 	UserName      string     `gorm:"column:userName;type:varchar(256);index:idx_userName" json:"userName"`
 	UserAvatar    string     `gorm:"column:userAvatar;type:varchar(1024)" json:"userAvatar"`
 	UserProfile   string     `gorm:"column:userProfile;type:varchar(512)" json:"userProfile"`
+	UserEmail     string     `gorm:"column:userEmail;type:varchar(256)" json:"userEmail"`
+	UserJob       string     `gorm:"column:userJob;type:varchar(256)" json:"userJob"`
+	UserAddress   string     `gorm:"column:userAddress;type:varchar(512)" json:"userAddress"`
+	UserTags      string     `gorm:"column:userTags;type:varchar(1024)" json:"userTags"`
 	UserRole      string     `gorm:"column:userRole;type:varchar(256);not null;default:user" json:"userRole"`
 	VipExpireTime *time.Time `gorm:"column:vipExpireTime" json:"vipExpireTime"`
 	VipCode       string     `gorm:"column:vipCode;type:varchar(128)" json:"vipCode"`

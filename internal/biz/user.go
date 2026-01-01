@@ -20,6 +20,10 @@ type User struct {
 	UserName      string
 	UserAvatar    string
 	UserProfile   string
+	UserEmail     string
+	UserJob       string
+	UserAddress   string
+	UserTags      string
 	UserRole      string
 	VipNumber     int64
 	VipExpireTime *time.Time
@@ -378,7 +382,7 @@ func (uc *UserUsecase) ListUserByPage(ctx context.Context, params *UserQueryPara
 }
 
 // UpdateMyInfo 更新个人信息（用户自己）
-func (uc *UserUsecase) UpdateMyInfo(ctx context.Context, userID int64, password, name, avatar, profile string) error {
+func (uc *UserUsecase) UpdateMyInfo(ctx context.Context, userID int64, password, name, avatar, profile, email, job, address, tags string) error {
 	if userID <= 0 {
 		return v1.ErrorNotLoginError("未登录")
 	}
@@ -419,6 +423,26 @@ func (uc *UserUsecase) UpdateMyInfo(ctx context.Context, userID int64, password,
 	// 更新简介
 	if strings.TrimSpace(profile) != "" {
 		user.UserProfile = profile
+	}
+
+	// 更新邮箱
+	if strings.TrimSpace(email) != "" {
+		user.UserEmail = email
+	}
+
+	// 更新职业
+	if strings.TrimSpace(job) != "" {
+		user.UserJob = job
+	}
+
+	// 更新地址
+	if strings.TrimSpace(address) != "" {
+		user.UserAddress = address
+	}
+
+	// 更新标签
+	if strings.TrimSpace(tags) != "" {
+		user.UserTags = tags
 	}
 
 	// 执行更新

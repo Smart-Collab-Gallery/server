@@ -144,11 +144,15 @@ message LoginUserVO {
   string user_name = 3;       // 用户昵称
   string user_avatar = 4;     // 用户头像
   string user_profile = 5;    // 用户简介
-  string user_role = 6;       // 用户角色
-  int64 vip_number = 7;       // 会员编号
-  string vip_expire_time = 8; // 会员过期时间
-  string create_time = 9;     // 创建时间
-  string update_time = 10;    // 更新时间
+  string user_email = 6;      // 用户邮箱
+  string user_job = 7;        // 职业
+  string user_address = 8;    // 地址
+  string user_tags = 9;       // 标签
+  string user_role = 10;      // 用户角色
+  int64 vip_number = 11;      // 会员编号
+  string vip_expire_time = 12; // 会员过期时间
+  string create_time = 13;    // 创建时间
+  string update_time = 14;    // 更新时间
 }
 
 // 用户视图对象（用于列表展示）
@@ -158,11 +162,15 @@ message UserVO {
   string user_name = 3;
   string user_avatar = 4;
   string user_profile = 5;
-  string user_role = 6;
-  int64 vip_number = 7;
-  string vip_expire_time = 8;
-  string create_time = 9;
-  string update_time = 10;
+  string user_email = 6;
+  string user_job = 7;
+  string user_address = 8;
+  string user_tags = 9;
+  string user_role = 10;
+  int64 vip_number = 11;
+  string vip_expire_time = 12;
+  string create_time = 13;
+  string update_time = 14;
 }
 
 // 创建用户请求
@@ -192,11 +200,15 @@ message GetUserByIdReply {
   string user_name = 4;
   string user_avatar = 5;
   string user_profile = 6;
-  string user_role = 7;
-  int64 vip_number = 8;
-  string vip_expire_time = 9;
-  string create_time = 10;
-  string update_time = 11;
+  string user_email = 7;
+  string user_job = 8;
+  string user_address = 9;
+  string user_tags = 10;
+  string user_role = 11;
+  int64 vip_number = 12;
+  string vip_expire_time = 13;
+  string create_time = 14;
+  string update_time = 15;
 }
 
 // 根据 ID 获取用户 VO 请求
@@ -261,6 +273,10 @@ message UpdateMyInfoRequest {
   string user_name = 2;         // 用户昵称（可选）
   string user_avatar = 3;       // 用户头像（可选）
   string user_profile = 4;      // 用户简介（可选）
+  string user_email = 5;        // 用户邮箱（可选）
+  string user_job = 6;          // 职业（可选）
+  string user_address = 7;      // 地址（可选）
+  string user_tags = 8;         // 标签（可选）
 }
 
 // 更新个人信息响应

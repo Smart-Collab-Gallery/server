@@ -401,16 +401,20 @@ func (x *LogoutReply) GetSuccess() bool {
 // 登录用户视图对象
 type LoginUserVO struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                             // 用户 ID
-	UserAccount   string                 `protobuf:"bytes,2,opt,name=user_account,json=userAccount,proto3" json:"user_account,omitempty"`         // 用户账号
-	UserName      string                 `protobuf:"bytes,3,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`                  // 用户昵称
-	UserAvatar    string                 `protobuf:"bytes,4,opt,name=user_avatar,json=userAvatar,proto3" json:"user_avatar,omitempty"`            // 用户头像
-	UserProfile   string                 `protobuf:"bytes,5,opt,name=user_profile,json=userProfile,proto3" json:"user_profile,omitempty"`         // 用户简介
-	UserRole      string                 `protobuf:"bytes,6,opt,name=user_role,json=userRole,proto3" json:"user_role,omitempty"`                  // 用户角色
-	VipNumber     int64                  `protobuf:"varint,7,opt,name=vip_number,json=vipNumber,proto3" json:"vip_number,omitempty"`              // 会员编号
-	VipExpireTime string                 `protobuf:"bytes,8,opt,name=vip_expire_time,json=vipExpireTime,proto3" json:"vip_expire_time,omitempty"` // 会员过期时间
-	CreateTime    string                 `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`            // 创建时间
-	UpdateTime    string                 `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`           // 更新时间
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                              // 用户 ID
+	UserAccount   string                 `protobuf:"bytes,2,opt,name=user_account,json=userAccount,proto3" json:"user_account,omitempty"`          // 用户账号
+	UserName      string                 `protobuf:"bytes,3,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`                   // 用户昵称
+	UserAvatar    string                 `protobuf:"bytes,4,opt,name=user_avatar,json=userAvatar,proto3" json:"user_avatar,omitempty"`             // 用户头像
+	UserProfile   string                 `protobuf:"bytes,5,opt,name=user_profile,json=userProfile,proto3" json:"user_profile,omitempty"`          // 用户简介
+	UserEmail     string                 `protobuf:"bytes,6,opt,name=user_email,json=userEmail,proto3" json:"user_email,omitempty"`                // 用户邮箱
+	UserJob       string                 `protobuf:"bytes,7,opt,name=user_job,json=userJob,proto3" json:"user_job,omitempty"`                      // 职业
+	UserAddress   string                 `protobuf:"bytes,8,opt,name=user_address,json=userAddress,proto3" json:"user_address,omitempty"`          // 地址
+	UserTags      string                 `protobuf:"bytes,9,opt,name=user_tags,json=userTags,proto3" json:"user_tags,omitempty"`                   // 标签
+	UserRole      string                 `protobuf:"bytes,10,opt,name=user_role,json=userRole,proto3" json:"user_role,omitempty"`                  // 用户角色
+	VipNumber     int64                  `protobuf:"varint,11,opt,name=vip_number,json=vipNumber,proto3" json:"vip_number,omitempty"`              // 会员编号
+	VipExpireTime string                 `protobuf:"bytes,12,opt,name=vip_expire_time,json=vipExpireTime,proto3" json:"vip_expire_time,omitempty"` // 会员过期时间
+	CreateTime    string                 `protobuf:"bytes,13,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`            // 创建时间
+	UpdateTime    string                 `protobuf:"bytes,14,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`            // 更新时间
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -480,6 +484,34 @@ func (x *LoginUserVO) GetUserProfile() string {
 	return ""
 }
 
+func (x *LoginUserVO) GetUserEmail() string {
+	if x != nil {
+		return x.UserEmail
+	}
+	return ""
+}
+
+func (x *LoginUserVO) GetUserJob() string {
+	if x != nil {
+		return x.UserJob
+	}
+	return ""
+}
+
+func (x *LoginUserVO) GetUserAddress() string {
+	if x != nil {
+		return x.UserAddress
+	}
+	return ""
+}
+
+func (x *LoginUserVO) GetUserTags() string {
+	if x != nil {
+		return x.UserTags
+	}
+	return ""
+}
+
 func (x *LoginUserVO) GetUserRole() string {
 	if x != nil {
 		return x.UserRole
@@ -523,11 +555,15 @@ type UserVO struct {
 	UserName      string                 `protobuf:"bytes,3,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
 	UserAvatar    string                 `protobuf:"bytes,4,opt,name=user_avatar,json=userAvatar,proto3" json:"user_avatar,omitempty"`
 	UserProfile   string                 `protobuf:"bytes,5,opt,name=user_profile,json=userProfile,proto3" json:"user_profile,omitempty"`
-	UserRole      string                 `protobuf:"bytes,6,opt,name=user_role,json=userRole,proto3" json:"user_role,omitempty"`
-	VipNumber     int64                  `protobuf:"varint,7,opt,name=vip_number,json=vipNumber,proto3" json:"vip_number,omitempty"`
-	VipExpireTime string                 `protobuf:"bytes,8,opt,name=vip_expire_time,json=vipExpireTime,proto3" json:"vip_expire_time,omitempty"`
-	CreateTime    string                 `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
-	UpdateTime    string                 `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	UserEmail     string                 `protobuf:"bytes,6,opt,name=user_email,json=userEmail,proto3" json:"user_email,omitempty"`
+	UserJob       string                 `protobuf:"bytes,7,opt,name=user_job,json=userJob,proto3" json:"user_job,omitempty"`
+	UserAddress   string                 `protobuf:"bytes,8,opt,name=user_address,json=userAddress,proto3" json:"user_address,omitempty"`
+	UserTags      string                 `protobuf:"bytes,9,opt,name=user_tags,json=userTags,proto3" json:"user_tags,omitempty"`
+	UserRole      string                 `protobuf:"bytes,10,opt,name=user_role,json=userRole,proto3" json:"user_role,omitempty"`
+	VipNumber     int64                  `protobuf:"varint,11,opt,name=vip_number,json=vipNumber,proto3" json:"vip_number,omitempty"`
+	VipExpireTime string                 `protobuf:"bytes,12,opt,name=vip_expire_time,json=vipExpireTime,proto3" json:"vip_expire_time,omitempty"`
+	CreateTime    string                 `protobuf:"bytes,13,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
+	UpdateTime    string                 `protobuf:"bytes,14,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -593,6 +629,34 @@ func (x *UserVO) GetUserAvatar() string {
 func (x *UserVO) GetUserProfile() string {
 	if x != nil {
 		return x.UserProfile
+	}
+	return ""
+}
+
+func (x *UserVO) GetUserEmail() string {
+	if x != nil {
+		return x.UserEmail
+	}
+	return ""
+}
+
+func (x *UserVO) GetUserJob() string {
+	if x != nil {
+		return x.UserJob
+	}
+	return ""
+}
+
+func (x *UserVO) GetUserAddress() string {
+	if x != nil {
+		return x.UserAddress
+	}
+	return ""
+}
+
+func (x *UserVO) GetUserTags() string {
+	if x != nil {
+		return x.UserTags
 	}
 	return ""
 }
@@ -808,11 +872,15 @@ type GetUserByIdReply struct {
 	UserName      string                 `protobuf:"bytes,4,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
 	UserAvatar    string                 `protobuf:"bytes,5,opt,name=user_avatar,json=userAvatar,proto3" json:"user_avatar,omitempty"`
 	UserProfile   string                 `protobuf:"bytes,6,opt,name=user_profile,json=userProfile,proto3" json:"user_profile,omitempty"`
-	UserRole      string                 `protobuf:"bytes,7,opt,name=user_role,json=userRole,proto3" json:"user_role,omitempty"`
-	VipNumber     int64                  `protobuf:"varint,8,opt,name=vip_number,json=vipNumber,proto3" json:"vip_number,omitempty"`
-	VipExpireTime string                 `protobuf:"bytes,9,opt,name=vip_expire_time,json=vipExpireTime,proto3" json:"vip_expire_time,omitempty"`
-	CreateTime    string                 `protobuf:"bytes,10,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
-	UpdateTime    string                 `protobuf:"bytes,11,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	UserEmail     string                 `protobuf:"bytes,7,opt,name=user_email,json=userEmail,proto3" json:"user_email,omitempty"`
+	UserJob       string                 `protobuf:"bytes,8,opt,name=user_job,json=userJob,proto3" json:"user_job,omitempty"`
+	UserAddress   string                 `protobuf:"bytes,9,opt,name=user_address,json=userAddress,proto3" json:"user_address,omitempty"`
+	UserTags      string                 `protobuf:"bytes,10,opt,name=user_tags,json=userTags,proto3" json:"user_tags,omitempty"`
+	UserRole      string                 `protobuf:"bytes,11,opt,name=user_role,json=userRole,proto3" json:"user_role,omitempty"`
+	VipNumber     int64                  `protobuf:"varint,12,opt,name=vip_number,json=vipNumber,proto3" json:"vip_number,omitempty"`
+	VipExpireTime string                 `protobuf:"bytes,13,opt,name=vip_expire_time,json=vipExpireTime,proto3" json:"vip_expire_time,omitempty"`
+	CreateTime    string                 `protobuf:"bytes,14,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
+	UpdateTime    string                 `protobuf:"bytes,15,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -885,6 +953,34 @@ func (x *GetUserByIdReply) GetUserAvatar() string {
 func (x *GetUserByIdReply) GetUserProfile() string {
 	if x != nil {
 		return x.UserProfile
+	}
+	return ""
+}
+
+func (x *GetUserByIdReply) GetUserEmail() string {
+	if x != nil {
+		return x.UserEmail
+	}
+	return ""
+}
+
+func (x *GetUserByIdReply) GetUserJob() string {
+	if x != nil {
+		return x.UserJob
+	}
+	return ""
+}
+
+func (x *GetUserByIdReply) GetUserAddress() string {
+	if x != nil {
+		return x.UserAddress
+	}
+	return ""
+}
+
+func (x *GetUserByIdReply) GetUserTags() string {
+	if x != nil {
+		return x.UserTags
 	}
 	return ""
 }
@@ -1419,6 +1515,10 @@ type UpdateMyInfoRequest struct {
 	UserName      string                 `protobuf:"bytes,2,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`             // 用户昵称（可选）
 	UserAvatar    string                 `protobuf:"bytes,3,opt,name=user_avatar,json=userAvatar,proto3" json:"user_avatar,omitempty"`       // 用户头像（可选）
 	UserProfile   string                 `protobuf:"bytes,4,opt,name=user_profile,json=userProfile,proto3" json:"user_profile,omitempty"`    // 用户简介（可选）
+	UserEmail     string                 `protobuf:"bytes,5,opt,name=user_email,json=userEmail,proto3" json:"user_email,omitempty"`          // 用户邮箱（可选）
+	UserJob       string                 `protobuf:"bytes,6,opt,name=user_job,json=userJob,proto3" json:"user_job,omitempty"`                // 职业（可选）
+	UserAddress   string                 `protobuf:"bytes,7,opt,name=user_address,json=userAddress,proto3" json:"user_address,omitempty"`    // 地址（可选）
+	UserTags      string                 `protobuf:"bytes,8,opt,name=user_tags,json=userTags,proto3" json:"user_tags,omitempty"`             // 标签（可选）
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1477,6 +1577,34 @@ func (x *UpdateMyInfoRequest) GetUserAvatar() string {
 func (x *UpdateMyInfoRequest) GetUserProfile() string {
 	if x != nil {
 		return x.UserProfile
+	}
+	return ""
+}
+
+func (x *UpdateMyInfoRequest) GetUserEmail() string {
+	if x != nil {
+		return x.UserEmail
+	}
+	return ""
+}
+
+func (x *UpdateMyInfoRequest) GetUserJob() string {
+	if x != nil {
+		return x.UserJob
+	}
+	return ""
+}
+
+func (x *UpdateMyInfoRequest) GetUserAddress() string {
+	if x != nil {
+		return x.UserAddress
+	}
+	return ""
+}
+
+func (x *UpdateMyInfoRequest) GetUserTags() string {
+	if x != nil {
+		return x.UserTags
 	}
 	return ""
 }
@@ -1549,38 +1677,48 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\x04user\x18\x01 \x01(\v2\x18.api.user.v1.LoginUserVOR\x04user\"\x0f\n" +
 	"\rLogoutRequest\"'\n" +
 	"\vLogoutReply\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\"\xc7\x02\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"\xc1\x03\n" +
 	"\vLoginUserVO\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12!\n" +
 	"\fuser_account\x18\x02 \x01(\tR\vuserAccount\x12\x1b\n" +
 	"\tuser_name\x18\x03 \x01(\tR\buserName\x12\x1f\n" +
 	"\vuser_avatar\x18\x04 \x01(\tR\n" +
 	"userAvatar\x12!\n" +
-	"\fuser_profile\x18\x05 \x01(\tR\vuserProfile\x12\x1b\n" +
-	"\tuser_role\x18\x06 \x01(\tR\buserRole\x12\x1d\n" +
+	"\fuser_profile\x18\x05 \x01(\tR\vuserProfile\x12\x1d\n" +
 	"\n" +
-	"vip_number\x18\a \x01(\x03R\tvipNumber\x12&\n" +
-	"\x0fvip_expire_time\x18\b \x01(\tR\rvipExpireTime\x12\x1f\n" +
-	"\vcreate_time\x18\t \x01(\tR\n" +
+	"user_email\x18\x06 \x01(\tR\tuserEmail\x12\x19\n" +
+	"\buser_job\x18\a \x01(\tR\auserJob\x12!\n" +
+	"\fuser_address\x18\b \x01(\tR\vuserAddress\x12\x1b\n" +
+	"\tuser_tags\x18\t \x01(\tR\buserTags\x12\x1b\n" +
+	"\tuser_role\x18\n" +
+	" \x01(\tR\buserRole\x12\x1d\n" +
+	"\n" +
+	"vip_number\x18\v \x01(\x03R\tvipNumber\x12&\n" +
+	"\x0fvip_expire_time\x18\f \x01(\tR\rvipExpireTime\x12\x1f\n" +
+	"\vcreate_time\x18\r \x01(\tR\n" +
 	"createTime\x12\x1f\n" +
-	"\vupdate_time\x18\n" +
-	" \x01(\tR\n" +
-	"updateTime\"\xc2\x02\n" +
+	"\vupdate_time\x18\x0e \x01(\tR\n" +
+	"updateTime\"\xbc\x03\n" +
 	"\x06UserVO\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12!\n" +
 	"\fuser_account\x18\x02 \x01(\tR\vuserAccount\x12\x1b\n" +
 	"\tuser_name\x18\x03 \x01(\tR\buserName\x12\x1f\n" +
 	"\vuser_avatar\x18\x04 \x01(\tR\n" +
 	"userAvatar\x12!\n" +
-	"\fuser_profile\x18\x05 \x01(\tR\vuserProfile\x12\x1b\n" +
-	"\tuser_role\x18\x06 \x01(\tR\buserRole\x12\x1d\n" +
+	"\fuser_profile\x18\x05 \x01(\tR\vuserProfile\x12\x1d\n" +
 	"\n" +
-	"vip_number\x18\a \x01(\x03R\tvipNumber\x12&\n" +
-	"\x0fvip_expire_time\x18\b \x01(\tR\rvipExpireTime\x12\x1f\n" +
-	"\vcreate_time\x18\t \x01(\tR\n" +
+	"user_email\x18\x06 \x01(\tR\tuserEmail\x12\x19\n" +
+	"\buser_job\x18\a \x01(\tR\auserJob\x12!\n" +
+	"\fuser_address\x18\b \x01(\tR\vuserAddress\x12\x1b\n" +
+	"\tuser_tags\x18\t \x01(\tR\buserTags\x12\x1b\n" +
+	"\tuser_role\x18\n" +
+	" \x01(\tR\buserRole\x12\x1d\n" +
+	"\n" +
+	"vip_number\x18\v \x01(\x03R\tvipNumber\x12&\n" +
+	"\x0fvip_expire_time\x18\f \x01(\tR\rvipExpireTime\x12\x1f\n" +
+	"\vcreate_time\x18\r \x01(\tR\n" +
 	"createTime\x12\x1f\n" +
-	"\vupdate_time\x18\n" +
-	" \x01(\tR\n" +
+	"\vupdate_time\x18\x0e \x01(\tR\n" +
 	"updateTime\"\xb1\x01\n" +
 	"\x0eAddUserRequest\x12!\n" +
 	"\fuser_account\x18\x01 \x01(\tR\vuserAccount\x12\x1b\n" +
@@ -1592,7 +1730,7 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\fAddUserReply\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\"$\n" +
 	"\x12GetUserByIdRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\"\xf1\x02\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"\xeb\x03\n" +
 	"\x10GetUserByIdReply\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12!\n" +
 	"\fuser_account\x18\x02 \x01(\tR\vuserAccount\x12#\n" +
@@ -1600,15 +1738,20 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\tuser_name\x18\x04 \x01(\tR\buserName\x12\x1f\n" +
 	"\vuser_avatar\x18\x05 \x01(\tR\n" +
 	"userAvatar\x12!\n" +
-	"\fuser_profile\x18\x06 \x01(\tR\vuserProfile\x12\x1b\n" +
-	"\tuser_role\x18\a \x01(\tR\buserRole\x12\x1d\n" +
+	"\fuser_profile\x18\x06 \x01(\tR\vuserProfile\x12\x1d\n" +
 	"\n" +
-	"vip_number\x18\b \x01(\x03R\tvipNumber\x12&\n" +
-	"\x0fvip_expire_time\x18\t \x01(\tR\rvipExpireTime\x12\x1f\n" +
-	"\vcreate_time\x18\n" +
-	" \x01(\tR\n" +
+	"user_email\x18\a \x01(\tR\tuserEmail\x12\x19\n" +
+	"\buser_job\x18\b \x01(\tR\auserJob\x12!\n" +
+	"\fuser_address\x18\t \x01(\tR\vuserAddress\x12\x1b\n" +
+	"\tuser_tags\x18\n" +
+	" \x01(\tR\buserTags\x12\x1b\n" +
+	"\tuser_role\x18\v \x01(\tR\buserRole\x12\x1d\n" +
+	"\n" +
+	"vip_number\x18\f \x01(\x03R\tvipNumber\x12&\n" +
+	"\x0fvip_expire_time\x18\r \x01(\tR\rvipExpireTime\x12\x1f\n" +
+	"\vcreate_time\x18\x0e \x01(\tR\n" +
 	"createTime\x12\x1f\n" +
-	"\vupdate_time\x18\v \x01(\tR\n" +
+	"\vupdate_time\x18\x0f \x01(\tR\n" +
 	"updateTime\"&\n" +
 	"\x14GetUserVOByIdRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"=\n" +
@@ -1644,13 +1787,18 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\x05total\x18\x01 \x01(\x03R\x05total\x12'\n" +
 	"\x04list\x18\x02 \x03(\v2\x13.api.user.v1.UserVOR\x04list\x12\x18\n" +
 	"\acurrent\x18\x03 \x01(\x03R\acurrent\x12\x1b\n" +
-	"\tpage_size\x18\x04 \x01(\x03R\bpageSize\"\x9b\x01\n" +
+	"\tpage_size\x18\x04 \x01(\x03R\bpageSize\"\x95\x02\n" +
 	"\x13UpdateMyInfoRequest\x12#\n" +
 	"\ruser_password\x18\x01 \x01(\tR\fuserPassword\x12\x1b\n" +
 	"\tuser_name\x18\x02 \x01(\tR\buserName\x12\x1f\n" +
 	"\vuser_avatar\x18\x03 \x01(\tR\n" +
 	"userAvatar\x12!\n" +
-	"\fuser_profile\x18\x04 \x01(\tR\vuserProfile\"-\n" +
+	"\fuser_profile\x18\x04 \x01(\tR\vuserProfile\x12\x1d\n" +
+	"\n" +
+	"user_email\x18\x05 \x01(\tR\tuserEmail\x12\x19\n" +
+	"\buser_job\x18\x06 \x01(\tR\auserJob\x12!\n" +
+	"\fuser_address\x18\a \x01(\tR\vuserAddress\x12\x1b\n" +
+	"\tuser_tags\x18\b \x01(\tR\buserTags\"-\n" +
 	"\x11UpdateMyInfoReply\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess2\x87\t\n" +
 	"\x04User\x12c\n" +
