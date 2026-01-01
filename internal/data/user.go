@@ -125,6 +125,9 @@ func (r *userRepo) UpdateUser(ctx context.Context, user *biz.User) error {
 	if user.UserAccount != "" {
 		updates["userAccount"] = user.UserAccount
 	}
+	if user.UserPassword != "" {
+		updates["userPassword"] = user.UserPassword
+	}
 	if user.UserName != "" {
 		updates["userName"] = user.UserName
 	}
