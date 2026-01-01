@@ -306,16 +306,24 @@ func (x *Consul) GetEnabled() bool {
 	return false
 }
 
+// COS 配置（支持多存储桶）
 type Cos struct {
-	state             protoimpl.MessageState `protogen:"open.v1"`
-	SecretId          string                 `protobuf:"bytes,1,opt,name=secret_id,json=secretId,proto3" json:"secret_id,omitempty"`                              // 腾讯云 SecretId
-	SecretKey         string                 `protobuf:"bytes,2,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`                           // 腾讯云 SecretKey
-	DefaultBucketUrl  string                 `protobuf:"bytes,3,opt,name=default_bucket_url,json=defaultBucketUrl,proto3" json:"default_bucket_url,omitempty"`    // 默认存储桶 URL（可选）
-	DefaultRegion     string                 `protobuf:"bytes,4,opt,name=default_region,json=defaultRegion,proto3" json:"default_region,omitempty"`               // 默认地域（可选）
-	DefaultBucketName string                 `protobuf:"bytes,5,opt,name=default_bucket_name,json=defaultBucketName,proto3" json:"default_bucket_name,omitempty"` // 默认存储桶名称（可选）
-	DefaultUploadDir  string                 `protobuf:"bytes,6,opt,name=default_upload_dir,json=defaultUploadDir,proto3" json:"default_upload_dir,omitempty"`    // 默认上传目录前缀（可选）
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SecretId      string                 `protobuf:"bytes,1,opt,name=secret_id,json=secretId,proto3" json:"secret_id,omitempty"`                                                                       // 腾讯云 SecretId（全局共享）
+	SecretKey     string                 `protobuf:"bytes,2,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`                                                                    // 腾讯云 SecretKey（全局共享）
+	Buckets       map[string]*CosBucket  `protobuf:"bytes,3,rep,name=buckets,proto3" json:"buckets,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // 多存储桶配置
+	DefaultBucket string                 `protobuf:"bytes,4,opt,name=default_bucket,json=defaultBucket,proto3" json:"default_bucket,omitempty"`                                                        // 默认使用的存储桶 key
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+// 单个存储桶配置
+type CosBucket struct {
+	BucketName        string   `protobuf:"bytes,1,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`                      // 存储桶名称
+	Region            string   `protobuf:"bytes,2,opt,name=region,proto3" json:"region,omitempty"`                                                // 地域
+	UploadDir         string   `protobuf:"bytes,3,opt,name=upload_dir,json=uploadDir,proto3" json:"upload_dir,omitempty"`                         // 上传目录前缀
+	AllowedExtensions []string `protobuf:"bytes,4,rep,name=allowed_extensions,json=allowedExtensions,proto3" json:"allowed_extensions,omitempty"` // 允许的文件扩展名
+	MaxSize           int64    `protobuf:"varint,5,opt,name=max_size,json=maxSize,proto3" json:"max_size,omitempty"`                              // 最大文件大小（字节）
 }
 
 func (x *Cos) Reset() {
@@ -362,32 +370,53 @@ func (x *Cos) GetSecretKey() string {
 	return ""
 }
 
-func (x *Cos) GetDefaultBucketUrl() string {
+func (x *Cos) GetBuckets() map[string]*CosBucket {
 	if x != nil {
-		return x.DefaultBucketUrl
+		return x.Buckets
+	}
+	return nil
+}
+
+func (x *Cos) GetDefaultBucket() string {
+	if x != nil {
+		return x.DefaultBucket
 	}
 	return ""
 }
 
-func (x *Cos) GetDefaultRegion() string {
+func (x *CosBucket) GetBucketName() string {
 	if x != nil {
-		return x.DefaultRegion
+		return x.BucketName
 	}
 	return ""
 }
 
-func (x *Cos) GetDefaultBucketName() string {
+func (x *CosBucket) GetRegion() string {
 	if x != nil {
-		return x.DefaultBucketName
+		return x.Region
 	}
 	return ""
 }
 
-func (x *Cos) GetDefaultUploadDir() string {
+func (x *CosBucket) GetUploadDir() string {
 	if x != nil {
-		return x.DefaultUploadDir
+		return x.UploadDir
 	}
 	return ""
+}
+
+func (x *CosBucket) GetAllowedExtensions() []string {
+	if x != nil {
+		return x.AllowedExtensions
+	}
+	return nil
+}
+
+func (x *CosBucket) GetMaxSize() int64 {
+	if x != nil {
+		return x.MaxSize
+	}
+	return 0
 }
 
 type Server_HTTP struct {

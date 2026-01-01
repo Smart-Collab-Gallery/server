@@ -16,22 +16,15 @@ service File {
       body: "*"
     };
   }
-
-  // 获取可用的存储桶列表
-  rpc ListBuckets (ListBucketsRequest) returns (ListBucketsReply) {
-    option (google.api.http) = {
-      get: "/api/file/buckets"
-    };
-  }
 }
 
 // 获取上传预签名 URL 请求
 message GetUploadPresignedUrlRequest {
   string file_name = 1;           // 文件名（包含扩展名）
   string content_type = 2;        // 文件 MIME 类型（可选）
-  string bucket_key = 3;          // 存储桶 key（如 image/video/document，可选，不传则自动检测或使用默认）
-  int64 file_size = 4;            // 文件大小（字节，用于校验，可选）
-  bool auto_detect = 5;           // 是否根据文件扩展名自动选择存储桶（默认 true）
+  string bucket_name = 3;         // 存储桶 key（如 image/video/document，可选，不传则自动检测）
+  string region = 4;              // 地域（保留字段，暂未使用）
+  string upload_dir = 5;          // 上传目录前缀（保留字段，暂未使用）
 }
 
 // 获取上传预签名 URL 响应
@@ -40,25 +33,6 @@ message GetUploadPresignedUrlReply {
   string file_key = 2;             // 文件在 COS 中的完整路径（key）
   string access_url = 3;           // 上传成功后的访问 URL
   int64 expire_time = 4;           // 过期时间（Unix 时间戳）
-  string bucket_key = 5;           // 实际使用的存储桶 key（如 image/video/document）
-  string bucket_name = 6;          // 实际使用的存储桶名称
-  string region = 7;               // 实际使用的地域
-}
-
-// 获取存储桶列表请求
-message ListBucketsRequest {}
-
-// 获取存储桶列表响应
-message ListBucketsReply {
-  repeated BucketInfo buckets = 1;      // 存储桶列表
-  string default_bucket = 2;            // 默认存储桶 key
-}
-
-// 存储桶信息
-message BucketInfo {
-  string key = 1;                        // 存储桶 key（如 image/video/document）
-  string bucket_name = 2;                // 存储桶名称
-  string region = 3;                     // 地域
-  repeated string allowed_extensions = 4; // 允许的文件扩展名
-  int64 max_size = 5;                    // 最大文件大小（字节），0 表示不限制
+  string bucket_name = 5;          // 实际使用的存储桶 key（如 image/video/document）
+  string region = 6;               // 实际使用的地域
 }
