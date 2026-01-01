@@ -166,16 +166,6 @@ func (s *UserService) convertToUserVO(user *biz.User) *v1.UserVO {
 
 	return vo
 }
-		CreateTime:  user.CreateTime.Format(time.RFC3339),
-		UpdateTime:  user.UpdateTime.Format(time.RFC3339),
-	}
-
-	if user.VipExpireTime != nil {
-		vo.VipExpireTime = user.VipExpireTime.Format(time.RFC3339)
-	}
-
-	return vo
-}
 
 // convertToUserVOList 将 User 列表转换为 UserVO 列表
 func (s *UserService) convertToUserVOList(users []*biz.User) []*v1.UserVO {
