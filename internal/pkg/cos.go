@@ -12,7 +12,6 @@ import (
 	"smart-collab-gallery-server/internal/conf"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/google/uuid"
 	"github.com/tencentyun/cos-go-sdk-v5"
 )
 
@@ -252,33 +251,14 @@ func (m *COSManager) DetectBucketKeyByFileName(fileName string) string {
 
 // generateFileKey 生成文件存储路径（key）
 func generateFileKey(fileName, uploadDir string) string {
-	now := time.Now()
-
 	// 处理上传目录前缀
 	dirPrefix := uploadDir
 	if dirPrefix != "" && !strings.HasSuffix(dirPrefix, "/") {
 		dirPrefix += "/"
 	}
 
-	datePrefix := fmt.Sprintf("%s%04d/%02d/%02d/",
-		dirPrefix,
-		now.Year(),
-		now.Month(),
-		now.Day(),
-	)
-
-	// 生成 UUID 作为文件前缀
-	uniqueID := uuid.New().String()
-
-	// 获取文件扩展名
-	ext := path.Ext(fileName)
-	baseName := fileName[:len(fileName)-len(ext)]
-
-	// 清理文件名
-	cleanName := cleanFileName(baseName)
-
-	// 组合最终的文件 key
-	fileKey := fmt.Sprintf("%s%s_%s%s", datePrefix, uniqueID, cleanName, ext)
+	// 直接使用原始文件名，不添加日期路径和 UUID 前缀
+	fileKey := fmt.Sprintf("%s%s", dirPrefix, fileName)
 
 	return fileKey
 }
