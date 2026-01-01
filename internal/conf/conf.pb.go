@@ -306,24 +306,29 @@ func (x *Consul) GetEnabled() bool {
 	return false
 }
 
-// COS 配置（支持多存储桶）
+// COS 配置
 type Cos struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	SecretId      string                 `protobuf:"bytes,1,opt,name=secret_id,json=secretId,proto3" json:"secret_id,omitempty"`                                                                       // 腾讯云 SecretId（全局共享）
-	SecretKey     string                 `protobuf:"bytes,2,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`                                                                    // 腾讯云 SecretKey（全局共享）
-	Buckets       map[string]*CosBucket  `protobuf:"bytes,3,rep,name=buckets,proto3" json:"buckets,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"` // 多存储桶配置
-	DefaultBucket string                 `protobuf:"bytes,4,opt,name=default_bucket,json=defaultBucket,proto3" json:"default_bucket,omitempty"`                                                        // 默认使用的存储桶 key
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	SecretId          string                 `protobuf:"bytes,1,opt,name=secret_id,json=secretId,proto3" json:"secret_id,omitempty"`
+	SecretKey         string                 `protobuf:"bytes,2,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`
+	DefaultBucketUrl  string                 `protobuf:"bytes,3,opt,name=default_bucket_url,json=defaultBucketUrl,proto3" json:"default_bucket_url,omitempty"`
+	DefaultRegion     string                 `protobuf:"bytes,4,opt,name=default_region,json=defaultRegion,proto3" json:"default_region,omitempty"`
+	DefaultBucketName string                 `protobuf:"bytes,5,opt,name=default_bucket_name,json=defaultBucketName,proto3" json:"default_bucket_name,omitempty"`
+	DefaultUploadDir  string                 `protobuf:"bytes,6,opt,name=default_upload_dir,json=defaultUploadDir,proto3" json:"default_upload_dir,omitempty"`
+	// 新增字段（YAML 解析用，不参与 protobuf 序列化）
+	Buckets       map[string]*CosBucket `json:"buckets,omitempty" yaml:"buckets"`
+	DefaultBucket string                `json:"default_bucket,omitempty" yaml:"default_bucket"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-// 单个存储桶配置
+// CosBucket 单个存储桶配置
 type CosBucket struct {
-	BucketName        string   `protobuf:"bytes,1,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`                      // 存储桶名称
-	Region            string   `protobuf:"bytes,2,opt,name=region,proto3" json:"region,omitempty"`                                                // 地域
-	UploadDir         string   `protobuf:"bytes,3,opt,name=upload_dir,json=uploadDir,proto3" json:"upload_dir,omitempty"`                         // 上传目录前缀
-	AllowedExtensions []string `protobuf:"bytes,4,rep,name=allowed_extensions,json=allowedExtensions,proto3" json:"allowed_extensions,omitempty"` // 允许的文件扩展名
-	MaxSize           int64    `protobuf:"varint,5,opt,name=max_size,json=maxSize,proto3" json:"max_size,omitempty"`                              // 最大文件大小（字节）
+	BucketName        string   `json:"bucket_name,omitempty" yaml:"bucket_name"`
+	Region            string   `json:"region,omitempty" yaml:"region"`
+	UploadDir         string   `json:"upload_dir,omitempty" yaml:"upload_dir"`
+	AllowedExtensions []string `json:"allowed_extensions,omitempty" yaml:"allowed_extensions"`
+	MaxSize           int64    `json:"max_size,omitempty" yaml:"max_size"`
 }
 
 func (x *Cos) Reset() {
