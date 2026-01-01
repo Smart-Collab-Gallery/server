@@ -252,6 +252,10 @@ components:
                     type: string
                 expireTime:
                     type: string
+                bucketName:
+                    type: string
+                region:
+                    type: string
             description: 获取上传预签名 URL 响应
         api.file.v1.GetUploadPresignedUrlRequest:
             type: object
@@ -259,6 +263,12 @@ components:
                 fileName:
                     type: string
                 contentType:
+                    type: string
+                bucketName:
+                    type: string
+                region:
+                    type: string
+                uploadDir:
                     type: string
             description: 获取上传预签名 URL 请求
         api.health.v1.PingReply:

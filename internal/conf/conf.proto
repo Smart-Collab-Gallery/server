@@ -56,8 +56,8 @@ message Consul {
 message Cos {
   string secret_id = 1;                         // 腾讯云 SecretId
   string secret_key = 2;                        // 腾讯云 SecretKey
-  string bucket_url = 3;                        // 存储桶 URL
-  string region = 4;                            // 地域
-  string bucket_name = 5;                       // 存储桶名称
-  string upload_dir = 6;                        // 上传目录前缀
+  string default_bucket_url = 3;                // 默认存储桶 URL（可选）
+  string default_region = 4;                    // 默认地域（可选）
+  string default_bucket_name = 5;               // 默认存储桶名称（可选）
+  string default_upload_dir = 6;                // 默认上传目录前缀（可选）
 }

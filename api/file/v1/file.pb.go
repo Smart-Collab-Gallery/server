@@ -27,6 +27,9 @@ type GetUploadPresignedUrlRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	FileName      string                 `protobuf:"bytes,1,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`          // 文件名（包含扩展名）
 	ContentType   string                 `protobuf:"bytes,2,opt,name=content_type,json=contentType,proto3" json:"content_type,omitempty"` // 文件 MIME 类型（可选）
+	BucketName    string                 `protobuf:"bytes,3,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`    // 存储桶名称（可选，不传使用默认配置）
+	Region        string                 `protobuf:"bytes,4,opt,name=region,proto3" json:"region,omitempty"`                              // 地域（可选，不传使用默认配置）
+	UploadDir     string                 `protobuf:"bytes,5,opt,name=upload_dir,json=uploadDir,proto3" json:"upload_dir,omitempty"`       // 上传目录前缀（可选，不传使用默认配置或根目录）
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -75,6 +78,27 @@ func (x *GetUploadPresignedUrlRequest) GetContentType() string {
 	return ""
 }
 
+func (x *GetUploadPresignedUrlRequest) GetBucketName() string {
+	if x != nil {
+		return x.BucketName
+	}
+	return ""
+}
+
+func (x *GetUploadPresignedUrlRequest) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
+func (x *GetUploadPresignedUrlRequest) GetUploadDir() string {
+	if x != nil {
+		return x.UploadDir
+	}
+	return ""
+}
+
 // 获取上传预签名 URL 响应
 type GetUploadPresignedUrlReply struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -82,6 +106,8 @@ type GetUploadPresignedUrlReply struct {
 	FileKey       string                 `protobuf:"bytes,2,opt,name=file_key,json=fileKey,proto3" json:"file_key,omitempty"`           // 文件在 COS 中的完整路径（key）
 	AccessUrl     string                 `protobuf:"bytes,3,opt,name=access_url,json=accessUrl,proto3" json:"access_url,omitempty"`     // 上传成功后的访问 URL
 	ExpireTime    int64                  `protobuf:"varint,4,opt,name=expire_time,json=expireTime,proto3" json:"expire_time,omitempty"` // 过期时间（Unix 时间戳）
+	BucketName    string                 `protobuf:"bytes,5,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`  // 实际使用的存储桶名称
+	Region        string                 `protobuf:"bytes,6,opt,name=region,proto3" json:"region,omitempty"`                            // 实际使用的地域
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -144,14 +170,33 @@ func (x *GetUploadPresignedUrlReply) GetExpireTime() int64 {
 	return 0
 }
 
+func (x *GetUploadPresignedUrlReply) GetBucketName() string {
+	if x != nil {
+		return x.BucketName
+	}
+	return ""
+}
+
+func (x *GetUploadPresignedUrlReply) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 var File_file_v1_file_proto protoreflect.FileDescriptor
 
 const file_file_v1_file_proto_rawDesc = "" +
 	"\n" +
-	"\x12file/v1/file.proto\x12\vapi.file.v1\x1a\x1cgoogle/api/annotations.proto\"^\n" +
+	"\x12file/v1/file.proto\x12\vapi.file.v1\x1a\x1cgoogle/api/annotations.proto\"\xb6\x01\n" +
 	"\x1cGetUploadPresignedUrlRequest\x12\x1b\n" +
 	"\tfile_name\x18\x01 \x01(\tR\bfileName\x12!\n" +
-	"\fcontent_type\x18\x02 \x01(\tR\vcontentType\"\x96\x01\n" +
+	"\fcontent_type\x18\x02 \x01(\tR\vcontentType\x12\x1f\n" +
+	"\vbucket_name\x18\x03 \x01(\tR\n" +
+	"bucketName\x12\x16\n" +
+	"\x06region\x18\x04 \x01(\tR\x06region\x12\x1d\n" +
+	"\n" +
+	"upload_dir\x18\x05 \x01(\tR\tuploadDir\"\xcf\x01\n" +
 	"\x1aGetUploadPresignedUrlReply\x12\x1d\n" +
 	"\n" +
 	"upload_url\x18\x01 \x01(\tR\tuploadUrl\x12\x19\n" +
@@ -159,7 +204,10 @@ const file_file_v1_file_proto_rawDesc = "" +
 	"\n" +
 	"access_url\x18\x03 \x01(\tR\taccessUrl\x12\x1f\n" +
 	"\vexpire_time\x18\x04 \x01(\x03R\n" +
-	"expireTime2\x9b\x01\n" +
+	"expireTime\x12\x1f\n" +
+	"\vbucket_name\x18\x05 \x01(\tR\n" +
+	"bucketName\x12\x16\n" +
+	"\x06region\x18\x06 \x01(\tR\x06region2\x9b\x01\n" +
 	"\x04File\x12\x92\x01\n" +
 	"\x15GetUploadPresignedUrl\x12).api.file.v1.GetUploadPresignedUrlRequest\x1a'.api.file.v1.GetUploadPresignedUrlReply\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/file/upload/presignedB;\n" +
 	"\vapi.file.v1P\x01Z*smart-collab-gallery-server/api/file/v1;v1b\x06proto3"

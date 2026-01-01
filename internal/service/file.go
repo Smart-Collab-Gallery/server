@@ -23,9 +23,10 @@ func NewFileService(cosManager *pkg.COSManager, logger log.Logger) *FileService 
 	}
 }
 
-// GetUploadPresignedUrl 获取上传预签名 URL
+// GetUploadPresignedUrl 获取上传预签名 URL（支持动态 Bucket）
 func (s *FileService) GetUploadPresignedUrl(ctx context.Context, req *v1.GetUploadPresignedUrlRequest) (*v1.GetUploadPresignedUrlReply, error) {
-	s.log.WithContext(ctx).Infof("获取上传预签名 URL: fileName=%s, contentType=%s", req.FileName, req.ContentType)
+	s.log.WithContext(ctx).Infof("获取上传预签名 URL: fileName=%s, contentType=%s, bucket=%s, region=%s, uploadDir=%s",
+		req.FileName, req.ContentType, req.BucketName, req.Region, req.UploadDir)
 
 	// 检查 COS Manager 是否可用
 	if s.cosManager == nil {
@@ -38,8 +39,17 @@ func (s *FileService) GetUploadPresignedUrl(ctx context.Context, req *v1.GetUplo
 		return nil, v1.ErrorParamsError("文件名不能为空")
 	}
 
+	// 构建上传选项
+	opts := &pkg.UploadOptions{
+		FileName:    req.FileName,
+		ContentType: req.ContentType,
+		BucketName:  req.BucketName,
+		Region:      req.Region,
+		UploadDir:   req.UploadDir,
+	}
+
 	// 获取预签名 URL
-	result, err := s.cosManager.GetUploadPresignedURL(ctx, req.FileName, req.ContentType)
+	result, err := s.cosManager.GetUploadPresignedURL(ctx, opts)
 	if err != nil {
 		s.log.WithContext(ctx).Errorf("生成预签名 URL 失败: %v", err)
 		return nil, v1.ErrorSystemError("生成上传链接失败")
@@ -50,5 +60,7 @@ func (s *FileService) GetUploadPresignedUrl(ctx context.Context, req *v1.GetUplo
 		FileKey:    result.FileKey,
 		AccessUrl:  result.AccessURL,
 		ExpireTime: result.ExpireTime,
+		BucketName: result.BucketName,
+		Region:     result.Region,
 	}, nil
 }

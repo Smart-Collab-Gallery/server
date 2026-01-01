@@ -307,15 +307,15 @@ func (x *Consul) GetEnabled() bool {
 }
 
 type Cos struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	SecretId      string                 `protobuf:"bytes,1,opt,name=secret_id,json=secretId,proto3" json:"secret_id,omitempty"`       // 腾讯云 SecretId
-	SecretKey     string                 `protobuf:"bytes,2,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`    // 腾讯云 SecretKey
-	BucketUrl     string                 `protobuf:"bytes,3,opt,name=bucket_url,json=bucketUrl,proto3" json:"bucket_url,omitempty"`    // 存储桶 URL
-	Region        string                 `protobuf:"bytes,4,opt,name=region,proto3" json:"region,omitempty"`                           // 地域
-	BucketName    string                 `protobuf:"bytes,5,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"` // 存储桶名称
-	UploadDir     string                 `protobuf:"bytes,6,opt,name=upload_dir,json=uploadDir,proto3" json:"upload_dir,omitempty"`    // 上传目录前缀
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	SecretId          string                 `protobuf:"bytes,1,opt,name=secret_id,json=secretId,proto3" json:"secret_id,omitempty"`                              // 腾讯云 SecretId
+	SecretKey         string                 `protobuf:"bytes,2,opt,name=secret_key,json=secretKey,proto3" json:"secret_key,omitempty"`                           // 腾讯云 SecretKey
+	DefaultBucketUrl  string                 `protobuf:"bytes,3,opt,name=default_bucket_url,json=defaultBucketUrl,proto3" json:"default_bucket_url,omitempty"`    // 默认存储桶 URL（可选）
+	DefaultRegion     string                 `protobuf:"bytes,4,opt,name=default_region,json=defaultRegion,proto3" json:"default_region,omitempty"`               // 默认地域（可选）
+	DefaultBucketName string                 `protobuf:"bytes,5,opt,name=default_bucket_name,json=defaultBucketName,proto3" json:"default_bucket_name,omitempty"` // 默认存储桶名称（可选）
+	DefaultUploadDir  string                 `protobuf:"bytes,6,opt,name=default_upload_dir,json=defaultUploadDir,proto3" json:"default_upload_dir,omitempty"`    // 默认上传目录前缀（可选）
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *Cos) Reset() {
@@ -362,30 +362,30 @@ func (x *Cos) GetSecretKey() string {
 	return ""
 }
 
-func (x *Cos) GetBucketUrl() string {
+func (x *Cos) GetDefaultBucketUrl() string {
 	if x != nil {
-		return x.BucketUrl
+		return x.DefaultBucketUrl
 	}
 	return ""
 }
 
-func (x *Cos) GetRegion() string {
+func (x *Cos) GetDefaultRegion() string {
 	if x != nil {
-		return x.Region
+		return x.DefaultRegion
 	}
 	return ""
 }
 
-func (x *Cos) GetBucketName() string {
+func (x *Cos) GetDefaultBucketName() string {
 	if x != nil {
-		return x.BucketName
+		return x.DefaultBucketName
 	}
 	return ""
 }
 
-func (x *Cos) GetUploadDir() string {
+func (x *Cos) GetDefaultUploadDir() string {
 	if x != nil {
-		return x.UploadDir
+		return x.DefaultUploadDir
 	}
 	return ""
 }
@@ -671,18 +671,15 @@ const file_conf_conf_proto_rawDesc = "" +
 	"jwt_expire\x18\x02 \x01(\v2\x19.google.protobuf.DurationR\tjwtExpire\"<\n" +
 	"\x06Consul\x12\x18\n" +
 	"\aaddress\x18\x01 \x01(\tR\aaddress\x12\x18\n" +
-	"\aenabled\x18\x02 \x01(\bR\aenabled\"\xb8\x01\n" +
+	"\aenabled\x18\x02 \x01(\bR\aenabled\"\xf4\x01\n" +
 	"\x03Cos\x12\x1b\n" +
 	"\tsecret_id\x18\x01 \x01(\tR\bsecretId\x12\x1d\n" +
 	"\n" +
-	"secret_key\x18\x02 \x01(\tR\tsecretKey\x12\x1d\n" +
-	"\n" +
-	"bucket_url\x18\x03 \x01(\tR\tbucketUrl\x12\x16\n" +
-	"\x06region\x18\x04 \x01(\tR\x06region\x12\x1f\n" +
-	"\vbucket_name\x18\x05 \x01(\tR\n" +
-	"bucketName\x12\x1d\n" +
-	"\n" +
-	"upload_dir\x18\x06 \x01(\tR\tuploadDirB0Z.smart-collab-gallery-server/internal/conf;confb\x06proto3"
+	"secret_key\x18\x02 \x01(\tR\tsecretKey\x12,\n" +
+	"\x12default_bucket_url\x18\x03 \x01(\tR\x10defaultBucketUrl\x12%\n" +
+	"\x0edefault_region\x18\x04 \x01(\tR\rdefaultRegion\x12.\n" +
+	"\x13default_bucket_name\x18\x05 \x01(\tR\x11defaultBucketName\x12,\n" +
+	"\x12default_upload_dir\x18\x06 \x01(\tR\x10defaultUploadDirB0Z.smart-collab-gallery-server/internal/conf;confb\x06proto3"
 
 var (
 	file_conf_conf_proto_rawDescOnce sync.Once

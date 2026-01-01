@@ -21,7 +21,10 @@ service File {
 // 获取上传预签名 URL 请求
 message GetUploadPresignedUrlRequest {
   string file_name = 1;           // 文件名（包含扩展名）
-  string content_type = 2;         // 文件 MIME 类型（可选）
+  string content_type = 2;        // 文件 MIME 类型（可选）
+  string bucket_name = 3;         // 存储桶名称（可选，不传使用默认配置）
+  string region = 4;              // 地域（可选，不传使用默认配置）
+  string upload_dir = 5;          // 上传目录前缀（可选，不传使用默认配置或根目录）
 }
 
 // 获取上传预签名 URL 响应
@@ -30,4 +33,6 @@ message GetUploadPresignedUrlReply {
   string file_key = 2;             // 文件在 COS 中的完整路径（key）
   string access_url = 3;           // 上传成功后的访问 URL
   int64 expire_time = 4;           // 过期时间（Unix 时间戳）
+  string bucket_name = 5;          // 实际使用的存储桶名称
+  string region = 6;               // 实际使用的地域
 }
