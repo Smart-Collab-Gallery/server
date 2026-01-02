@@ -116,19 +116,20 @@ func (s *UserService) Logout(ctx context.Context, req *v1.LogoutRequest) (*v1.Lo
 // convertToLoginUserVO 将 User 转换为 LoginUserVO
 func (s *UserService) convertToLoginUserVO(user *biz.User) *v1.LoginUserVO {
 	vo := &v1.LoginUserVO{
-		Id:          user.ID,
-		UserAccount: user.UserAccount,
-		UserName:    user.UserName,
-		UserAvatar:  user.UserAvatar,
-		UserProfile: user.UserProfile,
-		UserEmail:   user.UserEmail,
-		UserJob:     user.UserJob,
-		UserAddress: user.UserAddress,
-		UserTags:    user.UserTags,
-		UserRole:    user.UserRole,
-		VipNumber:   user.VipNumber,
-		CreateTime:  user.CreateTime.Format(time.RFC3339),
-		UpdateTime:  user.UpdateTime.Format(time.RFC3339),
+		Id:                  user.ID,
+		UserAccount:         user.UserAccount,
+		UserName:            user.UserName,
+		UserAvatar:          user.UserAvatar,
+		UserBackgroundImage: user.UserBackgroundImage,
+		UserProfile:         user.UserProfile,
+		UserEmail:           user.UserEmail,
+		UserJob:             user.UserJob,
+		UserAddress:         user.UserAddress,
+		UserTags:            user.UserTags,
+		UserRole:            user.UserRole,
+		VipNumber:           user.VipNumber,
+		CreateTime:          user.CreateTime.Format(time.RFC3339),
+		UpdateTime:          user.UpdateTime.Format(time.RFC3339),
 	}
 
 	if user.VipExpireTime != nil {
@@ -145,19 +146,20 @@ func (s *UserService) convertToUserVO(user *biz.User) *v1.UserVO {
 	}
 
 	vo := &v1.UserVO{
-		Id:          user.ID,
-		UserAccount: user.UserAccount,
-		UserName:    user.UserName,
-		UserAvatar:  user.UserAvatar,
-		UserProfile: user.UserProfile,
-		UserEmail:   user.UserEmail,
-		UserJob:     user.UserJob,
-		UserAddress: user.UserAddress,
-		UserTags:    user.UserTags,
-		UserRole:    user.UserRole,
-		VipNumber:   user.VipNumber,
-		CreateTime:  user.CreateTime.Format(time.RFC3339),
-		UpdateTime:  user.UpdateTime.Format(time.RFC3339),
+		Id:                  user.ID,
+		UserAccount:         user.UserAccount,
+		UserName:            user.UserName,
+		UserAvatar:          user.UserAvatar,
+		UserBackgroundImage: user.UserBackgroundImage,
+		UserProfile:         user.UserProfile,
+		UserEmail:           user.UserEmail,
+		UserJob:             user.UserJob,
+		UserAddress:         user.UserAddress,
+		UserTags:            user.UserTags,
+		UserRole:            user.UserRole,
+		VipNumber:           user.VipNumber,
+		CreateTime:          user.CreateTime.Format(time.RFC3339),
+		UpdateTime:          user.UpdateTime.Format(time.RFC3339),
 	}
 
 	if user.VipExpireTime != nil {
@@ -185,11 +187,12 @@ func (s *UserService) AddUser(ctx context.Context, req *v1.AddUserRequest) (*v1.
 	s.log.WithContext(ctx).Infof("创建用户请求: account=%s", req.UserAccount)
 
 	user := &biz.User{
-		UserAccount: req.UserAccount,
-		UserName:    req.UserName,
-		UserAvatar:  req.UserAvatar,
-		UserProfile: req.UserProfile,
-		UserRole:    req.UserRole,
+		UserAccount:         req.UserAccount,
+		UserName:            req.UserName,
+		UserAvatar:          req.UserAvatar,
+		UserBackgroundImage: req.UserBackgroundImage,
+		UserProfile:         req.UserProfile,
+		UserRole:            req.UserRole,
 	}
 
 	userID, err := s.uc.AddUser(ctx, user)
@@ -218,20 +221,21 @@ func (s *UserService) GetUserById(ctx context.Context, req *v1.GetUserByIdReques
 	}
 
 	reply := &v1.GetUserByIdReply{
-		Id:           user.ID,
-		UserAccount:  user.UserAccount,
-		UserPassword: user.UserPassword,
-		UserName:     user.UserName,
-		UserAvatar:   user.UserAvatar,
-		UserProfile:  user.UserProfile,
-		UserEmail:    user.UserEmail,
-		UserJob:      user.UserJob,
-		UserAddress:  user.UserAddress,
-		UserTags:     user.UserTags,
-		UserRole:     user.UserRole,
-		VipNumber:    user.VipNumber,
-		CreateTime:   user.CreateTime.Format(time.RFC3339),
-		UpdateTime:   user.UpdateTime.Format(time.RFC3339),
+		Id:                  user.ID,
+		UserAccount:         user.UserAccount,
+		UserPassword:        user.UserPassword,
+		UserName:            user.UserName,
+		UserAvatar:          user.UserAvatar,
+		UserBackgroundImage: user.UserBackgroundImage,
+		UserProfile:         user.UserProfile,
+		UserEmail:           user.UserEmail,
+		UserJob:             user.UserJob,
+		UserAddress:         user.UserAddress,
+		UserTags:            user.UserTags,
+		UserRole:            user.UserRole,
+		VipNumber:           user.VipNumber,
+		CreateTime:          user.CreateTime.Format(time.RFC3339),
+		UpdateTime:          user.UpdateTime.Format(time.RFC3339),
 	}
 
 	if user.VipExpireTime != nil {
@@ -288,12 +292,13 @@ func (s *UserService) UpdateUser(ctx context.Context, req *v1.UpdateUserRequest)
 	s.log.WithContext(ctx).Infof("更新用户: id=%d", req.Id)
 
 	user := &biz.User{
-		ID:          req.Id,
-		UserAccount: req.UserAccount,
-		UserName:    req.UserName,
-		UserAvatar:  req.UserAvatar,
-		UserProfile: req.UserProfile,
-		UserRole:    req.UserRole,
+		ID:                  req.Id,
+		UserAccount:         req.UserAccount,
+		UserName:            req.UserName,
+		UserAvatar:          req.UserAvatar,
+		UserBackgroundImage: req.UserBackgroundImage,
+		UserProfile:         req.UserProfile,
+		UserRole:            req.UserRole,
 	}
 
 	err := s.uc.UpdateUser(ctx, user)
@@ -356,7 +361,7 @@ func (s *UserService) UpdateMyInfo(ctx context.Context, req *v1.UpdateMyInfoRequ
 	s.log.WithContext(ctx).Infof("更新个人信息: userID=%d", userID)
 
 	// 执行更新
-	err := s.uc.UpdateMyInfo(ctx, userID, req.UserPassword, req.UserName, req.UserAvatar, req.UserProfile, req.UserEmail, req.UserJob, req.UserAddress, req.UserTags)
+	err := s.uc.UpdateMyInfo(ctx, userID, req.UserPassword, req.UserName, req.UserAvatar, req.UserBackgroundImage, req.UserProfile, req.UserEmail, req.UserJob, req.UserAddress, req.UserTags)
 	if err != nil {
 		s.log.WithContext(ctx).Errorf("更新个人信息失败: %v", err)
 		return nil, err

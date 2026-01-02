@@ -311,6 +311,8 @@ components:
                     type: string
                 userAvatar:
                     type: string
+                userBackgroundImage:
+                    type: string
                 userProfile:
                     type: string
                 userRole:
@@ -346,6 +348,8 @@ components:
                 userName:
                     type: string
                 userAvatar:
+                    type: string
+                userBackgroundImage:
                     type: string
                 userProfile:
                     type: string
@@ -437,6 +441,8 @@ components:
                     type: string
                 userAvatar:
                     type: string
+                userBackgroundImage:
+                    type: string
                 userProfile:
                     type: string
                 userEmail:
@@ -499,6 +505,8 @@ components:
                     type: string
                 userAvatar:
                     type: string
+                userBackgroundImage:
+                    type: string
                 userProfile:
                     type: string
                 userEmail:
@@ -527,6 +535,8 @@ components:
                     type: string
                 userAvatar:
                     type: string
+                userBackgroundImage:
+                    type: string
                 userProfile:
                     type: string
                 userRole:
@@ -542,6 +552,8 @@ components:
                 userName:
                     type: string
                 userAvatar:
+                    type: string
+                userBackgroundImage:
                     type: string
                 userProfile:
                     type: string

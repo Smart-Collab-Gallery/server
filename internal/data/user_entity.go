@@ -6,26 +6,27 @@ import (
 
 // User 用户实体
 type User struct {
-	ID            int64      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UserAccount   string     `gorm:"column:userAccount;type:varchar(256);not null;uniqueIndex:uk_userAccount" json:"userAccount"`
-	UserPassword  string     `gorm:"column:userPassword;type:varchar(512);not null" json:"-"`
-	UserName      string     `gorm:"column:userName;type:varchar(256);index:idx_userName" json:"userName"`
-	UserAvatar    string     `gorm:"column:userAvatar;type:varchar(1024)" json:"userAvatar"`
-	UserProfile   string     `gorm:"column:userProfile;type:varchar(512)" json:"userProfile"`
-	UserEmail     string     `gorm:"column:userEmail;type:varchar(256)" json:"userEmail"`
-	UserJob       string     `gorm:"column:userJob;type:varchar(256)" json:"userJob"`
-	UserAddress   string     `gorm:"column:userAddress;type:varchar(512)" json:"userAddress"`
-	UserTags      string     `gorm:"column:userTags;type:varchar(1024)" json:"userTags"`
-	UserRole      string     `gorm:"column:userRole;type:varchar(256);not null;default:user" json:"userRole"`
-	VipExpireTime *time.Time `gorm:"column:vipExpireTime" json:"vipExpireTime"`
-	VipCode       string     `gorm:"column:vipCode;type:varchar(128)" json:"vipCode"`
-	VipNumber     int64      `gorm:"column:vipNumber" json:"vipNumber"`
-	ShareCode     string     `gorm:"column:shareCode;type:varchar(20)" json:"shareCode"`
-	InviteUser    int64      `gorm:"column:inviteUser" json:"inviteUser"`
-	CreateTime    time.Time  `gorm:"column:createTime;autoCreateTime" json:"createTime"`
-	UpdateTime    time.Time  `gorm:"column:updateTime;autoUpdateTime" json:"updateTime"`
-	EditTime      time.Time  `gorm:"column:editTime;autoCreateTime" json:"editTime"`
-	IsDelete      int8       `gorm:"column:isDelete;not null;default:0" json:"-"`
+	ID                  int64      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	UserAccount         string     `gorm:"column:userAccount;type:varchar(256);not null;uniqueIndex:uk_userAccount" json:"userAccount"`
+	UserPassword        string     `gorm:"column:userPassword;type:varchar(512);not null" json:"-"`
+	UserName            string     `gorm:"column:userName;type:varchar(256);index:idx_userName" json:"userName"`
+	UserAvatar          string     `gorm:"column:userAvatar;type:varchar(1024)" json:"userAvatar"`
+	UserBackgroundImage string     `gorm:"column:userBackgroundImage;type:varchar(1024)" json:"userBackgroundImage"`
+	UserProfile         string     `gorm:"column:userProfile;type:varchar(512)" json:"userProfile"`
+	UserEmail           string     `gorm:"column:userEmail;type:varchar(256)" json:"userEmail"`
+	UserJob             string     `gorm:"column:userJob;type:varchar(256)" json:"userJob"`
+	UserAddress         string     `gorm:"column:userAddress;type:varchar(512)" json:"userAddress"`
+	UserTags            string     `gorm:"column:userTags;type:varchar(1024)" json:"userTags"`
+	UserRole            string     `gorm:"column:userRole;type:varchar(256);not null;default:user" json:"userRole"`
+	VipExpireTime       *time.Time `gorm:"column:vipExpireTime" json:"vipExpireTime"`
+	VipCode             string     `gorm:"column:vipCode;type:varchar(128)" json:"vipCode"`
+	VipNumber           int64      `gorm:"column:vipNumber" json:"vipNumber"`
+	ShareCode           string     `gorm:"column:shareCode;type:varchar(20)" json:"shareCode"`
+	InviteUser          int64      `gorm:"column:inviteUser" json:"inviteUser"`
+	CreateTime          time.Time  `gorm:"column:createTime;autoCreateTime" json:"createTime"`
+	UpdateTime          time.Time  `gorm:"column:updateTime;autoUpdateTime" json:"updateTime"`
+	EditTime            time.Time  `gorm:"column:editTime;autoCreateTime" json:"editTime"`
+	IsDelete            int8       `gorm:"column:isDelete;not null;default:0" json:"-"`
 }
 
 // TableName 指定表名

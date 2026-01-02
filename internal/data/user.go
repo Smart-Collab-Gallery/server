@@ -103,21 +103,22 @@ func (r *userRepo) GetUserByID(ctx context.Context, id int64) (*biz.User, error)
 // convertToUser 将数据库实体转换为业务对象
 func (r *userRepo) convertToUser(userEntity *User) *biz.User {
 	return &biz.User{
-		ID:            userEntity.ID,
-		UserAccount:   userEntity.UserAccount,
-		UserPassword:  userEntity.UserPassword,
-		UserName:      userEntity.UserName,
-		UserAvatar:    userEntity.UserAvatar,
-		UserProfile:   userEntity.UserProfile,
-		UserEmail:     userEntity.UserEmail,
-		UserJob:       userEntity.UserJob,
-		UserAddress:   userEntity.UserAddress,
-		UserTags:      userEntity.UserTags,
-		UserRole:      userEntity.UserRole,
-		VipNumber:     userEntity.VipNumber,
-		VipExpireTime: userEntity.VipExpireTime,
-		CreateTime:    userEntity.CreateTime,
-		UpdateTime:    userEntity.UpdateTime,
+		ID:                  userEntity.ID,
+		UserAccount:         userEntity.UserAccount,
+		UserPassword:        userEntity.UserPassword,
+		UserName:            userEntity.UserName,
+		UserAvatar:          userEntity.UserAvatar,
+		UserBackgroundImage: userEntity.UserBackgroundImage,
+		UserProfile:         userEntity.UserProfile,
+		UserEmail:           userEntity.UserEmail,
+		UserJob:             userEntity.UserJob,
+		UserAddress:         userEntity.UserAddress,
+		UserTags:            userEntity.UserTags,
+		UserRole:            userEntity.UserRole,
+		VipNumber:           userEntity.VipNumber,
+		VipExpireTime:       userEntity.VipExpireTime,
+		CreateTime:          userEntity.CreateTime,
+		UpdateTime:          userEntity.UpdateTime,
 	}
 }
 
@@ -137,6 +138,9 @@ func (r *userRepo) UpdateUser(ctx context.Context, user *biz.User) error {
 	}
 	if user.UserAvatar != "" {
 		updates["userAvatar"] = user.UserAvatar
+	}
+	if user.UserBackgroundImage != "" {
+		updates["userBackgroundImage"] = user.UserBackgroundImage
 	}
 	if user.UserProfile != "" {
 		updates["userProfile"] = user.UserProfile

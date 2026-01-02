@@ -14,21 +14,22 @@ import (
 
 // User 用户业务对象
 type User struct {
-	ID            int64
-	UserAccount   string
-	UserPassword  string
-	UserName      string
-	UserAvatar    string
-	UserProfile   string
-	UserEmail     string
-	UserJob       string
-	UserAddress   string
-	UserTags      string
-	UserRole      string
-	VipNumber     int64
-	VipExpireTime *time.Time
-	CreateTime    time.Time
-	UpdateTime    time.Time
+	ID                  int64
+	UserAccount         string
+	UserPassword        string
+	UserName            string
+	UserAvatar          string
+	UserBackgroundImage string
+	UserProfile         string
+	UserEmail           string
+	UserJob             string
+	UserAddress         string
+	UserTags            string
+	UserRole            string
+	VipNumber           int64
+	VipExpireTime       *time.Time
+	CreateTime          time.Time
+	UpdateTime          time.Time
 }
 
 // UserQueryParams 用户查询参数
@@ -392,7 +393,7 @@ func (uc *UserUsecase) ListUserByPage(ctx context.Context, params *UserQueryPara
 }
 
 // UpdateMyInfo 更新个人信息（用户自己）
-func (uc *UserUsecase) UpdateMyInfo(ctx context.Context, userID int64, password, name, avatar, profile, email, job, address, tags string) error {
+func (uc *UserUsecase) UpdateMyInfo(ctx context.Context, userID int64, password, name, avatar, backgroundImage, profile, email, job, address, tags string) error {
 	if userID <= 0 {
 		return v1.ErrorNotLoginError("未登录")
 	}
@@ -428,6 +429,11 @@ func (uc *UserUsecase) UpdateMyInfo(ctx context.Context, userID int64, password,
 	// 更新头像
 	if strings.TrimSpace(avatar) != "" {
 		user.UserAvatar = avatar
+	}
+
+	// 更新背景图片
+	if strings.TrimSpace(backgroundImage) != "" {
+		user.UserBackgroundImage = backgroundImage
 	}
 
 	// 更新简介

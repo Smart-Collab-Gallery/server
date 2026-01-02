@@ -6,6 +6,7 @@ create table if not exists user
     userPassword varchar(512)                           not null comment '密码',
     userName     varchar(256)                           null comment '用户昵称',
     userAvatar   varchar(1024)                          null comment '用户头像',
+    userBackgroundImage varchar(1024)                   null comment '用户背景图片',
     userProfile  varchar(512)                           null comment '用户简介',
     userEmail    varchar(256)                           null comment '用户邮箱',
     userJob      varchar(256)                           null comment '职业',
