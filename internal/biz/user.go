@@ -262,6 +262,11 @@ func (uc *UserUsecase) AddUser(ctx context.Context, user *User) (int64, error) {
 		return 0, v1.ErrorParamsError("用户简介不能超过50个字")
 	}
 
+	// 校验标签长度
+	if len([]rune(user.UserTags)) > 100 {
+		return 0, v1.ErrorParamsError("用户标签不能超过100个字")
+	}
+
 	// 2. 检查账号是否已存在
 	existUser, err := uc.repo.GetUserByAccount(ctx, user.UserAccount)
 	if err == nil && existUser != nil {
@@ -343,6 +348,11 @@ func (uc *UserUsecase) UpdateUser(ctx context.Context, user *User) error {
 	// 校验用户简介长度
 	if user.UserProfile != "" && len([]rune(user.UserProfile)) > 50 {
 		return v1.ErrorParamsError("用户简介不能超过50个字")
+	}
+
+	// 校验标签长度
+	if user.UserTags != "" && len([]rune(user.UserTags)) > 100 {
+		return v1.ErrorParamsError("用户标签不能超过100个字")
 	}
 
 	// 检查用户是否存在
@@ -462,6 +472,10 @@ func (uc *UserUsecase) UpdateMyInfo(ctx context.Context, userID int64, password,
 
 	// 更新标签
 	if strings.TrimSpace(tags) != "" {
+		// 校验标签长度
+		if len([]rune(tags)) > 100 {
+			return v1.ErrorParamsError("用户标签不能超过100个字")
+		}
 		user.UserTags = tags
 	}
 

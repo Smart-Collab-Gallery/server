@@ -148,7 +148,7 @@ message LoginUserVO {
   string user_email = 7;      // 用户邮箱
   string user_job = 8;        // 职业
   string user_address = 9;    // 地址
-  string user_tags = 10;       // 标签
+  string user_tags = 10;       // 标签，字数不能超过100个字
   string user_role = 11;      // 用户角色
   int64 vip_number = 12;      // 会员编号
   string vip_expire_time = 13; // 会员过期时间
@@ -167,7 +167,7 @@ message UserVO {
   string user_email = 7;
   string user_job = 8;
   string user_address = 9;
-  string user_tags = 10;
+  string user_tags = 10;  // 标签，字数不能超过100个字
   string user_role = 11;
   int64 vip_number = 12;
   string vip_expire_time = 13;
@@ -207,7 +207,7 @@ message GetUserByIdReply {
   string user_email = 8;
   string user_job = 9;
   string user_address = 10;
-  string user_tags = 11;
+  string user_tags = 11;  // 标签，字数不能超过100个字
   string user_role = 12;
   int64 vip_number = 13;
   string vip_expire_time = 14;
@@ -282,7 +282,7 @@ message UpdateMyInfoRequest {
   string user_email = 6;        // 用户邮箱（可选）
   string user_job = 7;          // 职业（可选）
   string user_address = 8;      // 地址（可选）
-  string user_tags = 9;         // 标签（可选）
+  string user_tags = 9;         // 标签（可选），字数不能超过100个字
 }
 
 // 更新个人信息响应
