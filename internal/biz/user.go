@@ -256,6 +256,11 @@ func (uc *UserUsecase) AddUser(ctx context.Context, user *User) (int64, error) {
 		return 0, v1.ErrorParamsError("用户账号不能为空")
 	}
 
+	// 校验用户简介长度
+	if len([]rune(user.UserProfile)) > 50 {
+		return 0, v1.ErrorParamsError("用户简介不能超过50个字")
+	}
+
 	// 2. 检查账号是否已存在
 	existUser, err := uc.repo.GetUserByAccount(ctx, user.UserAccount)
 	if err == nil && existUser != nil {
@@ -332,6 +337,11 @@ func (uc *UserUsecase) DeleteUser(ctx context.Context, id int64) error {
 func (uc *UserUsecase) UpdateUser(ctx context.Context, user *User) error {
 	if user.ID <= 0 {
 		return v1.ErrorParamsError("用户 ID 无效")
+	}
+
+	// 校验用户简介长度
+	if user.UserProfile != "" && len([]rune(user.UserProfile)) > 50 {
+		return v1.ErrorParamsError("用户简介不能超过50个字")
 	}
 
 	// 检查用户是否存在
@@ -422,6 +432,10 @@ func (uc *UserUsecase) UpdateMyInfo(ctx context.Context, userID int64, password,
 
 	// 更新简介
 	if strings.TrimSpace(profile) != "" {
+		// 校验简介长度
+		if len([]rune(profile)) > 50 {
+			return v1.ErrorParamsError("用户简介不能超过50个字")
+		}
 		user.UserProfile = profile
 	}
 

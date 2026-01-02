@@ -143,7 +143,7 @@ message LoginUserVO {
   string user_account = 2;    // 用户账号
   string user_name = 3;       // 用户昵称
   string user_avatar = 4;     // 用户头像
-  string user_profile = 5;    // 用户简介
+  string user_profile = 5;    // 用户简介，字数不能超过50个字
   string user_email = 6;      // 用户邮箱
   string user_job = 7;        // 职业
   string user_address = 8;    // 地址
@@ -161,7 +161,7 @@ message UserVO {
   string user_account = 2;
   string user_name = 3;
   string user_avatar = 4;
-  string user_profile = 5;
+  string user_profile = 5;  // 用户简介，字数不能超过50个字
   string user_email = 6;
   string user_job = 7;
   string user_address = 8;
@@ -178,7 +178,7 @@ message AddUserRequest {
   string user_account = 1;
   string user_name = 2;
   string user_avatar = 3;
-  string user_profile = 4;
+  string user_profile = 4;  // 用户简介，字数不能超过50个字
   string user_role = 5;
 }
 
@@ -199,7 +199,7 @@ message GetUserByIdReply {
   string user_password = 3;
   string user_name = 4;
   string user_avatar = 5;
-  string user_profile = 6;
+  string user_profile = 6;  // 用户简介，字数不能超过50个字
   string user_email = 7;
   string user_job = 8;
   string user_address = 9;
@@ -237,7 +237,7 @@ message UpdateUserRequest {
   string user_account = 2;
   string user_name = 3;
   string user_avatar = 4;
-  string user_profile = 5;
+  string user_profile = 5;  // 用户简介，字数不能超过50个字
   string user_role = 6;
 }
 
@@ -253,7 +253,7 @@ message ListUserByPageRequest {
   int64 id = 3;             // 用户 ID
   string user_account = 4;  // 用户账号
   string user_name = 5;     // 用户昵称
-  string user_profile = 6;  // 用户简介
+  string user_profile = 6;  // 用户简介，字数不能超过50个字
   string user_role = 7;     // 用户角色
   string sort_field = 8;    // 排序字段
   string sort_order = 9;    // 排序顺序 (ascend/descend)
@@ -272,7 +272,7 @@ message UpdateMyInfoRequest {
   string user_password = 1;     // 密码（可选）
   string user_name = 2;         // 用户昵称（可选）
   string user_avatar = 3;       // 用户头像（可选）
-  string user_profile = 4;      // 用户简介（可选）
+  string user_profile = 4;      // 用户简介（可选），字数不能超过50个字
   string user_email = 5;        // 用户邮箱（可选）
   string user_job = 6;          // 职业（可选）
   string user_address = 7;      // 地址（可选）
