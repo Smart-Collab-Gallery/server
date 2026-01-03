@@ -25,6 +25,8 @@ var (
 	Name string
 	// Version is the version of the compiled software.
 	Version string
+	// ENV is the environment (test/prod/dev)
+	ENV string
 	// ConsulAddress Consul 服务地址
 	ConsulAddress string
 	// ConsulToken Consul 访问令牌
@@ -44,6 +46,11 @@ func init() {
 	}
 	if version := os.Getenv("APP_VERSION"); version != "" {
 		Version = version
+	}
+	if env := os.Getenv("ENV"); env != "" {
+		ENV = env
+	} else {
+		ENV = "prod" // 默认为生产环境
 	}
 	if addr := os.Getenv("CONSUL_ADDRESS"); addr != "" {
 		ConsulAddress = addr
@@ -88,9 +95,13 @@ func main() {
 	configPath := filepath.Join(flagconf, "config.yaml")
 
 	// 1. 如果 Name 和 ConsulAddress 都不为空，尝试从 Consul 加载配置
-	// 使用 Name 作为 Consul Key
+	// 使用 Name 作为 Consul Key，添加环境前缀
 	if Name != "" && ConsulAddress != "" {
 		log.NewHelper(logger).Infof("检测到 Consul 环境变量，尝试从 Consul 加载配置")
+
+		// 构建带环境前缀的 Consul Key: ENV_Name (例如: prod_smart-collab-gallery-server 或 test_smart-collab-gallery-server)
+		consulKey := ENV + "_" + Name
+		log.NewHelper(logger).Infof("使用 Consul Key: %s", consulKey)
 
 		// 使用环境变量中的 Consul 配置
 		consulConfig := pkg.ConsulConfig{
@@ -99,7 +110,7 @@ func main() {
 			Token:   ConsulToken,
 		}
 		consulLoader := pkg.NewConsulConfigLoader(consulConfig, logger)
-		if err := consulLoader.LoadAndWriteConfig(configPath, Name); err != nil {
+		if err := consulLoader.LoadAndWriteConfig(configPath, consulKey); err != nil {
 			log.NewHelper(logger).Warnf("从 Consul 读取配置失败，使用本地配置文件: %v", err)
 		}
 	} else if Name != "" {
@@ -113,6 +124,10 @@ func main() {
 			var tmpBc conf.Bootstrap
 			if err := tmpConfig.Scan(&tmpBc); err == nil {
 				if tmpBc.Consul != nil && tmpBc.Consul.Enabled {
+					// 构建带环境前缀的 Consul Key
+					consulKey := ENV + "_" + Name
+					log.NewHelper(logger).Infof("使用 Consul Key: %s", consulKey)
+
 					// 使用配置文件中的 Consul 设置
 					consulConfig := pkg.ConsulConfig{
 						Enabled: true,
@@ -120,7 +135,7 @@ func main() {
 						Token:   "",
 					}
 					consulLoader := pkg.NewConsulConfigLoader(consulConfig, logger)
-					if err := consulLoader.LoadAndWriteConfig(configPath, Name); err != nil {
+					if err := consulLoader.LoadAndWriteConfig(configPath, consulKey); err != nil {
 						log.NewHelper(logger).Warnf("从 Consul 读取配置失败，使用本地配置文件: %v", err)
 					}
 				}
