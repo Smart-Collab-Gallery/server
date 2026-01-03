@@ -305,22 +305,13 @@ func (r *userRepo) DeleteEmailVerificationCode(ctx context.Context, userID int64
 
 // SendEmailVerificationCode 发送邮箱验证码
 func (r *userRepo) SendEmailVerificationCode(ctx context.Context, email, code string) error {
-	// TODO: 实现实际的邮件发送逻辑
-	// 这里暂时只打印日志，实际项目中需要集成邮件服务
-	r.log.Infof("发送验证码到邮箱: email=%s, code=%s", email, code)
-	r.log.Infof("【模拟邮件】您的验证码是: %s，有效期5分钟", code)
+	// 使用集成的 SMTP 服务发送邮件
+	if err := r.data.emailSender.SendVerificationCode(email, code); err != nil {
+		r.log.Errorf("发送验证码邮件失败: email=%s, err=%v", email, err)
+		return err
+	}
 
-	// 实际使用时需要集成 SMTP 或第三方邮件服务
-	// 例如：使用 gomail 库发送邮件
-	// 参考实现：
-	// m := gomail.NewMessage()
-	// m.SetHeader("From", "noreply@example.com")
-	// m.SetHeader("To", email)
-	// m.SetHeader("Subject", "邮箱验证码")
-	// m.SetBody("text/html", fmt.Sprintf("您的验证码是: <b>%s</b>，有效期5分钟", code))
-	// d := gomail.NewDialer("smtp.example.com", 587, "username", "password")
-	// return d.DialAndSend(m)
-
+	r.log.Infof("验证码邮件发送成功: email=%s", email)
 	return nil
 }
 

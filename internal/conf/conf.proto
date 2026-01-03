@@ -11,6 +11,7 @@ message Bootstrap {
   Auth auth = 3;
   Consul consul = 4;
   Cos cos = 5;
+  Email email = 6;
 }
 
 message Server {
@@ -70,4 +71,14 @@ message CosBucket {
   string upload_dir = 3;                        // 上传目录前缀
   repeated string allowed_extensions = 4;       // 允许的文件扩展名（如 .jpg, .png）
   int64 max_size = 5;                           // 最大文件大小（字节），0 表示不限制
+}
+
+// Email 邮件配置
+message Email {
+  string smtp_host = 1;                         // SMTP 服务器地址
+  int32 smtp_port = 2;                          // SMTP 服务器端口
+  string smtp_user = 3;                         // SMTP 用户名
+  string smtp_password = 4;                     // SMTP 密码
+  string from_email = 5;                        // 发件人邮箱
+  string from_name = 6;                         // 发件人名称
 }

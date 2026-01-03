@@ -12,11 +12,11 @@ import (
 var ProviderSet = wire.NewSet(NewGreeterService, NewUserService, NewFileService, NewHealthService, NewJWTManager, NewCOSManager)
 
 // NewJWTManager 创建 JWT 管理器
-func NewJWTManager(c *conf.Auth) *pkg.JWTManager {
-	return pkg.NewJWTManager(c.JwtSecret, c.JwtExpire.AsDuration())
+func NewJWTManager(bc *conf.Bootstrap) *pkg.JWTManager {
+	return pkg.NewJWTManager(bc.Auth.JwtSecret, bc.Auth.JwtExpire.AsDuration())
 }
 
 // NewCOSManager 创建 COS 管理器
-func NewCOSManager(c *conf.Cos, logger log.Logger) (*pkg.COSManager, error) {
-	return pkg.NewCOSManager(c, logger)
+func NewCOSManager(bc *conf.Bootstrap, logger log.Logger) (*pkg.COSManager, error) {
+	return pkg.NewCOSManager(bc.Cos, logger)
 }

@@ -14,7 +14,8 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, greeter *service.GreeterService, user *service.UserService, health *service.HealthService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(bc *conf.Bootstrap, greeter *service.GreeterService, user *service.UserService, health *service.HealthService, logger log.Logger) *grpc.Server {
+	c := bc.Server
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),

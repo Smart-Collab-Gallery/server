@@ -29,6 +29,7 @@ type Bootstrap struct {
 	Auth          *Auth                  `protobuf:"bytes,3,opt,name=auth,proto3" json:"auth,omitempty"`
 	Consul        *Consul                `protobuf:"bytes,4,opt,name=consul,proto3" json:"consul,omitempty"`
 	Cos           *Cos                   `protobuf:"bytes,5,opt,name=cos,proto3" json:"cos,omitempty"`
+	Email         *Email                 `protobuf:"bytes,6,opt,name=email,proto3" json:"email,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -94,6 +95,13 @@ func (x *Bootstrap) GetConsul() *Consul {
 func (x *Bootstrap) GetCos() *Cos {
 	if x != nil {
 		return x.Cos
+	}
+	return nil
+}
+
+func (x *Bootstrap) GetEmail() *Email {
+	if x != nil {
+		return x.Email
 	}
 	return nil
 }
@@ -452,6 +460,91 @@ func (x *CosBucket) GetMaxSize() int64 {
 	return 0
 }
 
+// Email 邮件配置
+type Email struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SmtpHost      string                 `protobuf:"bytes,1,opt,name=smtp_host,json=smtpHost,proto3" json:"smtp_host,omitempty"`             // SMTP 服务器地址
+	SmtpPort      int32                  `protobuf:"varint,2,opt,name=smtp_port,json=smtpPort,proto3" json:"smtp_port,omitempty"`            // SMTP 服务器端口
+	SmtpUser      string                 `protobuf:"bytes,3,opt,name=smtp_user,json=smtpUser,proto3" json:"smtp_user,omitempty"`             // SMTP 用户名
+	SmtpPassword  string                 `protobuf:"bytes,4,opt,name=smtp_password,json=smtpPassword,proto3" json:"smtp_password,omitempty"` // SMTP 密码
+	FromEmail     string                 `protobuf:"bytes,5,opt,name=from_email,json=fromEmail,proto3" json:"from_email,omitempty"`          // 发件人邮箱
+	FromName      string                 `protobuf:"bytes,6,opt,name=from_name,json=fromName,proto3" json:"from_name,omitempty"`             // 发件人名称
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Email) Reset() {
+	*x = Email{}
+	mi := &file_conf_conf_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Email) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Email) ProtoMessage() {}
+
+func (x *Email) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_conf_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Email.ProtoReflect.Descriptor instead.
+func (*Email) Descriptor() ([]byte, []int) {
+	return file_conf_conf_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *Email) GetSmtpHost() string {
+	if x != nil {
+		return x.SmtpHost
+	}
+	return ""
+}
+
+func (x *Email) GetSmtpPort() int32 {
+	if x != nil {
+		return x.SmtpPort
+	}
+	return 0
+}
+
+func (x *Email) GetSmtpUser() string {
+	if x != nil {
+		return x.SmtpUser
+	}
+	return ""
+}
+
+func (x *Email) GetSmtpPassword() string {
+	if x != nil {
+		return x.SmtpPassword
+	}
+	return ""
+}
+
+func (x *Email) GetFromEmail() string {
+	if x != nil {
+		return x.FromEmail
+	}
+	return ""
+}
+
+func (x *Email) GetFromName() string {
+	if x != nil {
+		return x.FromName
+	}
+	return ""
+}
+
 type Server_HTTP struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Network       string                 `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"`
@@ -463,7 +556,7 @@ type Server_HTTP struct {
 
 func (x *Server_HTTP) Reset() {
 	*x = Server_HTTP{}
-	mi := &file_conf_conf_proto_msgTypes[7]
+	mi := &file_conf_conf_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -475,7 +568,7 @@ func (x *Server_HTTP) String() string {
 func (*Server_HTTP) ProtoMessage() {}
 
 func (x *Server_HTTP) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[7]
+	mi := &file_conf_conf_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -523,7 +616,7 @@ type Server_GRPC struct {
 
 func (x *Server_GRPC) Reset() {
 	*x = Server_GRPC{}
-	mi := &file_conf_conf_proto_msgTypes[8]
+	mi := &file_conf_conf_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -535,7 +628,7 @@ func (x *Server_GRPC) String() string {
 func (*Server_GRPC) ProtoMessage() {}
 
 func (x *Server_GRPC) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[8]
+	mi := &file_conf_conf_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -582,7 +675,7 @@ type Data_Database struct {
 
 func (x *Data_Database) Reset() {
 	*x = Data_Database{}
-	mi := &file_conf_conf_proto_msgTypes[9]
+	mi := &file_conf_conf_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -594,7 +687,7 @@ func (x *Data_Database) String() string {
 func (*Data_Database) ProtoMessage() {}
 
 func (x *Data_Database) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[9]
+	mi := &file_conf_conf_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -638,7 +731,7 @@ type Data_Redis struct {
 
 func (x *Data_Redis) Reset() {
 	*x = Data_Redis{}
-	mi := &file_conf_conf_proto_msgTypes[10]
+	mi := &file_conf_conf_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -650,7 +743,7 @@ func (x *Data_Redis) String() string {
 func (*Data_Redis) ProtoMessage() {}
 
 func (x *Data_Redis) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[10]
+	mi := &file_conf_conf_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -713,13 +806,14 @@ var File_conf_conf_proto protoreflect.FileDescriptor
 const file_conf_conf_proto_rawDesc = "" +
 	"\n" +
 	"\x0fconf/conf.proto\x12\n" +
-	"kratos.api\x1a\x1egoogle/protobuf/duration.proto\"\xd2\x01\n" +
+	"kratos.api\x1a\x1egoogle/protobuf/duration.proto\"\xfb\x01\n" +
 	"\tBootstrap\x12*\n" +
 	"\x06server\x18\x01 \x01(\v2\x12.kratos.api.ServerR\x06server\x12$\n" +
 	"\x04data\x18\x02 \x01(\v2\x10.kratos.api.DataR\x04data\x12$\n" +
 	"\x04auth\x18\x03 \x01(\v2\x10.kratos.api.AuthR\x04auth\x12*\n" +
 	"\x06consul\x18\x04 \x01(\v2\x12.kratos.api.ConsulR\x06consul\x12!\n" +
-	"\x03cos\x18\x05 \x01(\v2\x0f.kratos.api.CosR\x03cos\"\xb8\x02\n" +
+	"\x03cos\x18\x05 \x01(\v2\x0f.kratos.api.CosR\x03cos\x12'\n" +
+	"\x05email\x18\x06 \x01(\v2\x11.kratos.api.EmailR\x05email\"\xb8\x02\n" +
 	"\x06Server\x12+\n" +
 	"\x04http\x18\x01 \x01(\v2\x17.kratos.api.Server.HTTPR\x04http\x12+\n" +
 	"\x04grpc\x18\x02 \x01(\v2\x17.kratos.api.Server.GRPCR\x04grpc\x1ai\n" +
@@ -768,7 +862,15 @@ const file_conf_conf_proto_rawDesc = "" +
 	"\n" +
 	"upload_dir\x18\x03 \x01(\tR\tuploadDir\x12-\n" +
 	"\x12allowed_extensions\x18\x04 \x03(\tR\x11allowedExtensions\x12\x19\n" +
-	"\bmax_size\x18\x05 \x01(\x03R\amaxSizeB0Z.smart-collab-gallery-server/internal/conf;confb\x06proto3"
+	"\bmax_size\x18\x05 \x01(\x03R\amaxSize\"\xbf\x01\n" +
+	"\x05Email\x12\x1b\n" +
+	"\tsmtp_host\x18\x01 \x01(\tR\bsmtpHost\x12\x1b\n" +
+	"\tsmtp_port\x18\x02 \x01(\x05R\bsmtpPort\x12\x1b\n" +
+	"\tsmtp_user\x18\x03 \x01(\tR\bsmtpUser\x12#\n" +
+	"\rsmtp_password\x18\x04 \x01(\tR\fsmtpPassword\x12\x1d\n" +
+	"\n" +
+	"from_email\x18\x05 \x01(\tR\tfromEmail\x12\x1b\n" +
+	"\tfrom_name\x18\x06 \x01(\tR\bfromNameB0Z.smart-collab-gallery-server/internal/conf;confb\x06proto3"
 
 var (
 	file_conf_conf_proto_rawDescOnce sync.Once
@@ -782,7 +884,7 @@ func file_conf_conf_proto_rawDescGZIP() []byte {
 	return file_conf_conf_proto_rawDescData
 }
 
-var file_conf_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_conf_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_conf_conf_proto_goTypes = []any{
 	(*Bootstrap)(nil),           // 0: kratos.api.Bootstrap
 	(*Server)(nil),              // 1: kratos.api.Server
@@ -791,12 +893,13 @@ var file_conf_conf_proto_goTypes = []any{
 	(*Consul)(nil),              // 4: kratos.api.Consul
 	(*Cos)(nil),                 // 5: kratos.api.Cos
 	(*CosBucket)(nil),           // 6: kratos.api.CosBucket
-	(*Server_HTTP)(nil),         // 7: kratos.api.Server.HTTP
-	(*Server_GRPC)(nil),         // 8: kratos.api.Server.GRPC
-	(*Data_Database)(nil),       // 9: kratos.api.Data.Database
-	(*Data_Redis)(nil),          // 10: kratos.api.Data.Redis
-	nil,                         // 11: kratos.api.Cos.BucketsEntry
-	(*durationpb.Duration)(nil), // 12: google.protobuf.Duration
+	(*Email)(nil),               // 7: kratos.api.Email
+	(*Server_HTTP)(nil),         // 8: kratos.api.Server.HTTP
+	(*Server_GRPC)(nil),         // 9: kratos.api.Server.GRPC
+	(*Data_Database)(nil),       // 10: kratos.api.Data.Database
+	(*Data_Redis)(nil),          // 11: kratos.api.Data.Redis
+	nil,                         // 12: kratos.api.Cos.BucketsEntry
+	(*durationpb.Duration)(nil), // 13: google.protobuf.Duration
 }
 var file_conf_conf_proto_depIdxs = []int32{
 	1,  // 0: kratos.api.Bootstrap.server:type_name -> kratos.api.Server
@@ -804,22 +907,23 @@ var file_conf_conf_proto_depIdxs = []int32{
 	3,  // 2: kratos.api.Bootstrap.auth:type_name -> kratos.api.Auth
 	4,  // 3: kratos.api.Bootstrap.consul:type_name -> kratos.api.Consul
 	5,  // 4: kratos.api.Bootstrap.cos:type_name -> kratos.api.Cos
-	7,  // 5: kratos.api.Server.http:type_name -> kratos.api.Server.HTTP
-	8,  // 6: kratos.api.Server.grpc:type_name -> kratos.api.Server.GRPC
-	9,  // 7: kratos.api.Data.database:type_name -> kratos.api.Data.Database
-	10, // 8: kratos.api.Data.redis:type_name -> kratos.api.Data.Redis
-	12, // 9: kratos.api.Auth.jwt_expire:type_name -> google.protobuf.Duration
-	11, // 10: kratos.api.Cos.buckets:type_name -> kratos.api.Cos.BucketsEntry
-	12, // 11: kratos.api.Server.HTTP.timeout:type_name -> google.protobuf.Duration
-	12, // 12: kratos.api.Server.GRPC.timeout:type_name -> google.protobuf.Duration
-	12, // 13: kratos.api.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
-	12, // 14: kratos.api.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
-	6,  // 15: kratos.api.Cos.BucketsEntry.value:type_name -> kratos.api.CosBucket
-	16, // [16:16] is the sub-list for method output_type
-	16, // [16:16] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	7,  // 5: kratos.api.Bootstrap.email:type_name -> kratos.api.Email
+	8,  // 6: kratos.api.Server.http:type_name -> kratos.api.Server.HTTP
+	9,  // 7: kratos.api.Server.grpc:type_name -> kratos.api.Server.GRPC
+	10, // 8: kratos.api.Data.database:type_name -> kratos.api.Data.Database
+	11, // 9: kratos.api.Data.redis:type_name -> kratos.api.Data.Redis
+	13, // 10: kratos.api.Auth.jwt_expire:type_name -> google.protobuf.Duration
+	12, // 11: kratos.api.Cos.buckets:type_name -> kratos.api.Cos.BucketsEntry
+	13, // 12: kratos.api.Server.HTTP.timeout:type_name -> google.protobuf.Duration
+	13, // 13: kratos.api.Server.GRPC.timeout:type_name -> google.protobuf.Duration
+	13, // 14: kratos.api.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
+	13, // 15: kratos.api.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
+	6,  // 16: kratos.api.Cos.BucketsEntry.value:type_name -> kratos.api.CosBucket
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_conf_conf_proto_init() }
@@ -833,7 +937,7 @@ func file_conf_conf_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_conf_proto_rawDesc), len(file_conf_conf_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

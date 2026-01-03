@@ -59,3 +59,10 @@ cos:
         - ".ppt"
         - ".pptx"
       max_size: 52428800
+email:
+  smtp_host: "smtp.example.com"      # SMTP 服务器地址 (如 smtp.qq.com, smtp.163.com, smtp.gmail.com)
+  smtp_port: 587                      # SMTP 端口 (587 为 TLS, 465 为 SSL)
+  smtp_user: "your-email@example.com" # SMTP 用户名/邮箱
+  smtp_password: "your-password"      # SMTP 密码/授权码
+  from_email: "noreply@example.com"   # 发件人邮箱
+  from_name: "Smart Collab Gallery"   # 发件人名称

@@ -21,7 +21,8 @@ import (
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, user *service.UserService, file *service.FileService, health *service.HealthService, jwtManager *pkg.JWTManager, logger log.Logger) *http.Server {
+func NewHTTPServer(bc *conf.Bootstrap, greeter *service.GreeterService, user *service.UserService, file *service.FileService, health *service.HealthService, jwtManager *pkg.JWTManager, logger log.Logger) *http.Server {
+	c := bc.Server
 	var opts = []http.ServerOption{
 		// 应用统一响应格式编码器
 		http.ResponseEncoder(response.ResponseEncoder),

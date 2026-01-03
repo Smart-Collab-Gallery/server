@@ -23,8 +23,8 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, auth *conf.Auth, cos *conf.Cos, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
+func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(), error) {
+	dataData, cleanup, err := data.NewData(bootstrap, logger)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -33,17 +33,17 @@ func wireApp(confServer *conf.Server, confData *conf.Data, auth *conf.Auth, cos 
 	greeterService := service.NewGreeterService(greeterUsecase)
 	userRepo := data.NewUserRepo(dataData, logger)
 	userUsecase := biz.NewUserUsecase(userRepo, logger)
-	jwtManager := service.NewJWTManager(auth)
+	jwtManager := service.NewJWTManager(bootstrap)
 	userService := service.NewUserService(userUsecase, jwtManager, logger)
 	healthService := service.NewHealthService()
-	grpcServer := server.NewGRPCServer(confServer, greeterService, userService, healthService, logger)
-	cosManager, err := service.NewCOSManager(cos, logger)
+	grpcServer := server.NewGRPCServer(bootstrap, greeterService, userService, healthService, logger)
+	cosManager, err := service.NewCOSManager(bootstrap, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
 	fileService := service.NewFileService(cosManager, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, userService, fileService, healthService, jwtManager, logger)
+	httpServer := server.NewHTTPServer(bootstrap, greeterService, userService, fileService, healthService, jwtManager, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 		cleanup()

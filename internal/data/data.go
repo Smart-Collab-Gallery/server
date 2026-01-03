@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"smart-collab-gallery-server/internal/conf"
+	"smart-collab-gallery-server/internal/pkg"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
@@ -16,16 +17,17 @@ var ProviderSet = wire.NewSet(NewData, NewGreeterRepo, NewUserRepo)
 
 // Data .
 type Data struct {
-	db  *gorm.DB
-	rdb *redis.Client
+	db          *gorm.DB
+	rdb         *redis.Client
+	emailSender *pkg.EmailSender
 }
 
 // NewData .
-func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
+func NewData(c *conf.Bootstrap, logger log.Logger) (*Data, func(), error) {
 	log := log.NewHelper(logger)
 
 	// 初始化数据库连接
-	db, err := gorm.Open(mysql.Open(c.Database.Source), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(c.Data.Database.Source), &gorm.Config{})
 	if err != nil {
 		log.Errorf("failed to connect database: %v", err)
 		return nil, nil, err
@@ -39,12 +41,12 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 
 	// 初始化 Redis 连接
 	rdb := redis.NewClient(&redis.Options{
-		Network:      c.Redis.Network,
-		Addr:         c.Redis.Addr,
-		Password:     c.Redis.Password,
-		DB:           int(c.Redis.Db),
-		ReadTimeout:  c.Redis.ReadTimeout.AsDuration(),
-		WriteTimeout: c.Redis.WriteTimeout.AsDuration(),
+		Network:      c.Data.Redis.Network,
+		Addr:         c.Data.Redis.Addr,
+		Password:     c.Data.Redis.Password,
+		DB:           int(c.Data.Redis.Db),
+		ReadTimeout:  c.Data.Redis.ReadTimeout.AsDuration(),
+		WriteTimeout: c.Data.Redis.WriteTimeout.AsDuration(),
 	})
 
 	// 测试 Redis 连接
@@ -52,6 +54,16 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		log.Errorf("failed to connect redis: %v", err)
 		return nil, nil, err
 	}
+
+	// 初始化邮件发送器
+	emailSender := pkg.NewEmailSender(&pkg.EmailConfig{
+		SMTPHost:     c.Email.SmtpHost,
+		SMTPPort:     int(c.Email.SmtpPort),
+		SMTPUser:     c.Email.SmtpUser,
+		SMTPPassword: c.Email.SmtpPassword,
+		FromEmail:    c.Email.FromEmail,
+		FromName:     c.Email.FromName,
+	})
 
 	cleanup := func() {
 		log.Info("closing the data resources")
@@ -64,5 +76,5 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		}
 	}
 
-	return &Data{db: db, rdb: rdb}, cleanup, nil
+	return &Data{db: db, rdb: rdb, emailSender: emailSender}, cleanup, nil
 }
