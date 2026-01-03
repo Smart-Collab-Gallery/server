@@ -307,7 +307,6 @@ message UpdateMyInfoReply {
 
 // 发送邮箱验证码请求
 message SendEmailVerificationCodeRequest {
-  string email = 1;  // 新邮箱地址
 }
 
 // 发送邮箱验证码响应
@@ -319,6 +318,7 @@ message SendEmailVerificationCodeReply {
 // 验证码校验并更新邮箱请求
 message VerifyAndUpdateEmailRequest {
   string code = 1;  // 验证码
+  string email = 2;  // 新邮箱地址
 }
 
 // 验证码校验并更新邮箱响应

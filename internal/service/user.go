@@ -380,10 +380,10 @@ func (s *UserService) SendEmailVerificationCode(ctx context.Context, req *v1.Sen
 		return nil, v1.ErrorNotLoginError("未登录")
 	}
 
-	s.log.WithContext(ctx).Infof("发送邮箱验证码: userID=%d, newEmail=%s", userID, req.Email)
+	s.log.WithContext(ctx).Infof("发送邮箱验证码: userID=%d", userID)
 
 	// 执行发送验证码逻辑
-	message, err := s.uc.SendEmailVerificationCode(ctx, userID, req.Email)
+	message, err := s.uc.SendEmailVerificationCode(ctx, userID)
 	if err != nil {
 		s.log.WithContext(ctx).Errorf("发送邮箱验证码失败: %v", err)
 		return &v1.SendEmailVerificationCodeReply{
@@ -406,10 +406,10 @@ func (s *UserService) VerifyAndUpdateEmail(ctx context.Context, req *v1.VerifyAn
 		return nil, v1.ErrorNotLoginError("未登录")
 	}
 
-	s.log.WithContext(ctx).Infof("验证码校验并更新邮箱: userID=%d", userID)
+	s.log.WithContext(ctx).Infof("验证码校验并更新邮箱: userID=%d, newEmail=%s", userID, req.Email)
 
 	// 执行验证码校验和邮箱更新逻辑
-	message, err := s.uc.VerifyAndUpdateEmail(ctx, userID, req.Code)
+	message, err := s.uc.VerifyAndUpdateEmail(ctx, userID, req.Code, req.Email)
 	if err != nil {
 		s.log.WithContext(ctx).Errorf("验证码校验失败: %v", err)
 		return &v1.VerifyAndUpdateEmailReply{

@@ -71,9 +71,9 @@ type UserRepo interface {
 	// ListUserByPage 分页查询用户
 	ListUserByPage(ctx context.Context, params *UserQueryParams) (*UserPage, error)
 	// SaveEmailVerificationCode 保存邮箱验证码到 Redis
-	SaveEmailVerificationCode(ctx context.Context, userID int64, code, newEmail string) error
+	SaveEmailVerificationCode(ctx context.Context, userID int64, code string) error
 	// GetAndVerifyEmailCode 获取并验证邮箱验证码
-	GetAndVerifyEmailCode(ctx context.Context, userID int64, code string) (string, error)
+	GetAndVerifyEmailCode(ctx context.Context, userID int64, code string) error
 	// DeleteEmailVerificationCode 删除邮箱验证码
 	DeleteEmailVerificationCode(ctx context.Context, userID int64) error
 	// SendEmailVerificationCode 发送邮箱验证码
@@ -494,9 +494,55 @@ func (uc *UserUsecase) UpdateMyInfo(ctx context.Context, userID int64, password,
 }
 
 // SendEmailVerificationCode 发送邮箱验证码
-func (uc *UserUsecase) SendEmailVerificationCode(ctx context.Context, userID int64, newEmail string) (string, error) {
+func (uc *UserUsecase) SendEmailVerificationCode(ctx context.Context, userID int64) (string, error) {
 	if userID <= 0 {
 		return "", v1.ErrorNotLoginError("未登录")
+	}
+
+	// 查询用户当前的邮箱
+	user, err := uc.repo.GetUserByID(ctx, userID)
+	if err != nil {
+		uc.log.Errorf("查询用户失败: userID=%d, err=%v", userID, err)
+		return "", v1.ErrorSystemError("查询用户失败")
+	}
+	if user == nil {
+		return "", v1.ErrorUserNotFound("用户不存在")
+	}
+
+	// 检查用户是否已设置邮箱
+	if strings.TrimSpace(user.UserEmail) == "" {
+		return "", v1.ErrorParamsError("您还未设置邮箱，请先设置邮箱")
+	}
+
+	// 生成6位验证码
+	code := uc.generateVerificationCode()
+
+	// 保存验证码到 Redis，key 格式: email_verify:{userID}, value: {code}
+	err = uc.repo.SaveEmailVerificationCode(ctx, userID, code)
+	if err != nil {
+		uc.log.Errorf("保存验证码到Redis失败: userID=%d, err=%v", userID, err)
+		return "", v1.ErrorSystemError("保存验证码失败")
+	}
+
+	// 发送验证码到当前邮箱
+	err = uc.repo.SendEmailVerificationCode(ctx, user.UserEmail, code)
+	if err != nil {
+		uc.log.Errorf("发送验证码失败: userID=%d, email=%s, err=%v", userID, user.UserEmail, err)
+		return "", v1.ErrorSystemError("发送验证码失败")
+	}
+
+	return "验证码已发送到您的邮箱，请查收", nil
+}
+
+// VerifyAndUpdateEmail 验证码校验并更新邮箱
+func (uc *UserUsecase) VerifyAndUpdateEmail(ctx context.Context, userID int64, code, newEmail string) (string, error) {
+	if userID <= 0 {
+		return "", v1.ErrorNotLoginError("未登录")
+	}
+
+	code = strings.TrimSpace(code)
+	if code == "" {
+		return "", v1.ErrorParamsError("验证码不能为空")
 	}
 
 	// 验证新邮箱格式
@@ -510,61 +556,8 @@ func (uc *UserUsecase) SendEmailVerificationCode(ctx context.Context, userID int
 		return "", v1.ErrorParamsError("邮箱格式不正确")
 	}
 
-	// 查询用户当前的邮箱
-	user, err := uc.repo.GetUserByID(ctx, userID)
-	if err != nil {
-		uc.log.Errorf("查询用户失败: userID=%d, err=%v", userID, err)
-		return "", v1.ErrorSystemError("查询用户失败")
-	}
-	if user == nil {
-		return "", v1.ErrorUserNotFound("用户不存在")
-	}
-
-	// 如果用户之前没有设置邮箱，直接保存
-	if strings.TrimSpace(user.UserEmail) == "" {
-		user.UserEmail = newEmail
-		err = uc.repo.UpdateUser(ctx, user)
-		if err != nil {
-			uc.log.Errorf("保存邮箱失败: userID=%d, err=%v", userID, err)
-			return "", v1.ErrorSystemError("保存邮箱失败")
-		}
-		return "邮箱保存成功", nil
-	}
-
-	// 如果用户已有邮箱，需要发送验证码到旧邮箱
-	// 生成6位验证码
-	code := uc.generateVerificationCode()
-
-	// 保存验证码到 Redis，key 格式: email_verify:{userID}, value: {code}:{newEmail}
-	err = uc.repo.SaveEmailVerificationCode(ctx, userID, code, newEmail)
-	if err != nil {
-		uc.log.Errorf("保存验证码到Redis失败: userID=%d, err=%v", userID, err)
-		return "", v1.ErrorSystemError("保存验证码失败")
-	}
-
-	// 发送验证码到旧邮箱
-	err = uc.repo.SendEmailVerificationCode(ctx, user.UserEmail, code)
-	if err != nil {
-		uc.log.Errorf("发送验证码失败: userID=%d, oldEmail=%s, err=%v", userID, user.UserEmail, err)
-		return "", v1.ErrorSystemError("发送验证码失败")
-	}
-
-	return "验证码已发送到您的旧邮箱，请查收", nil
-}
-
-// VerifyAndUpdateEmail 验证码校验并更新邮箱
-func (uc *UserUsecase) VerifyAndUpdateEmail(ctx context.Context, userID int64, code string) (string, error) {
-	if userID <= 0 {
-		return "", v1.ErrorNotLoginError("未登录")
-	}
-
-	code = strings.TrimSpace(code)
-	if code == "" {
-		return "", v1.ErrorParamsError("验证码不能为空")
-	}
-
-	// 从 Redis 获取验证码和新邮箱
-	newEmail, err := uc.repo.GetAndVerifyEmailCode(ctx, userID, code)
+	// 从 Redis 获取并验证验证码
+	err := uc.repo.GetAndVerifyEmailCode(ctx, userID, code)
 	if err != nil {
 		uc.log.Errorf("验证码校验失败: userID=%d, err=%v", userID, err)
 		return "", err

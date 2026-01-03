@@ -257,11 +257,10 @@ func (r *userRepo) ListUserByPage(ctx context.Context, params *biz.UserQueryPara
 }
 
 // SaveEmailVerificationCode 保存邮箱验证码到 Redis
-func (r *userRepo) SaveEmailVerificationCode(ctx context.Context, userID int64, code, newEmail string) error {
+func (r *userRepo) SaveEmailVerificationCode(ctx context.Context, userID int64, code string) error {
 	key := r.getEmailVerifyKey(userID)
-	value := code + ":" + newEmail
 	// 设置过期时间为5分钟
-	err := r.data.rdb.Set(ctx, key, value, 5*60*1000000000).Err()
+	err := r.data.rdb.Set(ctx, key, code, 5*60*1000000000).Err()
 	if err != nil {
 		r.log.Errorf("保存验证码到Redis失败: userID=%d, err=%v", userID, err)
 		return err
@@ -270,31 +269,21 @@ func (r *userRepo) SaveEmailVerificationCode(ctx context.Context, userID int64, 
 }
 
 // GetAndVerifyEmailCode 获取并验证邮箱验证码
-func (r *userRepo) GetAndVerifyEmailCode(ctx context.Context, userID int64, code string) (string, error) {
+func (r *userRepo) GetAndVerifyEmailCode(ctx context.Context, userID int64, code string) error {
 	key := r.getEmailVerifyKey(userID)
-	value, err := r.data.rdb.Get(ctx, key).Result()
+	storedCode, err := r.data.rdb.Get(ctx, key).Result()
 	if err != nil {
 		r.log.Errorf("从Redis获取验证码失败: userID=%d, err=%v", userID, err)
-		return "", v1.ErrorVerificationCodeExpired("验证码已过期或不存在")
+		return v1.ErrorVerificationCodeExpired("验证码已过期或不存在")
 	}
-
-	// 解析 value，格式为 {code}:{newEmail}
-	parts := splitTwo(value, ":")
-	if len(parts) != 2 {
-		r.log.Errorf("验证码格式错误: userID=%d, value=%s", userID, value)
-		return "", v1.ErrorSystemError("验证码格式错误")
-	}
-
-	storedCode := parts[0]
-	newEmail := parts[1]
 
 	// 验证验证码是否匹配
 	if storedCode != code {
 		r.log.Errorf("验证码不匹配: userID=%d, expected=%s, actual=%s", userID, storedCode, code)
-		return "", v1.ErrorVerificationCodeError("验证码错误")
+		return v1.ErrorVerificationCodeError("验证码错误")
 	}
 
-	return newEmail, nil
+	return nil
 }
 
 // DeleteEmailVerificationCode 删除邮箱验证码

@@ -538,9 +538,7 @@ components:
             description: 发送邮箱验证码响应
         api.user.v1.SendEmailVerificationCodeRequest:
             type: object
-            properties:
-                email:
-                    type: string
+            properties: {}
             description: 发送邮箱验证码请求
         api.user.v1.UpdateMyInfoReply:
             type: object
@@ -638,6 +636,8 @@ components:
             type: object
             properties:
                 code:
+                    type: string
+                email:
                     type: string
             description: 验证码校验并更新邮箱请求
         helloworld.v1.HelloReply:
