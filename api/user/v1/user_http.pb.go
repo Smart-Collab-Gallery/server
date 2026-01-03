@@ -28,8 +28,10 @@ const OperationUserListUserByPage = "/api.user.v1.User/ListUserByPage"
 const OperationUserLogin = "/api.user.v1.User/Login"
 const OperationUserLogout = "/api.user.v1.User/Logout"
 const OperationUserRegister = "/api.user.v1.User/Register"
+const OperationUserSendEmailVerificationCode = "/api.user.v1.User/SendEmailVerificationCode"
 const OperationUserUpdateMyInfo = "/api.user.v1.User/UpdateMyInfo"
 const OperationUserUpdateUser = "/api.user.v1.User/UpdateUser"
+const OperationUserVerifyAndUpdateEmail = "/api.user.v1.User/VerifyAndUpdateEmail"
 
 type UserHTTPServer interface {
 	// AddUser 创建用户（仅管理员）
@@ -50,10 +52,14 @@ type UserHTTPServer interface {
 	Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
 	// Register 用户注册
 	Register(context.Context, *RegisterRequest) (*RegisterReply, error)
+	// SendEmailVerificationCode 发送邮箱验证码
+	SendEmailVerificationCode(context.Context, *SendEmailVerificationCodeRequest) (*SendEmailVerificationCodeReply, error)
 	// UpdateMyInfo 更新个人信息（用户自己）
 	UpdateMyInfo(context.Context, *UpdateMyInfoRequest) (*UpdateMyInfoReply, error)
 	// UpdateUser 更新用户（仅管理员）
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserReply, error)
+	// VerifyAndUpdateEmail 验证码校验并更新邮箱
+	VerifyAndUpdateEmail(context.Context, *VerifyAndUpdateEmailRequest) (*VerifyAndUpdateEmailReply, error)
 }
 
 func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
@@ -69,6 +75,8 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r.POST("/api/user/update", _User_UpdateUser0_HTTP_Handler(srv))
 	r.POST("/api/user/list/page/vo", _User_ListUserByPage0_HTTP_Handler(srv))
 	r.POST("/api/user/update/personal", _User_UpdateMyInfo0_HTTP_Handler(srv))
+	r.POST("/api/user/email/send-code", _User_SendEmailVerificationCode0_HTTP_Handler(srv))
+	r.POST("/api/user/email/verify", _User_VerifyAndUpdateEmail0_HTTP_Handler(srv))
 }
 
 func _User_Register0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -304,6 +312,50 @@ func _User_UpdateMyInfo0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context)
 	}
 }
 
+func _User_SendEmailVerificationCode0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in SendEmailVerificationCodeRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserSendEmailVerificationCode)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.SendEmailVerificationCode(ctx, req.(*SendEmailVerificationCodeRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*SendEmailVerificationCodeReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_VerifyAndUpdateEmail0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in VerifyAndUpdateEmailRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserVerifyAndUpdateEmail)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.VerifyAndUpdateEmail(ctx, req.(*VerifyAndUpdateEmailRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*VerifyAndUpdateEmailReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type UserHTTPClient interface {
 	// AddUser 创建用户（仅管理员）
 	AddUser(ctx context.Context, req *AddUserRequest, opts ...http.CallOption) (rsp *AddUserReply, err error)
@@ -323,10 +375,14 @@ type UserHTTPClient interface {
 	Logout(ctx context.Context, req *LogoutRequest, opts ...http.CallOption) (rsp *LogoutReply, err error)
 	// Register 用户注册
 	Register(ctx context.Context, req *RegisterRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
+	// SendEmailVerificationCode 发送邮箱验证码
+	SendEmailVerificationCode(ctx context.Context, req *SendEmailVerificationCodeRequest, opts ...http.CallOption) (rsp *SendEmailVerificationCodeReply, err error)
 	// UpdateMyInfo 更新个人信息（用户自己）
 	UpdateMyInfo(ctx context.Context, req *UpdateMyInfoRequest, opts ...http.CallOption) (rsp *UpdateMyInfoReply, err error)
 	// UpdateUser 更新用户（仅管理员）
 	UpdateUser(ctx context.Context, req *UpdateUserRequest, opts ...http.CallOption) (rsp *UpdateUserReply, err error)
+	// VerifyAndUpdateEmail 验证码校验并更新邮箱
+	VerifyAndUpdateEmail(ctx context.Context, req *VerifyAndUpdateEmailRequest, opts ...http.CallOption) (rsp *VerifyAndUpdateEmailReply, err error)
 }
 
 type UserHTTPClientImpl struct {
@@ -463,6 +519,20 @@ func (c *UserHTTPClientImpl) Register(ctx context.Context, in *RegisterRequest, 
 	return &out, nil
 }
 
+// SendEmailVerificationCode 发送邮箱验证码
+func (c *UserHTTPClientImpl) SendEmailVerificationCode(ctx context.Context, in *SendEmailVerificationCodeRequest, opts ...http.CallOption) (*SendEmailVerificationCodeReply, error) {
+	var out SendEmailVerificationCodeReply
+	pattern := "/api/user/email/send-code"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserSendEmailVerificationCode))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 // UpdateMyInfo 更新个人信息（用户自己）
 func (c *UserHTTPClientImpl) UpdateMyInfo(ctx context.Context, in *UpdateMyInfoRequest, opts ...http.CallOption) (*UpdateMyInfoReply, error) {
 	var out UpdateMyInfoReply
@@ -483,6 +553,20 @@ func (c *UserHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateUserReque
 	pattern := "/api/user/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserUpdateUser))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// VerifyAndUpdateEmail 验证码校验并更新邮箱
+func (c *UserHTTPClientImpl) VerifyAndUpdateEmail(ctx context.Context, in *VerifyAndUpdateEmailRequest, opts ...http.CallOption) (*VerifyAndUpdateEmailReply, error) {
+	var out VerifyAndUpdateEmailReply
+	pattern := "/api/user/email/verify"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserVerifyAndUpdateEmail))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

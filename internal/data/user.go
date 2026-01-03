@@ -2,7 +2,9 @@ package data
 
 import (
 	"context"
+	"fmt"
 
+	v1 "smart-collab-gallery-server/api/user/v1"
 	"smart-collab-gallery-server/internal/biz"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -252,4 +254,87 @@ func (r *userRepo) ListUserByPage(ctx context.Context, params *biz.UserQueryPara
 		Current:  params.Current,
 		PageSize: params.PageSize,
 	}, nil
+}
+
+// SaveEmailVerificationCode 保存邮箱验证码到 Redis
+func (r *userRepo) SaveEmailVerificationCode(ctx context.Context, userID int64, code, newEmail string) error {
+	key := r.getEmailVerifyKey(userID)
+	value := code + ":" + newEmail
+	// 设置过期时间为5分钟
+	err := r.data.rdb.Set(ctx, key, value, 5*60*1000000000).Err()
+	if err != nil {
+		r.log.Errorf("保存验证码到Redis失败: userID=%d, err=%v", userID, err)
+		return err
+	}
+	return nil
+}
+
+// GetAndVerifyEmailCode 获取并验证邮箱验证码
+func (r *userRepo) GetAndVerifyEmailCode(ctx context.Context, userID int64, code string) (string, error) {
+	key := r.getEmailVerifyKey(userID)
+	value, err := r.data.rdb.Get(ctx, key).Result()
+	if err != nil {
+		r.log.Errorf("从Redis获取验证码失败: userID=%d, err=%v", userID, err)
+		return "", v1.ErrorVerificationCodeExpired("验证码已过期或不存在")
+	}
+
+	// 解析 value，格式为 {code}:{newEmail}
+	parts := splitTwo(value, ":")
+	if len(parts) != 2 {
+		r.log.Errorf("验证码格式错误: userID=%d, value=%s", userID, value)
+		return "", v1.ErrorSystemError("验证码格式错误")
+	}
+
+	storedCode := parts[0]
+	newEmail := parts[1]
+
+	// 验证验证码是否匹配
+	if storedCode != code {
+		r.log.Errorf("验证码不匹配: userID=%d, expected=%s, actual=%s", userID, storedCode, code)
+		return "", v1.ErrorVerificationCodeError("验证码错误")
+	}
+
+	return newEmail, nil
+}
+
+// DeleteEmailVerificationCode 删除邮箱验证码
+func (r *userRepo) DeleteEmailVerificationCode(ctx context.Context, userID int64) error {
+	key := r.getEmailVerifyKey(userID)
+	return r.data.rdb.Del(ctx, key).Err()
+}
+
+// SendEmailVerificationCode 发送邮箱验证码
+func (r *userRepo) SendEmailVerificationCode(ctx context.Context, email, code string) error {
+	// TODO: 实现实际的邮件发送逻辑
+	// 这里暂时只打印日志，实际项目中需要集成邮件服务
+	r.log.Infof("发送验证码到邮箱: email=%s, code=%s", email, code)
+	r.log.Infof("【模拟邮件】您的验证码是: %s，有效期5分钟", code)
+
+	// 实际使用时需要集成 SMTP 或第三方邮件服务
+	// 例如：使用 gomail 库发送邮件
+	// 参考实现：
+	// m := gomail.NewMessage()
+	// m.SetHeader("From", "noreply@example.com")
+	// m.SetHeader("To", email)
+	// m.SetHeader("Subject", "邮箱验证码")
+	// m.SetBody("text/html", fmt.Sprintf("您的验证码是: <b>%s</b>，有效期5分钟", code))
+	// d := gomail.NewDialer("smtp.example.com", 587, "username", "password")
+	// return d.DialAndSend(m)
+
+	return nil
+}
+
+// getEmailVerifyKey 获取邮箱验证码的 Redis key
+func (r *userRepo) getEmailVerifyKey(userID int64) string {
+	return fmt.Sprintf("email_verify:%d", userID)
+}
+
+// splitTwo 将字符串按分隔符分割为两部分
+func splitTwo(s, sep string) []string {
+	for i := 0; i < len(s); i++ {
+		if s[i:i+len(sep)] == sep {
+			return []string{s[:i], s[i+len(sep):]}
+		}
+	}
+	return []string{s}
 }

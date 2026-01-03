@@ -19,17 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	User_Register_FullMethodName       = "/api.user.v1.User/Register"
-	User_Login_FullMethodName          = "/api.user.v1.User/Login"
-	User_GetLoginUser_FullMethodName   = "/api.user.v1.User/GetLoginUser"
-	User_Logout_FullMethodName         = "/api.user.v1.User/Logout"
-	User_AddUser_FullMethodName        = "/api.user.v1.User/AddUser"
-	User_GetUserById_FullMethodName    = "/api.user.v1.User/GetUserById"
-	User_GetUserVOById_FullMethodName  = "/api.user.v1.User/GetUserVOById"
-	User_DeleteUser_FullMethodName     = "/api.user.v1.User/DeleteUser"
-	User_UpdateUser_FullMethodName     = "/api.user.v1.User/UpdateUser"
-	User_ListUserByPage_FullMethodName = "/api.user.v1.User/ListUserByPage"
-	User_UpdateMyInfo_FullMethodName   = "/api.user.v1.User/UpdateMyInfo"
+	User_Register_FullMethodName                  = "/api.user.v1.User/Register"
+	User_Login_FullMethodName                     = "/api.user.v1.User/Login"
+	User_GetLoginUser_FullMethodName              = "/api.user.v1.User/GetLoginUser"
+	User_Logout_FullMethodName                    = "/api.user.v1.User/Logout"
+	User_AddUser_FullMethodName                   = "/api.user.v1.User/AddUser"
+	User_GetUserById_FullMethodName               = "/api.user.v1.User/GetUserById"
+	User_GetUserVOById_FullMethodName             = "/api.user.v1.User/GetUserVOById"
+	User_DeleteUser_FullMethodName                = "/api.user.v1.User/DeleteUser"
+	User_UpdateUser_FullMethodName                = "/api.user.v1.User/UpdateUser"
+	User_ListUserByPage_FullMethodName            = "/api.user.v1.User/ListUserByPage"
+	User_UpdateMyInfo_FullMethodName              = "/api.user.v1.User/UpdateMyInfo"
+	User_SendEmailVerificationCode_FullMethodName = "/api.user.v1.User/SendEmailVerificationCode"
+	User_VerifyAndUpdateEmail_FullMethodName      = "/api.user.v1.User/VerifyAndUpdateEmail"
 )
 
 // UserClient is the client API for User service.
@@ -58,6 +60,10 @@ type UserClient interface {
 	ListUserByPage(ctx context.Context, in *ListUserByPageRequest, opts ...grpc.CallOption) (*ListUserByPageReply, error)
 	// 更新个人信息（用户自己）
 	UpdateMyInfo(ctx context.Context, in *UpdateMyInfoRequest, opts ...grpc.CallOption) (*UpdateMyInfoReply, error)
+	// 发送邮箱验证码
+	SendEmailVerificationCode(ctx context.Context, in *SendEmailVerificationCodeRequest, opts ...grpc.CallOption) (*SendEmailVerificationCodeReply, error)
+	// 验证码校验并更新邮箱
+	VerifyAndUpdateEmail(ctx context.Context, in *VerifyAndUpdateEmailRequest, opts ...grpc.CallOption) (*VerifyAndUpdateEmailReply, error)
 }
 
 type userClient struct {
@@ -178,6 +184,26 @@ func (c *userClient) UpdateMyInfo(ctx context.Context, in *UpdateMyInfoRequest, 
 	return out, nil
 }
 
+func (c *userClient) SendEmailVerificationCode(ctx context.Context, in *SendEmailVerificationCodeRequest, opts ...grpc.CallOption) (*SendEmailVerificationCodeReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SendEmailVerificationCodeReply)
+	err := c.cc.Invoke(ctx, User_SendEmailVerificationCode_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) VerifyAndUpdateEmail(ctx context.Context, in *VerifyAndUpdateEmailRequest, opts ...grpc.CallOption) (*VerifyAndUpdateEmailReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(VerifyAndUpdateEmailReply)
+	err := c.cc.Invoke(ctx, User_VerifyAndUpdateEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility.
@@ -204,6 +230,10 @@ type UserServer interface {
 	ListUserByPage(context.Context, *ListUserByPageRequest) (*ListUserByPageReply, error)
 	// 更新个人信息（用户自己）
 	UpdateMyInfo(context.Context, *UpdateMyInfoRequest) (*UpdateMyInfoReply, error)
+	// 发送邮箱验证码
+	SendEmailVerificationCode(context.Context, *SendEmailVerificationCodeRequest) (*SendEmailVerificationCodeReply, error)
+	// 验证码校验并更新邮箱
+	VerifyAndUpdateEmail(context.Context, *VerifyAndUpdateEmailRequest) (*VerifyAndUpdateEmailReply, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -246,6 +276,12 @@ func (UnimplementedUserServer) ListUserByPage(context.Context, *ListUserByPageRe
 }
 func (UnimplementedUserServer) UpdateMyInfo(context.Context, *UpdateMyInfoRequest) (*UpdateMyInfoReply, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateMyInfo not implemented")
+}
+func (UnimplementedUserServer) SendEmailVerificationCode(context.Context, *SendEmailVerificationCodeRequest) (*SendEmailVerificationCodeReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method SendEmailVerificationCode not implemented")
+}
+func (UnimplementedUserServer) VerifyAndUpdateEmail(context.Context, *VerifyAndUpdateEmailRequest) (*VerifyAndUpdateEmailReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method VerifyAndUpdateEmail not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 func (UnimplementedUserServer) testEmbeddedByValue()              {}
@@ -466,6 +502,42 @@ func _User_UpdateMyInfo_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_SendEmailVerificationCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendEmailVerificationCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).SendEmailVerificationCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_SendEmailVerificationCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).SendEmailVerificationCode(ctx, req.(*SendEmailVerificationCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_VerifyAndUpdateEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyAndUpdateEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).VerifyAndUpdateEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_VerifyAndUpdateEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).VerifyAndUpdateEmail(ctx, req.(*VerifyAndUpdateEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -516,6 +588,14 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateMyInfo",
 			Handler:    _User_UpdateMyInfo_Handler,
+		},
+		{
+			MethodName: "SendEmailVerificationCode",
+			Handler:    _User_SendEmailVerificationCode_Handler,
+		},
+		{
+			MethodName: "VerifyAndUpdateEmail",
+			Handler:    _User_VerifyAndUpdateEmail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

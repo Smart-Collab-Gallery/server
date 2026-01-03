@@ -410,7 +410,7 @@ type LoginUserVO struct {
 	UserEmail           string                 `protobuf:"bytes,7,opt,name=user_email,json=userEmail,proto3" json:"user_email,omitempty"`                                 // 用户邮箱
 	UserJob             string                 `protobuf:"bytes,8,opt,name=user_job,json=userJob,proto3" json:"user_job,omitempty"`                                       // 职业
 	UserAddress         string                 `protobuf:"bytes,9,opt,name=user_address,json=userAddress,proto3" json:"user_address,omitempty"`                           // 地址
-	UserTags            string                 `protobuf:"bytes,10,opt,name=user_tags,json=userTags,proto3" json:"user_tags,omitempty"`                                   // 标签
+	UserTags            string                 `protobuf:"bytes,10,opt,name=user_tags,json=userTags,proto3" json:"user_tags,omitempty"`                                   // 标签，字数不能超过100个字
 	UserRole            string                 `protobuf:"bytes,11,opt,name=user_role,json=userRole,proto3" json:"user_role,omitempty"`                                   // 用户角色
 	VipNumber           int64                  `protobuf:"varint,12,opt,name=vip_number,json=vipNumber,proto3" json:"vip_number,omitempty"`                               // 会员编号
 	VipExpireTime       string                 `protobuf:"bytes,13,opt,name=vip_expire_time,json=vipExpireTime,proto3" json:"vip_expire_time,omitempty"`                  // 会员过期时间
@@ -567,7 +567,7 @@ type UserVO struct {
 	UserEmail           string                 `protobuf:"bytes,7,opt,name=user_email,json=userEmail,proto3" json:"user_email,omitempty"`
 	UserJob             string                 `protobuf:"bytes,8,opt,name=user_job,json=userJob,proto3" json:"user_job,omitempty"`
 	UserAddress         string                 `protobuf:"bytes,9,opt,name=user_address,json=userAddress,proto3" json:"user_address,omitempty"`
-	UserTags            string                 `protobuf:"bytes,10,opt,name=user_tags,json=userTags,proto3" json:"user_tags,omitempty"`
+	UserTags            string                 `protobuf:"bytes,10,opt,name=user_tags,json=userTags,proto3" json:"user_tags,omitempty"` // 标签，字数不能超过100个字
 	UserRole            string                 `protobuf:"bytes,11,opt,name=user_role,json=userRole,proto3" json:"user_role,omitempty"`
 	VipNumber           int64                  `protobuf:"varint,12,opt,name=vip_number,json=vipNumber,proto3" json:"vip_number,omitempty"`
 	VipExpireTime       string                 `protobuf:"bytes,13,opt,name=vip_expire_time,json=vipExpireTime,proto3" json:"vip_expire_time,omitempty"`
@@ -900,7 +900,7 @@ type GetUserByIdReply struct {
 	UserEmail           string                 `protobuf:"bytes,8,opt,name=user_email,json=userEmail,proto3" json:"user_email,omitempty"`
 	UserJob             string                 `protobuf:"bytes,9,opt,name=user_job,json=userJob,proto3" json:"user_job,omitempty"`
 	UserAddress         string                 `protobuf:"bytes,10,opt,name=user_address,json=userAddress,proto3" json:"user_address,omitempty"`
-	UserTags            string                 `protobuf:"bytes,11,opt,name=user_tags,json=userTags,proto3" json:"user_tags,omitempty"`
+	UserTags            string                 `protobuf:"bytes,11,opt,name=user_tags,json=userTags,proto3" json:"user_tags,omitempty"` // 标签，字数不能超过100个字
 	UserRole            string                 `protobuf:"bytes,12,opt,name=user_role,json=userRole,proto3" json:"user_role,omitempty"`
 	VipNumber           int64                  `protobuf:"varint,13,opt,name=vip_number,json=vipNumber,proto3" json:"vip_number,omitempty"`
 	VipExpireTime       string                 `protobuf:"bytes,14,opt,name=vip_expire_time,json=vipExpireTime,proto3" json:"vip_expire_time,omitempty"`
@@ -1556,10 +1556,9 @@ type UpdateMyInfoRequest struct {
 	UserAvatar          string                 `protobuf:"bytes,3,opt,name=user_avatar,json=userAvatar,proto3" json:"user_avatar,omitempty"`                              // 用户头像（可选）
 	UserBackgroundImage string                 `protobuf:"bytes,4,opt,name=user_background_image,json=userBackgroundImage,proto3" json:"user_background_image,omitempty"` // 用户背景图片（可选）
 	UserProfile         string                 `protobuf:"bytes,5,opt,name=user_profile,json=userProfile,proto3" json:"user_profile,omitempty"`                           // 用户简介（可选），字数不能超过50个字
-	UserEmail           string                 `protobuf:"bytes,6,opt,name=user_email,json=userEmail,proto3" json:"user_email,omitempty"`                                 // 用户邮箱（可选）
-	UserJob             string                 `protobuf:"bytes,7,opt,name=user_job,json=userJob,proto3" json:"user_job,omitempty"`                                       // 职业（可选）
-	UserAddress         string                 `protobuf:"bytes,8,opt,name=user_address,json=userAddress,proto3" json:"user_address,omitempty"`                           // 地址（可选）
-	UserTags            string                 `protobuf:"bytes,9,opt,name=user_tags,json=userTags,proto3" json:"user_tags,omitempty"`                                    // 标签（可选）
+	UserJob             string                 `protobuf:"bytes,6,opt,name=user_job,json=userJob,proto3" json:"user_job,omitempty"`                                       // 职业（可选）
+	UserAddress         string                 `protobuf:"bytes,7,opt,name=user_address,json=userAddress,proto3" json:"user_address,omitempty"`                           // 地址（可选）
+	UserTags            string                 `protobuf:"bytes,8,opt,name=user_tags,json=userTags,proto3" json:"user_tags,omitempty"`                                    // 标签（可选），字数不能超过100个字
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -1629,13 +1628,6 @@ func (x *UpdateMyInfoRequest) GetUserProfile() string {
 	return ""
 }
 
-func (x *UpdateMyInfoRequest) GetUserEmail() string {
-	if x != nil {
-		return x.UserEmail
-	}
-	return ""
-}
-
 func (x *UpdateMyInfoRequest) GetUserJob() string {
 	if x != nil {
 		return x.UserJob
@@ -1700,6 +1692,202 @@ func (x *UpdateMyInfoReply) GetSuccess() bool {
 		return x.Success
 	}
 	return false
+}
+
+// 发送邮箱验证码请求
+type SendEmailVerificationCodeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"` // 新邮箱地址
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendEmailVerificationCodeRequest) Reset() {
+	*x = SendEmailVerificationCodeRequest{}
+	mi := &file_user_v1_user_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendEmailVerificationCodeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendEmailVerificationCodeRequest) ProtoMessage() {}
+
+func (x *SendEmailVerificationCodeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendEmailVerificationCodeRequest.ProtoReflect.Descriptor instead.
+func (*SendEmailVerificationCodeRequest) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *SendEmailVerificationCodeRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+// 发送邮箱验证码响应
+type SendEmailVerificationCodeReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // 是否成功
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`  // 提示信息
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendEmailVerificationCodeReply) Reset() {
+	*x = SendEmailVerificationCodeReply{}
+	mi := &file_user_v1_user_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendEmailVerificationCodeReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendEmailVerificationCodeReply) ProtoMessage() {}
+
+func (x *SendEmailVerificationCodeReply) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendEmailVerificationCodeReply.ProtoReflect.Descriptor instead.
+func (*SendEmailVerificationCodeReply) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *SendEmailVerificationCodeReply) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *SendEmailVerificationCodeReply) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+// 验证码校验并更新邮箱请求
+type VerifyAndUpdateEmailRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"` // 验证码
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VerifyAndUpdateEmailRequest) Reset() {
+	*x = VerifyAndUpdateEmailRequest{}
+	mi := &file_user_v1_user_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VerifyAndUpdateEmailRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyAndUpdateEmailRequest) ProtoMessage() {}
+
+func (x *VerifyAndUpdateEmailRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyAndUpdateEmailRequest.ProtoReflect.Descriptor instead.
+func (*VerifyAndUpdateEmailRequest) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *VerifyAndUpdateEmailRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+// 验证码校验并更新邮箱响应
+type VerifyAndUpdateEmailReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // 是否成功
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`  // 提示信息
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VerifyAndUpdateEmailReply) Reset() {
+	*x = VerifyAndUpdateEmailReply{}
+	mi := &file_user_v1_user_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VerifyAndUpdateEmailReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyAndUpdateEmailReply) ProtoMessage() {}
+
+func (x *VerifyAndUpdateEmailReply) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyAndUpdateEmailReply.ProtoReflect.Descriptor instead.
+func (*VerifyAndUpdateEmailReply) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *VerifyAndUpdateEmailReply) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *VerifyAndUpdateEmailReply) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
 }
 
 var File_user_v1_user_proto protoreflect.FileDescriptor
@@ -1840,21 +2028,29 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\x05total\x18\x01 \x01(\x03R\x05total\x12'\n" +
 	"\x04list\x18\x02 \x03(\v2\x13.api.user.v1.UserVOR\x04list\x12\x18\n" +
 	"\acurrent\x18\x03 \x01(\x03R\acurrent\x12\x1b\n" +
-	"\tpage_size\x18\x04 \x01(\x03R\bpageSize\"\xc9\x02\n" +
+	"\tpage_size\x18\x04 \x01(\x03R\bpageSize\"\xaa\x02\n" +
 	"\x13UpdateMyInfoRequest\x12#\n" +
 	"\ruser_password\x18\x01 \x01(\tR\fuserPassword\x12\x1b\n" +
 	"\tuser_name\x18\x02 \x01(\tR\buserName\x12\x1f\n" +
 	"\vuser_avatar\x18\x03 \x01(\tR\n" +
 	"userAvatar\x122\n" +
 	"\x15user_background_image\x18\x04 \x01(\tR\x13userBackgroundImage\x12!\n" +
-	"\fuser_profile\x18\x05 \x01(\tR\vuserProfile\x12\x1d\n" +
-	"\n" +
-	"user_email\x18\x06 \x01(\tR\tuserEmail\x12\x19\n" +
-	"\buser_job\x18\a \x01(\tR\auserJob\x12!\n" +
-	"\fuser_address\x18\b \x01(\tR\vuserAddress\x12\x1b\n" +
-	"\tuser_tags\x18\t \x01(\tR\buserTags\"-\n" +
+	"\fuser_profile\x18\x05 \x01(\tR\vuserProfile\x12\x19\n" +
+	"\buser_job\x18\x06 \x01(\tR\auserJob\x12!\n" +
+	"\fuser_address\x18\a \x01(\tR\vuserAddress\x12\x1b\n" +
+	"\tuser_tags\x18\b \x01(\tR\buserTags\"-\n" +
 	"\x11UpdateMyInfoReply\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\x87\t\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"8\n" +
+	" SendEmailVerificationCodeRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\"T\n" +
+	"\x1eSendEmailVerificationCodeReply\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"1\n" +
+	"\x1bVerifyAndUpdateEmailRequest\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\tR\x04code\"O\n" +
+	"\x19VerifyAndUpdateEmailReply\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage2\xb5\v\n" +
 	"\x04User\x12c\n" +
 	"\bRegister\x12\x1c.api.user.v1.RegisterRequest\x1a\x1a.api.user.v1.RegisterReply\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/user/register\x12W\n" +
 	"\x05Login\x12\x19.api.user.v1.LoginRequest\x1a\x17.api.user.v1.LoginReply\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/user/login\x12m\n" +
@@ -1868,7 +2064,9 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\n" +
 	"UpdateUser\x12\x1e.api.user.v1.UpdateUserRequest\x1a\x1c.api.user.v1.UpdateUserReply\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/user/update\x12y\n" +
 	"\x0eListUserByPage\x12\".api.user.v1.ListUserByPageRequest\x1a .api.user.v1.ListUserByPageReply\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/api/user/list/page/vo\x12v\n" +
-	"\fUpdateMyInfo\x12 .api.user.v1.UpdateMyInfoRequest\x1a\x1e.api.user.v1.UpdateMyInfoReply\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/user/update/personalB;\n" +
+	"\fUpdateMyInfo\x12 .api.user.v1.UpdateMyInfoRequest\x1a\x1e.api.user.v1.UpdateMyInfoReply\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/user/update/personal\x12\x9d\x01\n" +
+	"\x19SendEmailVerificationCode\x12-.api.user.v1.SendEmailVerificationCodeRequest\x1a+.api.user.v1.SendEmailVerificationCodeReply\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/user/email/send-code\x12\x8b\x01\n" +
+	"\x14VerifyAndUpdateEmail\x12(.api.user.v1.VerifyAndUpdateEmailRequest\x1a&.api.user.v1.VerifyAndUpdateEmailReply\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/api/user/email/verifyB;\n" +
 	"\vapi.user.v1P\x01Z*smart-collab-gallery-server/api/user/v1;v1b\x06proto3"
 
 var (
@@ -1883,32 +2081,36 @@ func file_user_v1_user_proto_rawDescGZIP() []byte {
 	return file_user_v1_user_proto_rawDescData
 }
 
-var file_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
+var file_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 28)
 var file_user_v1_user_proto_goTypes = []any{
-	(*RegisterRequest)(nil),       // 0: api.user.v1.RegisterRequest
-	(*RegisterReply)(nil),         // 1: api.user.v1.RegisterReply
-	(*LoginRequest)(nil),          // 2: api.user.v1.LoginRequest
-	(*LoginReply)(nil),            // 3: api.user.v1.LoginReply
-	(*GetLoginUserRequest)(nil),   // 4: api.user.v1.GetLoginUserRequest
-	(*GetLoginUserReply)(nil),     // 5: api.user.v1.GetLoginUserReply
-	(*LogoutRequest)(nil),         // 6: api.user.v1.LogoutRequest
-	(*LogoutReply)(nil),           // 7: api.user.v1.LogoutReply
-	(*LoginUserVO)(nil),           // 8: api.user.v1.LoginUserVO
-	(*UserVO)(nil),                // 9: api.user.v1.UserVO
-	(*AddUserRequest)(nil),        // 10: api.user.v1.AddUserRequest
-	(*AddUserReply)(nil),          // 11: api.user.v1.AddUserReply
-	(*GetUserByIdRequest)(nil),    // 12: api.user.v1.GetUserByIdRequest
-	(*GetUserByIdReply)(nil),      // 13: api.user.v1.GetUserByIdReply
-	(*GetUserVOByIdRequest)(nil),  // 14: api.user.v1.GetUserVOByIdRequest
-	(*GetUserVOByIdReply)(nil),    // 15: api.user.v1.GetUserVOByIdReply
-	(*DeleteUserRequest)(nil),     // 16: api.user.v1.DeleteUserRequest
-	(*DeleteUserReply)(nil),       // 17: api.user.v1.DeleteUserReply
-	(*UpdateUserRequest)(nil),     // 18: api.user.v1.UpdateUserRequest
-	(*UpdateUserReply)(nil),       // 19: api.user.v1.UpdateUserReply
-	(*ListUserByPageRequest)(nil), // 20: api.user.v1.ListUserByPageRequest
-	(*ListUserByPageReply)(nil),   // 21: api.user.v1.ListUserByPageReply
-	(*UpdateMyInfoRequest)(nil),   // 22: api.user.v1.UpdateMyInfoRequest
-	(*UpdateMyInfoReply)(nil),     // 23: api.user.v1.UpdateMyInfoReply
+	(*RegisterRequest)(nil),                  // 0: api.user.v1.RegisterRequest
+	(*RegisterReply)(nil),                    // 1: api.user.v1.RegisterReply
+	(*LoginRequest)(nil),                     // 2: api.user.v1.LoginRequest
+	(*LoginReply)(nil),                       // 3: api.user.v1.LoginReply
+	(*GetLoginUserRequest)(nil),              // 4: api.user.v1.GetLoginUserRequest
+	(*GetLoginUserReply)(nil),                // 5: api.user.v1.GetLoginUserReply
+	(*LogoutRequest)(nil),                    // 6: api.user.v1.LogoutRequest
+	(*LogoutReply)(nil),                      // 7: api.user.v1.LogoutReply
+	(*LoginUserVO)(nil),                      // 8: api.user.v1.LoginUserVO
+	(*UserVO)(nil),                           // 9: api.user.v1.UserVO
+	(*AddUserRequest)(nil),                   // 10: api.user.v1.AddUserRequest
+	(*AddUserReply)(nil),                     // 11: api.user.v1.AddUserReply
+	(*GetUserByIdRequest)(nil),               // 12: api.user.v1.GetUserByIdRequest
+	(*GetUserByIdReply)(nil),                 // 13: api.user.v1.GetUserByIdReply
+	(*GetUserVOByIdRequest)(nil),             // 14: api.user.v1.GetUserVOByIdRequest
+	(*GetUserVOByIdReply)(nil),               // 15: api.user.v1.GetUserVOByIdReply
+	(*DeleteUserRequest)(nil),                // 16: api.user.v1.DeleteUserRequest
+	(*DeleteUserReply)(nil),                  // 17: api.user.v1.DeleteUserReply
+	(*UpdateUserRequest)(nil),                // 18: api.user.v1.UpdateUserRequest
+	(*UpdateUserReply)(nil),                  // 19: api.user.v1.UpdateUserReply
+	(*ListUserByPageRequest)(nil),            // 20: api.user.v1.ListUserByPageRequest
+	(*ListUserByPageReply)(nil),              // 21: api.user.v1.ListUserByPageReply
+	(*UpdateMyInfoRequest)(nil),              // 22: api.user.v1.UpdateMyInfoRequest
+	(*UpdateMyInfoReply)(nil),                // 23: api.user.v1.UpdateMyInfoReply
+	(*SendEmailVerificationCodeRequest)(nil), // 24: api.user.v1.SendEmailVerificationCodeRequest
+	(*SendEmailVerificationCodeReply)(nil),   // 25: api.user.v1.SendEmailVerificationCodeReply
+	(*VerifyAndUpdateEmailRequest)(nil),      // 26: api.user.v1.VerifyAndUpdateEmailRequest
+	(*VerifyAndUpdateEmailReply)(nil),        // 27: api.user.v1.VerifyAndUpdateEmailReply
 }
 var file_user_v1_user_proto_depIdxs = []int32{
 	8,  // 0: api.user.v1.LoginReply.user:type_name -> api.user.v1.LoginUserVO
@@ -1926,19 +2128,23 @@ var file_user_v1_user_proto_depIdxs = []int32{
 	18, // 12: api.user.v1.User.UpdateUser:input_type -> api.user.v1.UpdateUserRequest
 	20, // 13: api.user.v1.User.ListUserByPage:input_type -> api.user.v1.ListUserByPageRequest
 	22, // 14: api.user.v1.User.UpdateMyInfo:input_type -> api.user.v1.UpdateMyInfoRequest
-	1,  // 15: api.user.v1.User.Register:output_type -> api.user.v1.RegisterReply
-	3,  // 16: api.user.v1.User.Login:output_type -> api.user.v1.LoginReply
-	5,  // 17: api.user.v1.User.GetLoginUser:output_type -> api.user.v1.GetLoginUserReply
-	7,  // 18: api.user.v1.User.Logout:output_type -> api.user.v1.LogoutReply
-	11, // 19: api.user.v1.User.AddUser:output_type -> api.user.v1.AddUserReply
-	13, // 20: api.user.v1.User.GetUserById:output_type -> api.user.v1.GetUserByIdReply
-	15, // 21: api.user.v1.User.GetUserVOById:output_type -> api.user.v1.GetUserVOByIdReply
-	17, // 22: api.user.v1.User.DeleteUser:output_type -> api.user.v1.DeleteUserReply
-	19, // 23: api.user.v1.User.UpdateUser:output_type -> api.user.v1.UpdateUserReply
-	21, // 24: api.user.v1.User.ListUserByPage:output_type -> api.user.v1.ListUserByPageReply
-	23, // 25: api.user.v1.User.UpdateMyInfo:output_type -> api.user.v1.UpdateMyInfoReply
-	15, // [15:26] is the sub-list for method output_type
-	4,  // [4:15] is the sub-list for method input_type
+	24, // 15: api.user.v1.User.SendEmailVerificationCode:input_type -> api.user.v1.SendEmailVerificationCodeRequest
+	26, // 16: api.user.v1.User.VerifyAndUpdateEmail:input_type -> api.user.v1.VerifyAndUpdateEmailRequest
+	1,  // 17: api.user.v1.User.Register:output_type -> api.user.v1.RegisterReply
+	3,  // 18: api.user.v1.User.Login:output_type -> api.user.v1.LoginReply
+	5,  // 19: api.user.v1.User.GetLoginUser:output_type -> api.user.v1.GetLoginUserReply
+	7,  // 20: api.user.v1.User.Logout:output_type -> api.user.v1.LogoutReply
+	11, // 21: api.user.v1.User.AddUser:output_type -> api.user.v1.AddUserReply
+	13, // 22: api.user.v1.User.GetUserById:output_type -> api.user.v1.GetUserByIdReply
+	15, // 23: api.user.v1.User.GetUserVOById:output_type -> api.user.v1.GetUserVOByIdReply
+	17, // 24: api.user.v1.User.DeleteUser:output_type -> api.user.v1.DeleteUserReply
+	19, // 25: api.user.v1.User.UpdateUser:output_type -> api.user.v1.UpdateUserReply
+	21, // 26: api.user.v1.User.ListUserByPage:output_type -> api.user.v1.ListUserByPageReply
+	23, // 27: api.user.v1.User.UpdateMyInfo:output_type -> api.user.v1.UpdateMyInfoReply
+	25, // 28: api.user.v1.User.SendEmailVerificationCode:output_type -> api.user.v1.SendEmailVerificationCodeReply
+	27, // 29: api.user.v1.User.VerifyAndUpdateEmail:output_type -> api.user.v1.VerifyAndUpdateEmailReply
+	17, // [17:30] is the sub-list for method output_type
+	4,  // [4:17] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
 	4,  // [4:4] is the sub-list for extension extendee
 	0,  // [0:4] is the sub-list for field type_name
@@ -1955,7 +2161,7 @@ func file_user_v1_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_v1_user_proto_rawDesc), len(file_user_v1_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   24,
+			NumMessages:   28,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

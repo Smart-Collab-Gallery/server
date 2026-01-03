@@ -51,6 +51,10 @@ const (
 	ErrorReason_USER_NOT_FOUND ErrorReason = 11
 	// 无权限
 	ErrorReason_NO_AUTH_ERROR ErrorReason = 12
+	// 验证码已过期
+	ErrorReason_VERIFICATION_CODE_EXPIRED ErrorReason = 13
+	// 验证码错误
+	ErrorReason_VERIFICATION_CODE_ERROR ErrorReason = 14
 )
 
 // Enum value maps for ErrorReason.
@@ -69,6 +73,8 @@ var (
 		10: "INVALID_TOKEN",
 		11: "USER_NOT_FOUND",
 		12: "NO_AUTH_ERROR",
+		13: "VERIFICATION_CODE_EXPIRED",
+		14: "VERIFICATION_CODE_ERROR",
 	}
 	ErrorReason_value = map[string]int32{
 		"PARAMS_ERROR":                     0,
@@ -84,6 +90,8 @@ var (
 		"INVALID_TOKEN":                    10,
 		"USER_NOT_FOUND":                   11,
 		"NO_AUTH_ERROR":                    12,
+		"VERIFICATION_CODE_EXPIRED":        13,
+		"VERIFICATION_CODE_ERROR":          14,
 	}
 )
 
@@ -118,7 +126,7 @@ var File_user_v1_error_reason_proto protoreflect.FileDescriptor
 
 const file_user_v1_error_reason_proto_rawDesc = "" +
 	"\n" +
-	"\x1auser/v1/error_reason.proto\x12\vapi.user.v1\x1a\x13errors/errors.proto*\xff\x02\n" +
+	"\x1auser/v1/error_reason.proto\x12\vapi.user.v1\x1a\x13errors/errors.proto*\xc7\x03\n" +
 	"\vErrorReason\x12\x16\n" +
 	"\fPARAMS_ERROR\x10\x00\x1a\x04\xa8E\x90\x03\x12\x1b\n" +
 	"\x11ACCOUNT_TOO_SHORT\x10\x01\x1a\x04\xa8E\x90\x03\x12\x1c\n" +
@@ -133,7 +141,9 @@ const file_user_v1_error_reason_proto_rawDesc = "" +
 	"\rINVALID_TOKEN\x10\n" +
 	"\x1a\x04\xa8E\x91\x03\x12\x18\n" +
 	"\x0eUSER_NOT_FOUND\x10\v\x1a\x04\xa8E\x94\x03\x12\x17\n" +
-	"\rNO_AUTH_ERROR\x10\f\x1a\x04\xa8E\x93\x03\x1a\x04\xa0E\xf4\x03B;\n" +
+	"\rNO_AUTH_ERROR\x10\f\x1a\x04\xa8E\x93\x03\x12#\n" +
+	"\x19VERIFICATION_CODE_EXPIRED\x10\r\x1a\x04\xa8E\x90\x03\x12!\n" +
+	"\x17VERIFICATION_CODE_ERROR\x10\x0e\x1a\x04\xa8E\x90\x03\x1a\x04\xa0E\xf4\x03B;\n" +
 	"\vapi.user.v1P\x01Z*smart-collab-gallery-server/api/user/v1;v1b\x06proto3"
 
 var (

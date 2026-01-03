@@ -361,7 +361,7 @@ func (s *UserService) UpdateMyInfo(ctx context.Context, req *v1.UpdateMyInfoRequ
 	s.log.WithContext(ctx).Infof("更新个人信息: userID=%d", userID)
 
 	// 执行更新
-	err := s.uc.UpdateMyInfo(ctx, userID, req.UserPassword, req.UserName, req.UserAvatar, req.UserBackgroundImage, req.UserProfile, req.UserEmail, req.UserJob, req.UserAddress, req.UserTags)
+	err := s.uc.UpdateMyInfo(ctx, userID, req.UserPassword, req.UserName, req.UserAvatar, req.UserBackgroundImage, req.UserProfile, req.UserJob, req.UserAddress, req.UserTags)
 	if err != nil {
 		s.log.WithContext(ctx).Errorf("更新个人信息失败: %v", err)
 		return nil, err
@@ -369,5 +369,57 @@ func (s *UserService) UpdateMyInfo(ctx context.Context, req *v1.UpdateMyInfoRequ
 
 	return &v1.UpdateMyInfoReply{
 		Success: true,
+	}, nil
+}
+
+// SendEmailVerificationCode 发送邮箱验证码
+func (s *UserService) SendEmailVerificationCode(ctx context.Context, req *v1.SendEmailVerificationCodeRequest) (*v1.SendEmailVerificationCodeReply, error) {
+	// 从上下文中获取用户 ID（由 JWT 中间件设置）
+	userID := middleware.GetUserIDFromContext(ctx)
+	if userID == 0 {
+		return nil, v1.ErrorNotLoginError("未登录")
+	}
+
+	s.log.WithContext(ctx).Infof("发送邮箱验证码: userID=%d, newEmail=%s", userID, req.Email)
+
+	// 执行发送验证码逻辑
+	message, err := s.uc.SendEmailVerificationCode(ctx, userID, req.Email)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("发送邮箱验证码失败: %v", err)
+		return &v1.SendEmailVerificationCodeReply{
+			Success: false,
+			Message: err.Error(),
+		}, nil
+	}
+
+	return &v1.SendEmailVerificationCodeReply{
+		Success: true,
+		Message: message,
+	}, nil
+}
+
+// VerifyAndUpdateEmail 验证码校验并更新邮箱
+func (s *UserService) VerifyAndUpdateEmail(ctx context.Context, req *v1.VerifyAndUpdateEmailRequest) (*v1.VerifyAndUpdateEmailReply, error) {
+	// 从上下文中获取用户 ID（由 JWT 中间件设置）
+	userID := middleware.GetUserIDFromContext(ctx)
+	if userID == 0 {
+		return nil, v1.ErrorNotLoginError("未登录")
+	}
+
+	s.log.WithContext(ctx).Infof("验证码校验并更新邮箱: userID=%d", userID)
+
+	// 执行验证码校验和邮箱更新逻辑
+	message, err := s.uc.VerifyAndUpdateEmail(ctx, userID, req.Code)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("验证码校验失败: %v", err)
+		return &v1.VerifyAndUpdateEmailReply{
+			Success: false,
+			Message: err.Error(),
+		}, nil
+	}
+
+	return &v1.VerifyAndUpdateEmailReply{
+		Success: true,
+		Message: message,
 	}, nil
 }

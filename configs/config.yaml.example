@@ -10,7 +10,10 @@ data:
     driver: mysql
     source: root:root~@tcp(127.0.0.1:3306)/test?parseTime=True&loc=Local
   redis:
+    network: tcp
     addr: 127.0.0.1:6379
+    password: ""          # Redis 密码，如果没有密码则留空
+    db: 0                 # Redis 数据库编号 (0-15)
     read_timeout: 0.2s
     write_timeout: 0.2s
 auth:

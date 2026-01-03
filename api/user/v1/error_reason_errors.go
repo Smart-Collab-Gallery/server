@@ -109,3 +109,19 @@ func ErrorNoAuthError(format string, args ...interface{}) *errors.Error {
 func IsNoAuthError(err error) bool {
 	return errors.Reason(err) == ErrorReason_NO_AUTH_ERROR.String()
 }
+
+func ErrorVerificationCodeExpired(format string, args ...interface{}) *errors.Error {
+	return errors.New(400, ErrorReason_VERIFICATION_CODE_EXPIRED.String(), format)
+}
+
+func IsVerificationCodeExpired(err error) bool {
+	return errors.Reason(err) == ErrorReason_VERIFICATION_CODE_EXPIRED.String()
+}
+
+func ErrorVerificationCodeError(format string, args ...interface{}) *errors.Error {
+	return errors.New(400, ErrorReason_VERIFICATION_CODE_ERROR.String(), format)
+}
+
+func IsVerificationCodeError(err error) bool {
+	return errors.Reason(err) == ErrorReason_VERIFICATION_CODE_ERROR.String()
+}

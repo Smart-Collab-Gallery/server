@@ -63,6 +63,44 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.user.v1.DeleteUserReply'
+    /api/user/email/send-code:
+        post:
+            tags:
+                - User
+            description: 发送邮箱验证码
+            operationId: User_SendEmailVerificationCode
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.SendEmailVerificationCodeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.SendEmailVerificationCodeReply'
+    /api/user/email/verify:
+        post:
+            tags:
+                - User
+            description: 验证码校验并更新邮箱
+            operationId: User_VerifyAndUpdateEmail
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.VerifyAndUpdateEmailRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.VerifyAndUpdateEmailReply'
     /api/user/get:
         get:
             tags:
@@ -490,6 +528,20 @@ components:
                 checkPassword:
                     type: string
             description: 注册请求
+        api.user.v1.SendEmailVerificationCodeReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+            description: 发送邮箱验证码响应
+        api.user.v1.SendEmailVerificationCodeRequest:
+            type: object
+            properties:
+                email:
+                    type: string
+            description: 发送邮箱验证码请求
         api.user.v1.UpdateMyInfoReply:
             type: object
             properties:
@@ -508,8 +560,6 @@ components:
                 userBackgroundImage:
                     type: string
                 userProfile:
-                    type: string
-                userEmail:
                     type: string
                 userJob:
                     type: string
@@ -576,6 +626,20 @@ components:
                 updateTime:
                     type: string
             description: 用户视图对象（用于列表展示）
+        api.user.v1.VerifyAndUpdateEmailReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+            description: 验证码校验并更新邮箱响应
+        api.user.v1.VerifyAndUpdateEmailRequest:
+            type: object
+            properties:
+                code:
+                    type: string
+            description: 验证码校验并更新邮箱请求
         helloworld.v1.HelloReply:
             type: object
             properties:

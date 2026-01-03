@@ -34,10 +34,12 @@ message Data {
     string source = 2;
   }
   message Redis {
-    string network = 1;
-    string addr = 2;
-    google.protobuf.Duration read_timeout = 3;
-    google.protobuf.Duration write_timeout = 4;
+    string network = 1;                            // 网络类型 (tcp/unix)
+    string addr = 2;                               // Redis 地址
+    string password = 3;                           // Redis 密码
+    int32 db = 4;                                  // Redis 数据库编号 (0-15)
+    google.protobuf.Duration read_timeout = 5;     // 读超时
+    google.protobuf.Duration write_timeout = 6;    // 写超时
   }
   Database database = 1;
   Redis redis = 2;
