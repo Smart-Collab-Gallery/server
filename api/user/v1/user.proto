@@ -109,6 +109,14 @@ service User {
       body: "*"
     };
   }
+
+  // 修改用户登录密码
+  rpc UpdatePassword (UpdatePasswordRequest) returns (UpdatePasswordReply) {
+    option (google.api.http) = {
+      post: "/api/user/update/password"
+      body: "*"
+    };
+  }
 }
 
 // 注册请求
@@ -323,6 +331,19 @@ message VerifyAndUpdateEmailRequest {
 
 // 验证码校验并更新邮箱响应
 message VerifyAndUpdateEmailReply {
+  bool success = 1;  // 是否成功
+  string message = 2;  // 提示信息
+}
+
+// 修改密码请求
+message UpdatePasswordRequest {
+  string old_password = 1;     // 原密码
+  string new_password = 2;     // 新密码
+  string check_password = 3;   // 新密码确认
+}
+
+// 修改密码响应
+message UpdatePasswordReply {
   bool success = 1;  // 是否成功
   string message = 2;  // 提示信息
 }

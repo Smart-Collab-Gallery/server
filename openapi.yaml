@@ -245,6 +245,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.user.v1.UpdateUserReply'
+    /api/user/update/password:
+        post:
+            tags:
+                - User
+            description: 修改用户登录密码
+            operationId: User_UpdatePassword
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.user.v1.UpdatePasswordRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.user.v1.UpdatePasswordReply'
     /api/user/update/personal:
         post:
             tags:
@@ -566,6 +585,24 @@ components:
                 userTags:
                     type: string
             description: 更新个人信息请求
+        api.user.v1.UpdatePasswordReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+            description: 修改密码响应
+        api.user.v1.UpdatePasswordRequest:
+            type: object
+            properties:
+                oldPassword:
+                    type: string
+                newPassword:
+                    type: string
+                checkPassword:
+                    type: string
+            description: 修改密码请求
         api.user.v1.UpdateUserReply:
             type: object
             properties:

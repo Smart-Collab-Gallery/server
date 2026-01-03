@@ -386,10 +386,7 @@ func (s *UserService) SendEmailVerificationCode(ctx context.Context, req *v1.Sen
 	message, err := s.uc.SendEmailVerificationCode(ctx, userID)
 	if err != nil {
 		s.log.WithContext(ctx).Errorf("发送邮箱验证码失败: %v", err)
-		return &v1.SendEmailVerificationCodeReply{
-			Success: false,
-			Message: err.Error(),
-		}, nil
+		return nil, err
 	}
 
 	return &v1.SendEmailVerificationCodeReply{
@@ -412,13 +409,33 @@ func (s *UserService) VerifyAndUpdateEmail(ctx context.Context, req *v1.VerifyAn
 	message, err := s.uc.VerifyAndUpdateEmail(ctx, userID, req.Code, req.Email)
 	if err != nil {
 		s.log.WithContext(ctx).Errorf("验证码校验失败: %v", err)
-		return &v1.VerifyAndUpdateEmailReply{
-			Success: false,
-			Message: err.Error(),
-		}, nil
+		return nil, err
 	}
 
 	return &v1.VerifyAndUpdateEmailReply{
+		Success: true,
+		Message: message,
+	}, nil
+}
+
+// UpdatePassword 修改用户登录密码
+func (s *UserService) UpdatePassword(ctx context.Context, req *v1.UpdatePasswordRequest) (*v1.UpdatePasswordReply, error) {
+	// 从上下文中获取用户 ID（由 JWT 中间件设置）
+	userID := middleware.GetUserIDFromContext(ctx)
+	if userID == 0 {
+		return nil, v1.ErrorNotLoginError("未登录")
+	}
+
+	s.log.WithContext(ctx).Infof("修改用户密码: userID=%d", userID)
+
+	// 执行修改密码逻辑
+	message, err := s.uc.UpdatePassword(ctx, userID, req.OldPassword, req.NewPassword, req.CheckPassword)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("修改密码失败: %v", err)
+		return nil, err
+	}
+
+	return &v1.UpdatePasswordReply{
 		Success: true,
 		Message: message,
 	}, nil

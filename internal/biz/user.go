@@ -580,6 +580,71 @@ func (uc *UserUsecase) VerifyAndUpdateEmail(ctx context.Context, userID int64, c
 	return "邮箱更新成功", nil
 }
 
+// UpdatePassword 修改用户登录密码
+func (uc *UserUsecase) UpdatePassword(ctx context.Context, userID int64, oldPassword, newPassword, checkPassword string) (string, error) {
+	if userID <= 0 {
+		return "", v1.ErrorNotLoginError("未登录")
+	}
+
+	// 验证参数
+	oldPassword = strings.TrimSpace(oldPassword)
+	newPassword = strings.TrimSpace(newPassword)
+	checkPassword = strings.TrimSpace(checkPassword)
+
+	if oldPassword == "" {
+		return "", v1.ErrorParamsError("原密码不能为空")
+	}
+	if newPassword == "" {
+		return "", v1.ErrorParamsError("新密码不能为空")
+	}
+	if checkPassword == "" {
+		return "", v1.ErrorParamsError("确认密码不能为空")
+	}
+
+	// 密码长度验证
+	if len(newPassword) < 8 {
+		return "", v1.ErrorParamsError("新密码长度不能少于8位")
+	}
+
+	// 验证新密码和确认密码是否一致
+	if newPassword != checkPassword {
+		return "", v1.ErrorParamsError("两次输入的新密码不一致")
+	}
+
+	// 验证新密码不能与原密码相同
+	if oldPassword == newPassword {
+		return "", v1.ErrorParamsError("新密码不能与原密码相同")
+	}
+
+	// 查询用户信息
+	user, err := uc.repo.GetUserByID(ctx, userID)
+	if err != nil {
+		uc.log.Errorf("查询用户失败: userID=%d, err=%v", userID, err)
+		return "", v1.ErrorSystemError("查询用户失败")
+	}
+	if user == nil {
+		return "", v1.ErrorUserNotFound("用户不存在")
+	}
+
+	// 验证原密码是否正确
+	encryptedOldPassword := uc.encryptPassword(oldPassword)
+	if user.UserPassword != encryptedOldPassword {
+		return "", v1.ErrorParamsError("原密码错误")
+	}
+
+	// 加密新密码并更新
+	encryptedNewPassword := uc.encryptPassword(newPassword)
+	user.UserPassword = encryptedNewPassword
+
+	err = uc.repo.UpdateUser(ctx, user)
+	if err != nil {
+		uc.log.Errorf("更新密码失败: userID=%d, err=%v", userID, err)
+		return "", v1.ErrorSystemError("更新密码失败")
+	}
+
+	return "密码修改成功", nil
+}
+
 // generateVerificationCode 生成6位验证码
 func (uc *UserUsecase) generateVerificationCode() string {
 	// 使用时间戳生成6位数字验证码

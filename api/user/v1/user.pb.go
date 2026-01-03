@@ -1890,6 +1890,120 @@ func (x *VerifyAndUpdateEmailReply) GetMessage() string {
 	return ""
 }
 
+// 修改密码请求
+type UpdatePasswordRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	OldPassword   string                 `protobuf:"bytes,1,opt,name=old_password,json=oldPassword,proto3" json:"old_password,omitempty"`       // 原密码
+	NewPassword   string                 `protobuf:"bytes,2,opt,name=new_password,json=newPassword,proto3" json:"new_password,omitempty"`       // 新密码
+	CheckPassword string                 `protobuf:"bytes,3,opt,name=check_password,json=checkPassword,proto3" json:"check_password,omitempty"` // 新密码确认
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdatePasswordRequest) Reset() {
+	*x = UpdatePasswordRequest{}
+	mi := &file_user_v1_user_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdatePasswordRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdatePasswordRequest) ProtoMessage() {}
+
+func (x *UpdatePasswordRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdatePasswordRequest.ProtoReflect.Descriptor instead.
+func (*UpdatePasswordRequest) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *UpdatePasswordRequest) GetOldPassword() string {
+	if x != nil {
+		return x.OldPassword
+	}
+	return ""
+}
+
+func (x *UpdatePasswordRequest) GetNewPassword() string {
+	if x != nil {
+		return x.NewPassword
+	}
+	return ""
+}
+
+func (x *UpdatePasswordRequest) GetCheckPassword() string {
+	if x != nil {
+		return x.CheckPassword
+	}
+	return ""
+}
+
+// 修改密码响应
+type UpdatePasswordReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // 是否成功
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`  // 提示信息
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdatePasswordReply) Reset() {
+	*x = UpdatePasswordReply{}
+	mi := &file_user_v1_user_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdatePasswordReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdatePasswordReply) ProtoMessage() {}
+
+func (x *UpdatePasswordReply) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdatePasswordReply.ProtoReflect.Descriptor instead.
+func (*UpdatePasswordReply) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *UpdatePasswordReply) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *UpdatePasswordReply) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_user_v1_user_proto protoreflect.FileDescriptor
 
 const file_user_v1_user_proto_rawDesc = "" +
@@ -2050,7 +2164,14 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\x05email\x18\x02 \x01(\tR\x05email\"O\n" +
 	"\x19VerifyAndUpdateEmailReply\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\xb8\v\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\x84\x01\n" +
+	"\x15UpdatePasswordRequest\x12!\n" +
+	"\fold_password\x18\x01 \x01(\tR\voldPassword\x12!\n" +
+	"\fnew_password\x18\x02 \x01(\tR\vnewPassword\x12%\n" +
+	"\x0echeck_password\x18\x03 \x01(\tR\rcheckPassword\"I\n" +
+	"\x13UpdatePasswordReply\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage2\xb6\f\n" +
 	"\x04User\x12c\n" +
 	"\bRegister\x12\x1c.api.user.v1.RegisterRequest\x1a\x1a.api.user.v1.RegisterReply\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/user/register\x12W\n" +
 	"\x05Login\x12\x19.api.user.v1.LoginRequest\x1a\x17.api.user.v1.LoginReply\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/user/login\x12m\n" +
@@ -2066,7 +2187,8 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\x0eListUserByPage\x12\".api.user.v1.ListUserByPageRequest\x1a .api.user.v1.ListUserByPageReply\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/api/user/list/page/vo\x12v\n" +
 	"\fUpdateMyInfo\x12 .api.user.v1.UpdateMyInfoRequest\x1a\x1e.api.user.v1.UpdateMyInfoReply\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/user/update/personal\x12\x9c\x01\n" +
 	"\x19SendEmailVerificationCode\x12-.api.user.v1.SendEmailVerificationCodeRequest\x1a+.api.user.v1.SendEmailVerificationCodeReply\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/api/user/email/sendcode\x12\x8f\x01\n" +
-	"\x14VerifyAndUpdateEmail\x12(.api.user.v1.VerifyAndUpdateEmailRequest\x1a&.api.user.v1.VerifyAndUpdateEmailReply\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/user/email/verifycodeB;\n" +
+	"\x14VerifyAndUpdateEmail\x12(.api.user.v1.VerifyAndUpdateEmailRequest\x1a&.api.user.v1.VerifyAndUpdateEmailReply\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/user/email/verifycode\x12|\n" +
+	"\x0eUpdatePassword\x12\".api.user.v1.UpdatePasswordRequest\x1a .api.user.v1.UpdatePasswordReply\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/user/update/passwordB;\n" +
 	"\vapi.user.v1P\x01Z*smart-collab-gallery-server/api/user/v1;v1b\x06proto3"
 
 var (
@@ -2081,7 +2203,7 @@ func file_user_v1_user_proto_rawDescGZIP() []byte {
 	return file_user_v1_user_proto_rawDescData
 }
 
-var file_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 28)
+var file_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
 var file_user_v1_user_proto_goTypes = []any{
 	(*RegisterRequest)(nil),                  // 0: api.user.v1.RegisterRequest
 	(*RegisterReply)(nil),                    // 1: api.user.v1.RegisterReply
@@ -2111,6 +2233,8 @@ var file_user_v1_user_proto_goTypes = []any{
 	(*SendEmailVerificationCodeReply)(nil),   // 25: api.user.v1.SendEmailVerificationCodeReply
 	(*VerifyAndUpdateEmailRequest)(nil),      // 26: api.user.v1.VerifyAndUpdateEmailRequest
 	(*VerifyAndUpdateEmailReply)(nil),        // 27: api.user.v1.VerifyAndUpdateEmailReply
+	(*UpdatePasswordRequest)(nil),            // 28: api.user.v1.UpdatePasswordRequest
+	(*UpdatePasswordReply)(nil),              // 29: api.user.v1.UpdatePasswordReply
 }
 var file_user_v1_user_proto_depIdxs = []int32{
 	8,  // 0: api.user.v1.LoginReply.user:type_name -> api.user.v1.LoginUserVO
@@ -2130,21 +2254,23 @@ var file_user_v1_user_proto_depIdxs = []int32{
 	22, // 14: api.user.v1.User.UpdateMyInfo:input_type -> api.user.v1.UpdateMyInfoRequest
 	24, // 15: api.user.v1.User.SendEmailVerificationCode:input_type -> api.user.v1.SendEmailVerificationCodeRequest
 	26, // 16: api.user.v1.User.VerifyAndUpdateEmail:input_type -> api.user.v1.VerifyAndUpdateEmailRequest
-	1,  // 17: api.user.v1.User.Register:output_type -> api.user.v1.RegisterReply
-	3,  // 18: api.user.v1.User.Login:output_type -> api.user.v1.LoginReply
-	5,  // 19: api.user.v1.User.GetLoginUser:output_type -> api.user.v1.GetLoginUserReply
-	7,  // 20: api.user.v1.User.Logout:output_type -> api.user.v1.LogoutReply
-	11, // 21: api.user.v1.User.AddUser:output_type -> api.user.v1.AddUserReply
-	13, // 22: api.user.v1.User.GetUserById:output_type -> api.user.v1.GetUserByIdReply
-	15, // 23: api.user.v1.User.GetUserVOById:output_type -> api.user.v1.GetUserVOByIdReply
-	17, // 24: api.user.v1.User.DeleteUser:output_type -> api.user.v1.DeleteUserReply
-	19, // 25: api.user.v1.User.UpdateUser:output_type -> api.user.v1.UpdateUserReply
-	21, // 26: api.user.v1.User.ListUserByPage:output_type -> api.user.v1.ListUserByPageReply
-	23, // 27: api.user.v1.User.UpdateMyInfo:output_type -> api.user.v1.UpdateMyInfoReply
-	25, // 28: api.user.v1.User.SendEmailVerificationCode:output_type -> api.user.v1.SendEmailVerificationCodeReply
-	27, // 29: api.user.v1.User.VerifyAndUpdateEmail:output_type -> api.user.v1.VerifyAndUpdateEmailReply
-	17, // [17:30] is the sub-list for method output_type
-	4,  // [4:17] is the sub-list for method input_type
+	28, // 17: api.user.v1.User.UpdatePassword:input_type -> api.user.v1.UpdatePasswordRequest
+	1,  // 18: api.user.v1.User.Register:output_type -> api.user.v1.RegisterReply
+	3,  // 19: api.user.v1.User.Login:output_type -> api.user.v1.LoginReply
+	5,  // 20: api.user.v1.User.GetLoginUser:output_type -> api.user.v1.GetLoginUserReply
+	7,  // 21: api.user.v1.User.Logout:output_type -> api.user.v1.LogoutReply
+	11, // 22: api.user.v1.User.AddUser:output_type -> api.user.v1.AddUserReply
+	13, // 23: api.user.v1.User.GetUserById:output_type -> api.user.v1.GetUserByIdReply
+	15, // 24: api.user.v1.User.GetUserVOById:output_type -> api.user.v1.GetUserVOByIdReply
+	17, // 25: api.user.v1.User.DeleteUser:output_type -> api.user.v1.DeleteUserReply
+	19, // 26: api.user.v1.User.UpdateUser:output_type -> api.user.v1.UpdateUserReply
+	21, // 27: api.user.v1.User.ListUserByPage:output_type -> api.user.v1.ListUserByPageReply
+	23, // 28: api.user.v1.User.UpdateMyInfo:output_type -> api.user.v1.UpdateMyInfoReply
+	25, // 29: api.user.v1.User.SendEmailVerificationCode:output_type -> api.user.v1.SendEmailVerificationCodeReply
+	27, // 30: api.user.v1.User.VerifyAndUpdateEmail:output_type -> api.user.v1.VerifyAndUpdateEmailReply
+	29, // 31: api.user.v1.User.UpdatePassword:output_type -> api.user.v1.UpdatePasswordReply
+	18, // [18:32] is the sub-list for method output_type
+	4,  // [4:18] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
 	4,  // [4:4] is the sub-list for extension extendee
 	0,  // [0:4] is the sub-list for field type_name
@@ -2161,7 +2287,7 @@ func file_user_v1_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_v1_user_proto_rawDesc), len(file_user_v1_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   28,
+			NumMessages:   30,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

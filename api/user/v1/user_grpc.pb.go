@@ -32,6 +32,7 @@ const (
 	User_UpdateMyInfo_FullMethodName              = "/api.user.v1.User/UpdateMyInfo"
 	User_SendEmailVerificationCode_FullMethodName = "/api.user.v1.User/SendEmailVerificationCode"
 	User_VerifyAndUpdateEmail_FullMethodName      = "/api.user.v1.User/VerifyAndUpdateEmail"
+	User_UpdatePassword_FullMethodName            = "/api.user.v1.User/UpdatePassword"
 )
 
 // UserClient is the client API for User service.
@@ -64,6 +65,8 @@ type UserClient interface {
 	SendEmailVerificationCode(ctx context.Context, in *SendEmailVerificationCodeRequest, opts ...grpc.CallOption) (*SendEmailVerificationCodeReply, error)
 	// 验证码校验并更新邮箱
 	VerifyAndUpdateEmail(ctx context.Context, in *VerifyAndUpdateEmailRequest, opts ...grpc.CallOption) (*VerifyAndUpdateEmailReply, error)
+	// 修改用户登录密码
+	UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*UpdatePasswordReply, error)
 }
 
 type userClient struct {
@@ -204,6 +207,16 @@ func (c *userClient) VerifyAndUpdateEmail(ctx context.Context, in *VerifyAndUpda
 	return out, nil
 }
 
+func (c *userClient) UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*UpdatePasswordReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdatePasswordReply)
+	err := c.cc.Invoke(ctx, User_UpdatePassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility.
@@ -234,6 +247,8 @@ type UserServer interface {
 	SendEmailVerificationCode(context.Context, *SendEmailVerificationCodeRequest) (*SendEmailVerificationCodeReply, error)
 	// 验证码校验并更新邮箱
 	VerifyAndUpdateEmail(context.Context, *VerifyAndUpdateEmailRequest) (*VerifyAndUpdateEmailReply, error)
+	// 修改用户登录密码
+	UpdatePassword(context.Context, *UpdatePasswordRequest) (*UpdatePasswordReply, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -282,6 +297,9 @@ func (UnimplementedUserServer) SendEmailVerificationCode(context.Context, *SendE
 }
 func (UnimplementedUserServer) VerifyAndUpdateEmail(context.Context, *VerifyAndUpdateEmailRequest) (*VerifyAndUpdateEmailReply, error) {
 	return nil, status.Error(codes.Unimplemented, "method VerifyAndUpdateEmail not implemented")
+}
+func (UnimplementedUserServer) UpdatePassword(context.Context, *UpdatePasswordRequest) (*UpdatePasswordReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdatePassword not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 func (UnimplementedUserServer) testEmbeddedByValue()              {}
@@ -538,6 +556,24 @@ func _User_VerifyAndUpdateEmail_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UpdatePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UpdatePassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UpdatePassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UpdatePassword(ctx, req.(*UpdatePasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -596,6 +632,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyAndUpdateEmail",
 			Handler:    _User_VerifyAndUpdateEmail_Handler,
+		},
+		{
+			MethodName: "UpdatePassword",
+			Handler:    _User_UpdatePassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

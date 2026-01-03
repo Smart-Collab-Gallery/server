@@ -30,6 +30,7 @@ const OperationUserLogout = "/api.user.v1.User/Logout"
 const OperationUserRegister = "/api.user.v1.User/Register"
 const OperationUserSendEmailVerificationCode = "/api.user.v1.User/SendEmailVerificationCode"
 const OperationUserUpdateMyInfo = "/api.user.v1.User/UpdateMyInfo"
+const OperationUserUpdatePassword = "/api.user.v1.User/UpdatePassword"
 const OperationUserUpdateUser = "/api.user.v1.User/UpdateUser"
 const OperationUserVerifyAndUpdateEmail = "/api.user.v1.User/VerifyAndUpdateEmail"
 
@@ -56,6 +57,8 @@ type UserHTTPServer interface {
 	SendEmailVerificationCode(context.Context, *SendEmailVerificationCodeRequest) (*SendEmailVerificationCodeReply, error)
 	// UpdateMyInfo 更新个人信息（用户自己）
 	UpdateMyInfo(context.Context, *UpdateMyInfoRequest) (*UpdateMyInfoReply, error)
+	// UpdatePassword 修改用户登录密码
+	UpdatePassword(context.Context, *UpdatePasswordRequest) (*UpdatePasswordReply, error)
 	// UpdateUser 更新用户（仅管理员）
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserReply, error)
 	// VerifyAndUpdateEmail 验证码校验并更新邮箱
@@ -77,6 +80,7 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r.POST("/api/user/update/personal", _User_UpdateMyInfo0_HTTP_Handler(srv))
 	r.POST("/api/user/email/sendcode", _User_SendEmailVerificationCode0_HTTP_Handler(srv))
 	r.POST("/api/user/email/verifycode", _User_VerifyAndUpdateEmail0_HTTP_Handler(srv))
+	r.POST("/api/user/update/password", _User_UpdatePassword0_HTTP_Handler(srv))
 }
 
 func _User_Register0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -356,6 +360,28 @@ func _User_VerifyAndUpdateEmail0_HTTP_Handler(srv UserHTTPServer) func(ctx http.
 	}
 }
 
+func _User_UpdatePassword0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdatePasswordRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserUpdatePassword)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UpdatePassword(ctx, req.(*UpdatePasswordRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UpdatePasswordReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type UserHTTPClient interface {
 	// AddUser 创建用户（仅管理员）
 	AddUser(ctx context.Context, req *AddUserRequest, opts ...http.CallOption) (rsp *AddUserReply, err error)
@@ -379,6 +405,8 @@ type UserHTTPClient interface {
 	SendEmailVerificationCode(ctx context.Context, req *SendEmailVerificationCodeRequest, opts ...http.CallOption) (rsp *SendEmailVerificationCodeReply, err error)
 	// UpdateMyInfo 更新个人信息（用户自己）
 	UpdateMyInfo(ctx context.Context, req *UpdateMyInfoRequest, opts ...http.CallOption) (rsp *UpdateMyInfoReply, err error)
+	// UpdatePassword 修改用户登录密码
+	UpdatePassword(ctx context.Context, req *UpdatePasswordRequest, opts ...http.CallOption) (rsp *UpdatePasswordReply, err error)
 	// UpdateUser 更新用户（仅管理员）
 	UpdateUser(ctx context.Context, req *UpdateUserRequest, opts ...http.CallOption) (rsp *UpdateUserReply, err error)
 	// VerifyAndUpdateEmail 验证码校验并更新邮箱
@@ -539,6 +567,20 @@ func (c *UserHTTPClientImpl) UpdateMyInfo(ctx context.Context, in *UpdateMyInfoR
 	pattern := "/api/user/update/personal"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserUpdateMyInfo))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// UpdatePassword 修改用户登录密码
+func (c *UserHTTPClientImpl) UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...http.CallOption) (*UpdatePasswordReply, error) {
+	var out UpdatePasswordReply
+	pattern := "/api/user/update/password"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserUpdatePassword))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
