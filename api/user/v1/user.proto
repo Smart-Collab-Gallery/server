@@ -97,7 +97,7 @@ service User {
   // 发送邮箱验证码
   rpc SendEmailVerificationCode (SendEmailVerificationCodeRequest) returns (SendEmailVerificationCodeReply) {
     option (google.api.http) = {
-      post: "/api/user/email/send-code"
+      post: "/api/user/email/sendcode"
       body: "*"
     };
   }
@@ -105,7 +105,7 @@ service User {
   // 验证码校验并更新邮箱
   rpc VerifyAndUpdateEmail (VerifyAndUpdateEmailRequest) returns (VerifyAndUpdateEmailReply) {
     option (google.api.http) = {
-      post: "/api/user/email/verify"
+      post: "/api/user/email/verifycode"
       body: "*"
     };
   }

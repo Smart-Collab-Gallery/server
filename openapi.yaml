@@ -63,7 +63,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.user.v1.DeleteUserReply'
-    /api/user/email/send-code:
+    /api/user/email/sendcode:
         post:
             tags:
                 - User
@@ -82,7 +82,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.user.v1.SendEmailVerificationCodeReply'
-    /api/user/email/verify:
+    /api/user/email/verifycode:
         post:
             tags:
                 - User

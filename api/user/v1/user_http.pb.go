@@ -75,8 +75,8 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r.POST("/api/user/update", _User_UpdateUser0_HTTP_Handler(srv))
 	r.POST("/api/user/list/page/vo", _User_ListUserByPage0_HTTP_Handler(srv))
 	r.POST("/api/user/update/personal", _User_UpdateMyInfo0_HTTP_Handler(srv))
-	r.POST("/api/user/email/send-code", _User_SendEmailVerificationCode0_HTTP_Handler(srv))
-	r.POST("/api/user/email/verify", _User_VerifyAndUpdateEmail0_HTTP_Handler(srv))
+	r.POST("/api/user/email/sendcode", _User_SendEmailVerificationCode0_HTTP_Handler(srv))
+	r.POST("/api/user/email/verifycode", _User_VerifyAndUpdateEmail0_HTTP_Handler(srv))
 }
 
 func _User_Register0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -522,7 +522,7 @@ func (c *UserHTTPClientImpl) Register(ctx context.Context, in *RegisterRequest, 
 // SendEmailVerificationCode 发送邮箱验证码
 func (c *UserHTTPClientImpl) SendEmailVerificationCode(ctx context.Context, in *SendEmailVerificationCodeRequest, opts ...http.CallOption) (*SendEmailVerificationCodeReply, error) {
 	var out SendEmailVerificationCodeReply
-	pattern := "/api/user/email/send-code"
+	pattern := "/api/user/email/sendcode"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserSendEmailVerificationCode))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -564,7 +564,7 @@ func (c *UserHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateUserReque
 // VerifyAndUpdateEmail 验证码校验并更新邮箱
 func (c *UserHTTPClientImpl) VerifyAndUpdateEmail(ctx context.Context, in *VerifyAndUpdateEmailRequest, opts ...http.CallOption) (*VerifyAndUpdateEmailReply, error) {
 	var out VerifyAndUpdateEmailReply
-	pattern := "/api/user/email/verify"
+	pattern := "/api/user/email/verifycode"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserVerifyAndUpdateEmail))
 	opts = append(opts, http.PathTemplate(pattern))

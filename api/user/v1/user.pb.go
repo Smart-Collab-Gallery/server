@@ -2050,7 +2050,7 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\x04code\x18\x01 \x01(\tR\x04code\"O\n" +
 	"\x19VerifyAndUpdateEmailReply\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\xb5\v\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage2\xb8\v\n" +
 	"\x04User\x12c\n" +
 	"\bRegister\x12\x1c.api.user.v1.RegisterRequest\x1a\x1a.api.user.v1.RegisterReply\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/user/register\x12W\n" +
 	"\x05Login\x12\x19.api.user.v1.LoginRequest\x1a\x17.api.user.v1.LoginReply\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/user/login\x12m\n" +
@@ -2064,9 +2064,9 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\n" +
 	"UpdateUser\x12\x1e.api.user.v1.UpdateUserRequest\x1a\x1c.api.user.v1.UpdateUserReply\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/user/update\x12y\n" +
 	"\x0eListUserByPage\x12\".api.user.v1.ListUserByPageRequest\x1a .api.user.v1.ListUserByPageReply\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/api/user/list/page/vo\x12v\n" +
-	"\fUpdateMyInfo\x12 .api.user.v1.UpdateMyInfoRequest\x1a\x1e.api.user.v1.UpdateMyInfoReply\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/user/update/personal\x12\x9d\x01\n" +
-	"\x19SendEmailVerificationCode\x12-.api.user.v1.SendEmailVerificationCodeRequest\x1a+.api.user.v1.SendEmailVerificationCodeReply\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/user/email/send-code\x12\x8b\x01\n" +
-	"\x14VerifyAndUpdateEmail\x12(.api.user.v1.VerifyAndUpdateEmailRequest\x1a&.api.user.v1.VerifyAndUpdateEmailReply\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/api/user/email/verifyB;\n" +
+	"\fUpdateMyInfo\x12 .api.user.v1.UpdateMyInfoRequest\x1a\x1e.api.user.v1.UpdateMyInfoReply\"$\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/user/update/personal\x12\x9c\x01\n" +
+	"\x19SendEmailVerificationCode\x12-.api.user.v1.SendEmailVerificationCodeRequest\x1a+.api.user.v1.SendEmailVerificationCodeReply\"#\x82\xd3\xe4\x93\x02\x1d:\x01*\"\x18/api/user/email/sendcode\x12\x8f\x01\n" +
+	"\x14VerifyAndUpdateEmail\x12(.api.user.v1.VerifyAndUpdateEmailRequest\x1a&.api.user.v1.VerifyAndUpdateEmailReply\"%\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/api/user/email/verifycodeB;\n" +
 	"\vapi.user.v1P\x01Z*smart-collab-gallery-server/api/user/v1;v1b\x06proto3"
 
 var (
