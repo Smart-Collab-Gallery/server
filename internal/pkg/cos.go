@@ -17,11 +17,12 @@ import (
 
 // BucketConfig 单个存储桶配置
 type BucketConfig struct {
-	Name              string   // 存储桶名称
-	Region            string   // 地域
-	UploadDir         string   // 上传目录前缀
-	AllowedExtensions []string // 允许的文件扩展名
-	MaxSize           int64    // 最大文件大小（字节）
+	Name              string        // 存储桶名称
+	Region            string        // 地域
+	UploadDir         string        // 上传目录前缀
+	AllowedExtensions []string      // 允许的文件扩展名
+	MaxSize           int64         // 最大文件大小（字节）
+	PresignedExpire   time.Duration // 预签名 URL 过期时间
 }
 
 // COSManager 腾讯云 COS 管理器（支持多存储桶）
@@ -58,14 +59,22 @@ func NewCOSManager(c *conf.Cos, logger log.Logger) (*COSManager, error) {
 	// 转换存储桶配置
 	buckets := make(map[string]*BucketConfig, len(c.Buckets))
 	for key, bucket := range c.Buckets {
+		// 设置预签名过期时间，默认 10 分钟
+		presignedExpire := 10 * time.Minute
+		if bucket.PresignedExpire != nil {
+			presignedExpire = bucket.PresignedExpire.AsDuration()
+		}
+
 		buckets[key] = &BucketConfig{
 			Name:              bucket.BucketName,
 			Region:            bucket.Region,
 			UploadDir:         bucket.UploadDir,
 			AllowedExtensions: bucket.AllowedExtensions,
 			MaxSize:           bucket.MaxSize,
+			PresignedExpire:   presignedExpire,
 		}
-		helper.Infof("加载存储桶配置: key=%s, bucket=%s, region=%s", key, bucket.BucketName, bucket.Region)
+		helper.Infof("加载存储桶配置: key=%s, bucket=%s, region=%s, expire=%v",
+			key, bucket.BucketName, bucket.Region, presignedExpire)
 	}
 
 	// 验证默认存储桶
@@ -183,8 +192,8 @@ func (m *COSManager) GetUploadPresignedURL(ctx context.Context, opts *UploadOpti
 	// 生成唯一的文件 key（路径）
 	fileKey := generateFileKey(opts.FileName, bucketConfig.UploadDir)
 
-	// 设置过期时间为 10 分钟
-	expireDuration := 10 * time.Minute
+	// 使用存储桶配置的过期时间
+	expireDuration := bucketConfig.PresignedExpire
 
 	// 准备签名选项
 	signOpt := &cos.PresignedURLOptions{

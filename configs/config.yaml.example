@@ -34,7 +34,8 @@ cos:
         - ".png"
         - ".gif"
         - ".webp"
-      max_size: 10485760
+      max_size: 10485760            # 10MB
+      presigned_expire: 10m         # 预签名 URL 过期时间 (支持: s秒, m分钟, h小时)
     video:
       bucket_name: "video-bucket-1250000000"
       region: "ap-guangzhou"
@@ -45,7 +46,8 @@ cos:
         - ".mov"
         - ".mkv"
         - ".webm"
-      max_size: 104857600
+      max_size: 104857600           # 100MB
+      presigned_expire: 30m         # 视频文件较大，设置 30 分钟过期
     document:
       bucket_name: "doc-bucket-1250000000"
       region: "ap-guangzhou"
@@ -58,7 +60,8 @@ cos:
         - ".xlsx"
         - ".ppt"
         - ".pptx"
-      max_size: 52428800
+      max_size: 52428800            # 50MB
+      presigned_expire: 15m         # 文档设置 15 分钟过期
 email:
   smtp_host: "smtp.example.com"      # SMTP 服务器地址 (如 smtp.qq.com, smtp.163.com, smtp.gmail.com)
   smtp_port: 587                      # SMTP 端口 (587 为 TLS, 465 为 SSL)

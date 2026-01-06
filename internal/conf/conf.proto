@@ -71,6 +71,7 @@ message CosBucket {
   string upload_dir = 3;                        // 上传目录前缀
   repeated string allowed_extensions = 4;       // 允许的文件扩展名（如 .jpg, .png）
   int64 max_size = 5;                           // 最大文件大小（字节），0 表示不限制
+  google.protobuf.Duration presigned_expire = 6; // 预签名 URL 过期时间（如 10m, 1h），默认 10 分钟
 }
 
 // Email 邮件配置
