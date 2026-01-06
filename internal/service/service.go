@@ -9,7 +9,7 @@ import (
 )
 
 // ProviderSet is service providers.
-var ProviderSet = wire.NewSet(NewGreeterService, NewUserService, NewFileService, NewHealthService, NewJWTManager, NewCOSManager)
+var ProviderSet = wire.NewSet(NewGreeterService, NewUserService, NewFileService, NewHealthService, NewPictureService, NewJWTManager, NewCOSManager)
 
 // NewJWTManager 创建 JWT 管理器
 func NewJWTManager(bc *conf.Bootstrap) *pkg.JWTManager {

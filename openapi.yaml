@@ -25,6 +25,101 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.file.v1.GetUploadPresignedUrlReply'
+    /api/picture/delete:
+        post:
+            tags:
+                - Picture
+            description: 删除图片
+            operationId: Picture_DeletePicture
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.picture.v1.DeletePictureRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.picture.v1.DeletePictureReply'
+    /api/picture/get/{id}:
+        get:
+            tags:
+                - Picture
+            description: 根据 ID 获取图片
+            operationId: Picture_GetPictureById
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.picture.v1.GetPictureByIdReply'
+    /api/picture/list/page:
+        post:
+            tags:
+                - Picture
+            description: 分页查询图片列表
+            operationId: Picture_ListPictureByPage
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.picture.v1.ListPictureByPageRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.picture.v1.ListPictureByPageReply'
+    /api/picture/update:
+        post:
+            tags:
+                - Picture
+            description: 更新图片信息
+            operationId: Picture_UpdatePicture
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.picture.v1.UpdatePictureRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.picture.v1.UpdatePictureReply'
+    /api/picture/upload:
+        post:
+            tags:
+                - Picture
+            description: 上传图片
+            operationId: Picture_UploadPicture
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.picture.v1.UploadPictureRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.picture.v1.UploadPictureReply'
     /api/user/add:
         post:
             tags:
@@ -353,6 +448,165 @@ components:
                 status:
                     type: string
             description: Ping 响应
+        api.picture.v1.DeletePictureReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        api.picture.v1.DeletePictureRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+        api.picture.v1.GetPictureByIdReply:
+            type: object
+            properties:
+                picture:
+                    $ref: '#/components/schemas/api.picture.v1.PictureVO'
+        api.picture.v1.ListPictureByPageReply:
+            type: object
+            properties:
+                total:
+                    type: string
+                list:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.picture.v1.PictureVO'
+        api.picture.v1.ListPictureByPageRequest:
+            type: object
+            properties:
+                current:
+                    type: string
+                pageSize:
+                    type: string
+                name:
+                    type: string
+                introduction:
+                    type: string
+                category:
+                    type: string
+                tags:
+                    type: array
+                    items:
+                        type: string
+                userId:
+                    type: string
+                sortField:
+                    type: string
+                sortOrder:
+                    type: string
+        api.picture.v1.PictureVO:
+            type: object
+            properties:
+                id:
+                    type: string
+                url:
+                    type: string
+                name:
+                    type: string
+                introduction:
+                    type: string
+                tags:
+                    type: array
+                    items:
+                        type: string
+                category:
+                    type: string
+                picSize:
+                    type: string
+                picWidth:
+                    type: integer
+                    format: int32
+                picHeight:
+                    type: integer
+                    format: int32
+                picScale:
+                    type: number
+                    format: double
+                picFormat:
+                    type: string
+                userId:
+                    type: string
+                createTime:
+                    type: string
+                    format: date-time
+                editTime:
+                    type: string
+                    format: date-time
+                updateTime:
+                    type: string
+                    format: date-time
+                user:
+                    $ref: '#/components/schemas/api.picture.v1.UserVO'
+            description: PictureVO 图片视图对象
+        api.picture.v1.UpdatePictureReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        api.picture.v1.UpdatePictureRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                introduction:
+                    type: string
+                category:
+                    type: string
+                tags:
+                    type: array
+                    items:
+                        type: string
+        api.picture.v1.UploadPictureReply:
+            type: object
+            properties:
+                picture:
+                    $ref: '#/components/schemas/api.picture.v1.PictureVO'
+        api.picture.v1.UploadPictureRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                url:
+                    type: string
+                name:
+                    type: string
+                introduction:
+                    type: string
+                category:
+                    type: string
+                tags:
+                    type: array
+                    items:
+                        type: string
+                picSize:
+                    type: string
+                picWidth:
+                    type: integer
+                    format: int32
+                picHeight:
+                    type: integer
+                    format: int32
+                picFormat:
+                    type: string
+        api.picture.v1.UserVO:
+            type: object
+            properties:
+                id:
+                    type: string
+                userAccount:
+                    type: string
+                userName:
+                    type: string
+                userAvatar:
+                    type: string
+                userProfile:
+                    type: string
+                userRole:
+                    type: string
+            description: UserVO 用户视图对象（简化版）
         api.user.v1.AddUserReply:
             type: object
             properties:
@@ -688,4 +942,6 @@ tags:
     - name: Greeter
       description: The greeting service definition.
     - name: Health
+    - name: Picture
+      description: Picture 服务
     - name: User

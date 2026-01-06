@@ -35,6 +35,9 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 	userUsecase := biz.NewUserUsecase(userRepo, logger)
 	jwtManager := service.NewJWTManager(bootstrap)
 	userService := service.NewUserService(userUsecase, jwtManager, logger)
+	pictureRepo := data.NewPictureRepo(dataData, logger)
+	pictureUsecase := biz.NewPictureUsecase(pictureRepo, userRepo, logger)
+	pictureService := service.NewPictureService(pictureUsecase, logger)
 	healthService := service.NewHealthService()
 	grpcServer := server.NewGRPCServer(bootstrap, greeterService, userService, healthService, logger)
 	cosManager, err := service.NewCOSManager(bootstrap, logger)
@@ -43,7 +46,7 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 		return nil, nil, err
 	}
 	fileService := service.NewFileService(cosManager, logger)
-	httpServer := server.NewHTTPServer(bootstrap, greeterService, userService, fileService, healthService, jwtManager, logger)
+	httpServer := server.NewHTTPServer(bootstrap, greeterService, userService, fileService, pictureService, healthService, jwtManager, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 		cleanup()

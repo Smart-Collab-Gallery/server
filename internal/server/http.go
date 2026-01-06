@@ -6,6 +6,7 @@ import (
 	filev1 "smart-collab-gallery-server/api/file/v1"
 	healthv1 "smart-collab-gallery-server/api/health/v1"
 	v1 "smart-collab-gallery-server/api/helloworld/v1"
+	picturev1 "smart-collab-gallery-server/api/picture/v1"
 	userv1 "smart-collab-gallery-server/api/user/v1"
 	"smart-collab-gallery-server/internal/conf"
 	"smart-collab-gallery-server/internal/middleware"
@@ -21,7 +22,7 @@ import (
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(bc *conf.Bootstrap, greeter *service.GreeterService, user *service.UserService, file *service.FileService, health *service.HealthService, jwtManager *pkg.JWTManager, logger log.Logger) *http.Server {
+func NewHTTPServer(bc *conf.Bootstrap, greeter *service.GreeterService, user *service.UserService, file *service.FileService, picture *service.PictureService, health *service.HealthService, jwtManager *pkg.JWTManager, logger log.Logger) *http.Server {
 	c := bc.Server
 	var opts = []http.ServerOption{
 		// 应用统一响应格式编码器
@@ -58,6 +59,7 @@ func NewHTTPServer(bc *conf.Bootstrap, greeter *service.GreeterService, user *se
 	v1.RegisterGreeterHTTPServer(srv, greeter)
 	userv1.RegisterUserHTTPServer(srv, user)
 	filev1.RegisterFileHTTPServer(srv, file)
+	picturev1.RegisterPictureHTTPServer(srv, picture)
 	return srv
 }
 
@@ -69,6 +71,9 @@ func NewWhiteListMatcher() selector.MatchFunc {
 	whiteList["/api.user.v1.User/Login"] = struct{}{}
 	whiteList["/api.helloworld.v1.Greeter/SayHello"] = struct{}{}
 	whiteList["/api.health.v1.Health/Ping"] = struct{}{}
+	// 图片公开接口（不需要登录即可查看）
+	whiteList["/api.picture.v1.Picture/GetPictureById"] = struct{}{}
+	whiteList["/api.picture.v1.Picture/ListPictureByPage"] = struct{}{}
 
 	return func(ctx context.Context, operation string) bool {
 		if _, ok := whiteList[operation]; ok {

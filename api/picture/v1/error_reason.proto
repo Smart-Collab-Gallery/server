@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package api.picture.v1;
+
+option go_package = "smart-collab-gallery-server/api/picture/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.picture.v1";
+
+import "errors/errors.proto";
+
+enum ErrorReason {
+  option (errors.default_code) = 500;
+
+  // 图片相关错误
+  PICTURE_NOT_FOUND = 0 [(errors.code) = 404];
+  PICTURE_UPLOAD_FAILED = 1 [(errors.code) = 500];
+  PICTURE_DELETE_FAILED = 2 [(errors.code) = 500];
+  PICTURE_UPDATE_FAILED = 3 [(errors.code) = 500];
+  PICTURE_NO_AUTH = 4 [(errors.code) = 403];
+  PICTURE_FILE_TOO_LARGE = 5 [(errors.code) = 400];
+  PICTURE_FORMAT_ERROR = 6 [(errors.code) = 400];
+  PARAMS_ERROR = 7 [(errors.code) = 400];
+  INVALID_ARGUMENT = 8 [(errors.code) = 400];
+  UNAUTHORIZED = 9 [(errors.code) = 401];
+}

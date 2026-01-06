@@ -1,0 +1,154 @@
+syntax = "proto3";
+
+package api.picture.v1;
+
+option go_package = "smart-collab-gallery-server/api/picture/v1;v1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+// Picture 服务
+service Picture {
+  // 上传图片
+  rpc UploadPicture (UploadPictureRequest) returns (UploadPictureReply) {
+    option (google.api.http) = {
+      post: "/api/picture/upload"
+      body: "*"
+    };
+  }
+
+  // 根据 ID 获取图片
+  rpc GetPictureById (GetPictureByIdRequest) returns (GetPictureByIdReply) {
+    option (google.api.http) = {
+      get: "/api/picture/get/{id}"
+    };
+  }
+
+  // 分页查询图片列表
+  rpc ListPictureByPage (ListPictureByPageRequest) returns (ListPictureByPageReply) {
+    option (google.api.http) = {
+      post: "/api/picture/list/page"
+      body: "*"
+    };
+  }
+
+  // 删除图片
+  rpc DeletePicture (DeletePictureRequest) returns (DeletePictureReply) {
+    option (google.api.http) = {
+      post: "/api/picture/delete"
+      body: "*"
+    };
+  }
+
+  // 更新图片信息
+  rpc UpdatePicture (UpdatePictureRequest) returns (UpdatePictureReply) {
+    option (google.api.http) = {
+      post: "/api/picture/update"
+      body: "*"
+    };
+  }
+}
+
+// ========== 上传图片 ==========
+
+message UploadPictureRequest {
+  int64 id = 1;                    // 图片 id（用于修改，可选）
+  string url = 2;                  // COS 图片 URL
+  string name = 3;                 // 图片名称
+  string introduction = 4;         // 简介
+  string category = 5;             // 分类
+  repeated string tags = 6;        // 标签数组
+  int64 pic_size = 7;              // 图片体积（字节）
+  int32 pic_width = 8;             // 图片宽度
+  int32 pic_height = 9;            // 图片高度
+  string pic_format = 10;          // 图片格式
+}
+
+message UploadPictureReply {
+  PictureVO picture = 1;
+}
+
+// ========== 获取图片 ==========
+
+message GetPictureByIdRequest {
+  int64 id = 1;
+}
+
+message GetPictureByIdReply {
+  PictureVO picture = 1;
+}
+
+// ========== 分页查询 ==========
+
+message ListPictureByPageRequest {
+  int64 current = 1;               // 当前页
+  int64 page_size = 2;             // 每页大小
+  string name = 3;                 // 图片名称（模糊搜索）
+  string introduction = 4;         // 简介（模糊搜索）
+  string category = 5;             // 分类
+  repeated string tags = 6;        // 标签
+  int64 user_id = 7;               // 用户 ID
+  string sort_field = 8;           // 排序字段
+  string sort_order = 9;           // 排序顺序（ascend/descend）
+}
+
+message ListPictureByPageReply {
+  int64 total = 1;                 // 总数
+  repeated PictureVO list = 2;     // 列表
+}
+
+// ========== 删除图片 ==========
+
+message DeletePictureRequest {
+  int64 id = 1;
+}
+
+message DeletePictureReply {
+  bool success = 1;
+}
+
+// ========== 更新图片 ==========
+
+message UpdatePictureRequest {
+  int64 id = 1;                    // 图片 id
+  string name = 2;                 // 图片名称
+  string introduction = 3;         // 简介
+  string category = 4;             // 分类
+  repeated string tags = 5;        // 标签数组
+}
+
+message UpdatePictureReply {
+  bool success = 1;
+}
+
+// ========== 通用消息 ==========
+
+// PictureVO 图片视图对象
+message PictureVO {
+  int64 id = 1;                                      // id
+  string url = 2;                                    // 图片 url
+  string name = 3;                                   // 图片名称
+  string introduction = 4;                           // 简介
+  repeated string tags = 5;                          // 标签
+  string category = 6;                               // 分类
+  int64 pic_size = 7;                                // 文件体积
+  int32 pic_width = 8;                               // 图片宽度
+  int32 pic_height = 9;                              // 图片高度
+  double pic_scale = 10;                             // 图片比例
+  string pic_format = 11;                            // 图片格式
+  int64 user_id = 12;                                // 用户 id
+  google.protobuf.Timestamp create_time = 13;        // 创建时间
+  google.protobuf.Timestamp edit_time = 14;          // 编辑时间
+  google.protobuf.Timestamp update_time = 15;        // 更新时间
+  UserVO user = 16;                                  // 创建用户信息
+}
+
+// UserVO 用户视图对象（简化版）
+message UserVO {
+  int64 id = 1;
+  string user_account = 2;
+  string user_name = 3;
+  string user_avatar = 4;
+  string user_profile = 5;
+  string user_role = 6;
+}
