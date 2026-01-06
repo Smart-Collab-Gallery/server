@@ -248,3 +248,111 @@ func (s *PictureService) convertToProtoUserVO(userVO *biz.UserVO) *pb.UserVO {
 		UserRole:    userVO.UserRole,
 	}
 }
+
+// EditPicture 编辑图片（用户版本）
+func (s *PictureService) EditPicture(ctx context.Context, req *pb.EditPictureRequest) (*pb.EditPictureReply, error) {
+	// 从上下文获取用户 ID
+	userID, err := s.getUserID(ctx)
+	if err != nil {
+		return nil, v1.ErrorPictureNoAuth("无法获取用户信息: %v", err)
+	}
+
+	// 调用 biz 层编辑图片
+	pictureVO := &biz.PictureVO{
+		ID:           req.Id,
+		URL:          req.Url,
+		Name:         req.Name,
+		Introduction: req.Introduction,
+		Category:     req.Category,
+		Tags:         req.Tags,
+	}
+
+	err = s.pictureUC.EditPicture(ctx, userID, pictureVO)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.EditPictureReply{
+		Success: true,
+	}, nil
+}
+
+// GetPictureVOById 根据 ID 获取图片（脱敏版本）
+func (s *PictureService) GetPictureVOById(ctx context.Context, req *pb.GetPictureVOByIdRequest) (*pb.GetPictureVOByIdReply, error) {
+	// 调用原有的 GetPictureById 方法
+	pictureVO, err := s.pictureUC.GetPictureById(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	// 脱敏处理：移除敏感字段（这里用户信息保持简单，可以根据需要进一步脱敏）
+	return &pb.GetPictureVOByIdReply{
+		Picture: s.convertToProtoPictureVO(pictureVO),
+	}, nil
+}
+
+// ListPictureVOByPage 分页获取图片列表（脱敏版本，最多 20 条）
+func (s *PictureService) ListPictureVOByPage(ctx context.Context, req *pb.ListPictureVOByPageRequest) (*pb.ListPictureVOByPageReply, error) {
+	// 限制每页最多 20 条
+	pageSize := req.PageSize
+	if pageSize <= 0 || pageSize > 20 {
+		pageSize = 20
+	}
+
+	// 构建查询参数
+	params := &biz.PictureQueryParams{
+		Current:      req.Current,
+		PageSize:     pageSize,
+		SortField:    req.SortField,
+		SortOrder:    req.SortOrder,
+		ID:           req.Id,
+		Name:         req.Name,
+		Introduction: req.Introduction,
+		Category:     req.Category,
+		Tags:         req.Tags,
+		SearchText:   req.SearchText,
+		UserID:       req.UserId,
+	}
+
+	// 调用原有的 ListPictureByPage 方法
+	pictures, total, err := s.pictureUC.ListPictureByPage(ctx, params)
+	if err != nil {
+		return nil, err
+	}
+
+	// 转换为 proto 对象列表
+	pictureList := make([]*pb.PictureVO, 0, len(pictures))
+	for _, picture := range pictures {
+		pictureList = append(pictureList, s.convertToProtoPictureVO(picture))
+	}
+
+	return &pb.ListPictureVOByPageReply{
+		Records: pictureList,
+		Total:   total,
+	}, nil
+}
+
+// GetPictureTagCategory 获取图片标签和分类（预设值）
+func (s *PictureService) GetPictureTagCategory(ctx context.Context, req *pb.GetPictureTagCategoryRequest) (*pb.GetPictureTagCategoryReply, error) {
+	// 返回预设的标签和分类列表
+	return &pb.GetPictureTagCategoryReply{
+		TagList: []string{
+			"热门",
+			"搞笑",
+			"生活",
+			"高清",
+			"艺术",
+			"校园",
+			"背景",
+			"简历",
+			"创意",
+		},
+		CategoryList: []string{
+			"模板",
+			"电商",
+			"表情包",
+			"素材",
+			"海报",
+		},
+	}, nil
+}

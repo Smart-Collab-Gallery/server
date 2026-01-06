@@ -267,3 +267,45 @@ func (uc *PictureUsecase) UpdatePicture(ctx context.Context, id int64, name, int
 
 	return nil
 }
+
+// EditPicture 编辑图片（用户使用）
+func (uc *PictureUsecase) EditPicture(ctx context.Context, id int64, name, introduction, category string, tags []string, userID int64) error {
+	uc.log.WithContext(ctx).Infof("编辑图片: id=%d, userID=%d", id, userID)
+
+	// 检查图片是否存在
+	picture, err := uc.pictureRepo.GetPictureByID(ctx, id)
+	if err != nil {
+		return v1.ErrorPictureNotFound("图片不存在")
+	}
+
+	if picture == nil {
+		return v1.ErrorPictureNotFound("图片不存在")
+	}
+
+	// 检查权限：只能编辑自己的图片
+	if picture.UserID != userID {
+		return v1.ErrorPictureNoAuth("无权限操作该图片")
+	}
+
+	// 更新字段
+	picture.Name = name
+	picture.Introduction = introduction
+	picture.Category = category
+	picture.EditTime = time.Now()
+
+	// 转换标签为 JSON
+	if len(tags) > 0 {
+		tagsBytes, err := json.Marshal(tags)
+		if err != nil {
+			return v1.ErrorParamsError("标签格式错误")
+		}
+		picture.Tags = string(tagsBytes)
+	}
+
+	err = uc.pictureRepo.UpdatePicture(ctx, picture)
+	if err != nil {
+		return v1.ErrorPictureUpdateFailed("图片编辑失败")
+	}
+
+	return nil
+}

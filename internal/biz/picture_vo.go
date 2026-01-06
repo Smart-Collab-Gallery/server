@@ -54,6 +54,7 @@ type PictureQueryParams struct {
 	Category     string
 	Tags         []string
 	UserID       *int64
+	SearchText   string // 搜索词（同时搜名称、简介等）
 	SortField    string
 	SortOrder    string // ascend 或 descend
 }

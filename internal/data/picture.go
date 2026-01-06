@@ -126,6 +126,12 @@ func (r *pictureRepo) ListPictureByPage(ctx context.Context, params *biz.Picture
 	// 构建查询
 	query := r.data.db.WithContext(ctx).Model(&Picture{}).Where("isDelete = 0")
 
+	// 搜索词查询（同时搜索名称和简介）
+	if params.SearchText != "" {
+		query = query.Where("name LIKE ? OR introduction LIKE ?",
+			"%"+params.SearchText+"%", "%"+params.SearchText+"%")
+	}
+
 	// 条件查询
 	if params.Name != "" {
 		query = query.Where("name LIKE ?", "%"+params.Name+"%")

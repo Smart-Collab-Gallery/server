@@ -44,6 +44,43 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.picture.v1.DeletePictureReply'
+    /api/picture/edit:
+        post:
+            tags:
+                - Picture
+            description: 编辑图片（用户）
+            operationId: Picture_EditPicture
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.picture.v1.EditPictureRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.picture.v1.EditPictureReply'
+    /api/picture/get/vo:
+        get:
+            tags:
+                - Picture
+            description: 获取图片 VO（脱敏）
+            operationId: Picture_GetPictureVOById
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.picture.v1.GetPictureVOByIdReply'
     /api/picture/get/{id}:
         get:
             tags:
@@ -82,11 +119,43 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/api.picture.v1.ListPictureByPageReply'
+    /api/picture/list/page/vo:
+        post:
+            tags:
+                - Picture
+            description: 分页获取图片列表 VO（脱敏）
+            operationId: Picture_ListPictureVOByPage
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.picture.v1.ListPictureVOByPageRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.picture.v1.ListPictureVOByPageReply'
+    /api/picture/tag_category:
+        get:
+            tags:
+                - Picture
+            description: 获取标签和分类
+            operationId: Picture_GetPictureTagCategory
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.picture.v1.GetPictureTagCategoryReply'
     /api/picture/update:
         post:
             tags:
                 - Picture
-            description: 更新图片信息
+            description: 更新图片信息（管理员）
             operationId: Picture_UpdatePicture
             requestBody:
                 content:
@@ -458,7 +527,43 @@ components:
             properties:
                 id:
                     type: string
+        api.picture.v1.EditPictureReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        api.picture.v1.EditPictureRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                introduction:
+                    type: string
+                category:
+                    type: string
+                tags:
+                    type: array
+                    items:
+                        type: string
         api.picture.v1.GetPictureByIdReply:
+            type: object
+            properties:
+                picture:
+                    $ref: '#/components/schemas/api.picture.v1.PictureVO'
+        api.picture.v1.GetPictureTagCategoryReply:
+            type: object
+            properties:
+                tagList:
+                    type: array
+                    items:
+                        type: string
+                categoryList:
+                    type: array
+                    items:
+                        type: string
+        api.picture.v1.GetPictureVOByIdReply:
             type: object
             properties:
                 picture:
@@ -494,6 +599,40 @@ components:
                 sortField:
                     type: string
                 sortOrder:
+                    type: string
+        api.picture.v1.ListPictureVOByPageReply:
+            type: object
+            properties:
+                total:
+                    type: string
+                list:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.picture.v1.PictureVO'
+        api.picture.v1.ListPictureVOByPageRequest:
+            type: object
+            properties:
+                current:
+                    type: string
+                pageSize:
+                    type: string
+                name:
+                    type: string
+                introduction:
+                    type: string
+                category:
+                    type: string
+                tags:
+                    type: array
+                    items:
+                        type: string
+                userId:
+                    type: string
+                sortField:
+                    type: string
+                sortOrder:
+                    type: string
+                searchText:
                     type: string
         api.picture.v1.PictureVO:
             type: object

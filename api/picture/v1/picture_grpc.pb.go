@@ -19,11 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Picture_UploadPicture_FullMethodName     = "/api.picture.v1.Picture/UploadPicture"
-	Picture_GetPictureById_FullMethodName    = "/api.picture.v1.Picture/GetPictureById"
-	Picture_ListPictureByPage_FullMethodName = "/api.picture.v1.Picture/ListPictureByPage"
-	Picture_DeletePicture_FullMethodName     = "/api.picture.v1.Picture/DeletePicture"
-	Picture_UpdatePicture_FullMethodName     = "/api.picture.v1.Picture/UpdatePicture"
+	Picture_UploadPicture_FullMethodName         = "/api.picture.v1.Picture/UploadPicture"
+	Picture_GetPictureById_FullMethodName        = "/api.picture.v1.Picture/GetPictureById"
+	Picture_ListPictureByPage_FullMethodName     = "/api.picture.v1.Picture/ListPictureByPage"
+	Picture_DeletePicture_FullMethodName         = "/api.picture.v1.Picture/DeletePicture"
+	Picture_UpdatePicture_FullMethodName         = "/api.picture.v1.Picture/UpdatePicture"
+	Picture_EditPicture_FullMethodName           = "/api.picture.v1.Picture/EditPicture"
+	Picture_GetPictureVOById_FullMethodName      = "/api.picture.v1.Picture/GetPictureVOById"
+	Picture_ListPictureVOByPage_FullMethodName   = "/api.picture.v1.Picture/ListPictureVOByPage"
+	Picture_GetPictureTagCategory_FullMethodName = "/api.picture.v1.Picture/GetPictureTagCategory"
 )
 
 // PictureClient is the client API for Picture service.
@@ -38,8 +42,16 @@ type PictureClient interface {
 	ListPictureByPage(ctx context.Context, in *ListPictureByPageRequest, opts ...grpc.CallOption) (*ListPictureByPageReply, error)
 	// 删除图片
 	DeletePicture(ctx context.Context, in *DeletePictureRequest, opts ...grpc.CallOption) (*DeletePictureReply, error)
-	// 更新图片信息
+	// 更新图片信息（管理员）
 	UpdatePicture(ctx context.Context, in *UpdatePictureRequest, opts ...grpc.CallOption) (*UpdatePictureReply, error)
+	// 编辑图片（用户）
+	EditPicture(ctx context.Context, in *EditPictureRequest, opts ...grpc.CallOption) (*EditPictureReply, error)
+	// 获取图片 VO（脱敏）
+	GetPictureVOById(ctx context.Context, in *GetPictureVOByIdRequest, opts ...grpc.CallOption) (*GetPictureVOByIdReply, error)
+	// 分页获取图片列表 VO（脱敏）
+	ListPictureVOByPage(ctx context.Context, in *ListPictureVOByPageRequest, opts ...grpc.CallOption) (*ListPictureVOByPageReply, error)
+	// 获取标签和分类
+	GetPictureTagCategory(ctx context.Context, in *GetPictureTagCategoryRequest, opts ...grpc.CallOption) (*GetPictureTagCategoryReply, error)
 }
 
 type pictureClient struct {
@@ -95,6 +107,42 @@ func (c *pictureClient) UpdatePicture(ctx context.Context, in *UpdatePictureRequ
 	return out, nil
 }
 
+func (c *pictureClient) EditPicture(ctx context.Context, in *EditPictureRequest, opts ...grpc.CallOption) (*EditPictureReply, error) {
+	out := new(EditPictureReply)
+	err := c.cc.Invoke(ctx, Picture_EditPicture_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pictureClient) GetPictureVOById(ctx context.Context, in *GetPictureVOByIdRequest, opts ...grpc.CallOption) (*GetPictureVOByIdReply, error) {
+	out := new(GetPictureVOByIdReply)
+	err := c.cc.Invoke(ctx, Picture_GetPictureVOById_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pictureClient) ListPictureVOByPage(ctx context.Context, in *ListPictureVOByPageRequest, opts ...grpc.CallOption) (*ListPictureVOByPageReply, error) {
+	out := new(ListPictureVOByPageReply)
+	err := c.cc.Invoke(ctx, Picture_ListPictureVOByPage_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pictureClient) GetPictureTagCategory(ctx context.Context, in *GetPictureTagCategoryRequest, opts ...grpc.CallOption) (*GetPictureTagCategoryReply, error) {
+	out := new(GetPictureTagCategoryReply)
+	err := c.cc.Invoke(ctx, Picture_GetPictureTagCategory_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PictureServer is the server API for Picture service.
 // All implementations must embed UnimplementedPictureServer
 // for forward compatibility
@@ -107,8 +155,16 @@ type PictureServer interface {
 	ListPictureByPage(context.Context, *ListPictureByPageRequest) (*ListPictureByPageReply, error)
 	// 删除图片
 	DeletePicture(context.Context, *DeletePictureRequest) (*DeletePictureReply, error)
-	// 更新图片信息
+	// 更新图片信息（管理员）
 	UpdatePicture(context.Context, *UpdatePictureRequest) (*UpdatePictureReply, error)
+	// 编辑图片（用户）
+	EditPicture(context.Context, *EditPictureRequest) (*EditPictureReply, error)
+	// 获取图片 VO（脱敏）
+	GetPictureVOById(context.Context, *GetPictureVOByIdRequest) (*GetPictureVOByIdReply, error)
+	// 分页获取图片列表 VO（脱敏）
+	ListPictureVOByPage(context.Context, *ListPictureVOByPageRequest) (*ListPictureVOByPageReply, error)
+	// 获取标签和分类
+	GetPictureTagCategory(context.Context, *GetPictureTagCategoryRequest) (*GetPictureTagCategoryReply, error)
 	mustEmbedUnimplementedPictureServer()
 }
 
@@ -130,6 +186,18 @@ func (UnimplementedPictureServer) DeletePicture(context.Context, *DeletePictureR
 }
 func (UnimplementedPictureServer) UpdatePicture(context.Context, *UpdatePictureRequest) (*UpdatePictureReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePicture not implemented")
+}
+func (UnimplementedPictureServer) EditPicture(context.Context, *EditPictureRequest) (*EditPictureReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EditPicture not implemented")
+}
+func (UnimplementedPictureServer) GetPictureVOById(context.Context, *GetPictureVOByIdRequest) (*GetPictureVOByIdReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPictureVOById not implemented")
+}
+func (UnimplementedPictureServer) ListPictureVOByPage(context.Context, *ListPictureVOByPageRequest) (*ListPictureVOByPageReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListPictureVOByPage not implemented")
+}
+func (UnimplementedPictureServer) GetPictureTagCategory(context.Context, *GetPictureTagCategoryRequest) (*GetPictureTagCategoryReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPictureTagCategory not implemented")
 }
 func (UnimplementedPictureServer) mustEmbedUnimplementedPictureServer() {}
 
@@ -234,6 +302,78 @@ func _Picture_UpdatePicture_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Picture_EditPicture_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EditPictureRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PictureServer).EditPicture(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Picture_EditPicture_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PictureServer).EditPicture(ctx, req.(*EditPictureRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Picture_GetPictureVOById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPictureVOByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PictureServer).GetPictureVOById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Picture_GetPictureVOById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PictureServer).GetPictureVOById(ctx, req.(*GetPictureVOByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Picture_ListPictureVOByPage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListPictureVOByPageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PictureServer).ListPictureVOByPage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Picture_ListPictureVOByPage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PictureServer).ListPictureVOByPage(ctx, req.(*ListPictureVOByPageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Picture_GetPictureTagCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPictureTagCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PictureServer).GetPictureTagCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Picture_GetPictureTagCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PictureServer).GetPictureTagCategory(ctx, req.(*GetPictureTagCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Picture_ServiceDesc is the grpc.ServiceDesc for Picture service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -260,6 +400,22 @@ var Picture_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdatePicture",
 			Handler:    _Picture_UpdatePicture_Handler,
+		},
+		{
+			MethodName: "EditPicture",
+			Handler:    _Picture_EditPicture_Handler,
+		},
+		{
+			MethodName: "GetPictureVOById",
+			Handler:    _Picture_GetPictureVOById_Handler,
+		},
+		{
+			MethodName: "ListPictureVOByPage",
+			Handler:    _Picture_ListPictureVOByPage_Handler,
+		},
+		{
+			MethodName: "GetPictureTagCategory",
+			Handler:    _Picture_GetPictureTagCategory_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

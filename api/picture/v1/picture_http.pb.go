@@ -20,19 +20,31 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 const OperationPictureDeletePicture = "/api.picture.v1.Picture/DeletePicture"
+const OperationPictureEditPicture = "/api.picture.v1.Picture/EditPicture"
 const OperationPictureGetPictureById = "/api.picture.v1.Picture/GetPictureById"
+const OperationPictureGetPictureTagCategory = "/api.picture.v1.Picture/GetPictureTagCategory"
+const OperationPictureGetPictureVOById = "/api.picture.v1.Picture/GetPictureVOById"
 const OperationPictureListPictureByPage = "/api.picture.v1.Picture/ListPictureByPage"
+const OperationPictureListPictureVOByPage = "/api.picture.v1.Picture/ListPictureVOByPage"
 const OperationPictureUpdatePicture = "/api.picture.v1.Picture/UpdatePicture"
 const OperationPictureUploadPicture = "/api.picture.v1.Picture/UploadPicture"
 
 type PictureHTTPServer interface {
 	// DeletePicture 删除图片
 	DeletePicture(context.Context, *DeletePictureRequest) (*DeletePictureReply, error)
+	// EditPicture 编辑图片（用户）
+	EditPicture(context.Context, *EditPictureRequest) (*EditPictureReply, error)
 	// GetPictureById 根据 ID 获取图片
 	GetPictureById(context.Context, *GetPictureByIdRequest) (*GetPictureByIdReply, error)
+	// GetPictureTagCategory 获取标签和分类
+	GetPictureTagCategory(context.Context, *GetPictureTagCategoryRequest) (*GetPictureTagCategoryReply, error)
+	// GetPictureVOById 获取图片 VO（脱敏）
+	GetPictureVOById(context.Context, *GetPictureVOByIdRequest) (*GetPictureVOByIdReply, error)
 	// ListPictureByPage 分页查询图片列表
 	ListPictureByPage(context.Context, *ListPictureByPageRequest) (*ListPictureByPageReply, error)
-	// UpdatePicture 更新图片信息
+	// ListPictureVOByPage 分页获取图片列表 VO（脱敏）
+	ListPictureVOByPage(context.Context, *ListPictureVOByPageRequest) (*ListPictureVOByPageReply, error)
+	// UpdatePicture 更新图片信息（管理员）
 	UpdatePicture(context.Context, *UpdatePictureRequest) (*UpdatePictureReply, error)
 	// UploadPicture 上传图片
 	UploadPicture(context.Context, *UploadPictureRequest) (*UploadPictureReply, error)
@@ -45,6 +57,10 @@ func RegisterPictureHTTPServer(s *http.Server, srv PictureHTTPServer) {
 	r.POST("/api/picture/list/page", _Picture_ListPictureByPage0_HTTP_Handler(srv))
 	r.POST("/api/picture/delete", _Picture_DeletePicture0_HTTP_Handler(srv))
 	r.POST("/api/picture/update", _Picture_UpdatePicture0_HTTP_Handler(srv))
+	r.POST("/api/picture/edit", _Picture_EditPicture0_HTTP_Handler(srv))
+	r.GET("/api/picture/get/vo", _Picture_GetPictureVOById0_HTTP_Handler(srv))
+	r.POST("/api/picture/list/page/vo", _Picture_ListPictureVOByPage0_HTTP_Handler(srv))
+	r.GET("/api/picture/tag_category", _Picture_GetPictureTagCategory0_HTTP_Handler(srv))
 }
 
 func _Picture_UploadPicture0_HTTP_Handler(srv PictureHTTPServer) func(ctx http.Context) error {
@@ -157,14 +173,104 @@ func _Picture_UpdatePicture0_HTTP_Handler(srv PictureHTTPServer) func(ctx http.C
 	}
 }
 
+func _Picture_EditPicture0_HTTP_Handler(srv PictureHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in EditPictureRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationPictureEditPicture)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.EditPicture(ctx, req.(*EditPictureRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*EditPictureReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Picture_GetPictureVOById0_HTTP_Handler(srv PictureHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetPictureVOByIdRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationPictureGetPictureVOById)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetPictureVOById(ctx, req.(*GetPictureVOByIdRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetPictureVOByIdReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Picture_ListPictureVOByPage0_HTTP_Handler(srv PictureHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in ListPictureVOByPageRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationPictureListPictureVOByPage)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ListPictureVOByPage(ctx, req.(*ListPictureVOByPageRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*ListPictureVOByPageReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Picture_GetPictureTagCategory0_HTTP_Handler(srv PictureHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetPictureTagCategoryRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationPictureGetPictureTagCategory)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetPictureTagCategory(ctx, req.(*GetPictureTagCategoryRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetPictureTagCategoryReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type PictureHTTPClient interface {
 	// DeletePicture 删除图片
 	DeletePicture(ctx context.Context, req *DeletePictureRequest, opts ...http.CallOption) (rsp *DeletePictureReply, err error)
+	// EditPicture 编辑图片（用户）
+	EditPicture(ctx context.Context, req *EditPictureRequest, opts ...http.CallOption) (rsp *EditPictureReply, err error)
 	// GetPictureById 根据 ID 获取图片
 	GetPictureById(ctx context.Context, req *GetPictureByIdRequest, opts ...http.CallOption) (rsp *GetPictureByIdReply, err error)
+	// GetPictureTagCategory 获取标签和分类
+	GetPictureTagCategory(ctx context.Context, req *GetPictureTagCategoryRequest, opts ...http.CallOption) (rsp *GetPictureTagCategoryReply, err error)
+	// GetPictureVOById 获取图片 VO（脱敏）
+	GetPictureVOById(ctx context.Context, req *GetPictureVOByIdRequest, opts ...http.CallOption) (rsp *GetPictureVOByIdReply, err error)
 	// ListPictureByPage 分页查询图片列表
 	ListPictureByPage(ctx context.Context, req *ListPictureByPageRequest, opts ...http.CallOption) (rsp *ListPictureByPageReply, err error)
-	// UpdatePicture 更新图片信息
+	// ListPictureVOByPage 分页获取图片列表 VO（脱敏）
+	ListPictureVOByPage(ctx context.Context, req *ListPictureVOByPageRequest, opts ...http.CallOption) (rsp *ListPictureVOByPageReply, err error)
+	// UpdatePicture 更新图片信息（管理员）
 	UpdatePicture(ctx context.Context, req *UpdatePictureRequest, opts ...http.CallOption) (rsp *UpdatePictureReply, err error)
 	// UploadPicture 上传图片
 	UploadPicture(ctx context.Context, req *UploadPictureRequest, opts ...http.CallOption) (rsp *UploadPictureReply, err error)
@@ -192,12 +298,54 @@ func (c *PictureHTTPClientImpl) DeletePicture(ctx context.Context, in *DeletePic
 	return &out, nil
 }
 
+// EditPicture 编辑图片（用户）
+func (c *PictureHTTPClientImpl) EditPicture(ctx context.Context, in *EditPictureRequest, opts ...http.CallOption) (*EditPictureReply, error) {
+	var out EditPictureReply
+	pattern := "/api/picture/edit"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationPictureEditPicture))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 // GetPictureById 根据 ID 获取图片
 func (c *PictureHTTPClientImpl) GetPictureById(ctx context.Context, in *GetPictureByIdRequest, opts ...http.CallOption) (*GetPictureByIdReply, error) {
 	var out GetPictureByIdReply
 	pattern := "/api/picture/get/{id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationPictureGetPictureById))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// GetPictureTagCategory 获取标签和分类
+func (c *PictureHTTPClientImpl) GetPictureTagCategory(ctx context.Context, in *GetPictureTagCategoryRequest, opts ...http.CallOption) (*GetPictureTagCategoryReply, error) {
+	var out GetPictureTagCategoryReply
+	pattern := "/api/picture/tag_category"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationPictureGetPictureTagCategory))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// GetPictureVOById 获取图片 VO（脱敏）
+func (c *PictureHTTPClientImpl) GetPictureVOById(ctx context.Context, in *GetPictureVOByIdRequest, opts ...http.CallOption) (*GetPictureVOByIdReply, error) {
+	var out GetPictureVOByIdReply
+	pattern := "/api/picture/get/vo"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationPictureGetPictureVOById))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -220,7 +368,21 @@ func (c *PictureHTTPClientImpl) ListPictureByPage(ctx context.Context, in *ListP
 	return &out, nil
 }
 
-// UpdatePicture 更新图片信息
+// ListPictureVOByPage 分页获取图片列表 VO（脱敏）
+func (c *PictureHTTPClientImpl) ListPictureVOByPage(ctx context.Context, in *ListPictureVOByPageRequest, opts ...http.CallOption) (*ListPictureVOByPageReply, error) {
+	var out ListPictureVOByPageReply
+	pattern := "/api/picture/list/page/vo"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationPictureListPictureVOByPage))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// UpdatePicture 更新图片信息（管理员）
 func (c *PictureHTTPClientImpl) UpdatePicture(ctx context.Context, in *UpdatePictureRequest, opts ...http.CallOption) (*UpdatePictureReply, error) {
 	var out UpdatePictureReply
 	pattern := "/api/picture/update"
